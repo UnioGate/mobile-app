@@ -26,9 +26,9 @@ export default function CreateAccount({ }) {
                 currentForm === "createAccountForm" ? (
                     <CreateAccountForm />
                 )
-                : (
-                    <OTPForm/>
-                )
+                    : (
+                        <OTPForm />
+                    )
             }
 
 
@@ -36,11 +36,11 @@ export default function CreateAccount({ }) {
 
 
             {/* This is the bottom text on the page  */}
-            <Text style={styles.bottomText}  >Have an account?
+            <Text style={styles.bottomText}  >Have an account? {" "}
                 <Text
                     onPress={() => navigation.navigate('SignIn')}
                     style={styles.bottomTextLink}
-                > Log in</Text></Text>
+                >Log in</Text></Text>
         </SafeAreaView>
     )
 }

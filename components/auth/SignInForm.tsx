@@ -7,7 +7,7 @@ import CustomInput from '../ui/ReusableInput';
 
 export default function SignInForm() {
 
-    const [signUpMode, setSignUpMode] = useState<"emailAddress" | "phoneNumber">("emailAddress")
+    const [signInMode, setSignInMode] = useState<"emailAddress" | "phoneNumber">("emailAddress")
 
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
@@ -18,21 +18,21 @@ export default function SignInForm() {
 
     // Validation function
     const validateEmail = (value: string) => {
-        if (!value && signUpMode === "emailAddress") return 'Email is required';
+        if (!value && signInMode === "emailAddress") return 'Email is required';
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(value)) return 'Enter a valid email';
         return '';
     };
 
     const validatePhone = (value: string) => {
-        if (!value && signUpMode === "phoneNumber") return 'Phone number is required';
+        if (!value && signInMode === "phoneNumber") return 'Phone number is required';
         if (!/^\d{10,15}$/.test(value)) return 'Enter a valid phone number';
         return '';
     };
 
 
     const toggleSignupMode = () => {
-        setSignUpMode(signUpMode === "emailAddress" ? "phoneNumber" : "emailAddress");
+        setSignInMode(signInMode === "emailAddress" ? "phoneNumber" : "emailAddress");
     }
 
     if (!fontsLoaded) return null;
@@ -45,7 +45,7 @@ export default function SignInForm() {
 
 
             {/* The form input  */}
-            {signUpMode === "phoneNumber" ? (
+            {signInMode === "phoneNumber" ? (
                 <>
                     {/* Phone number input  */}
                     <CustomInput
@@ -87,12 +87,29 @@ export default function SignInForm() {
                 )}
 
 
+
+
+
+            <View style={styles.contentWrapper} >
+
+
+
+                <Text style={styles.otherOptionText}
+                    onPress={toggleSignupMode}
+                >or sign in with {" "}
+                    <Text
+                        style={styles.option}
+                    >{signInMode === "emailAddress" ? "phone number" : "email address"} </Text></Text>
+
+
                 <TouchableOpacity
                     style={styles.button}
                     activeOpacity={0.7}
                 >
                     <Text style={styles.buttonText} >Sign in</Text>
                 </TouchableOpacity>
+            </View>
+
 
         </View>
     )
@@ -120,6 +137,27 @@ const styles = StyleSheet.create({
         fontFamily: "PlusJakartaSans_500Medium"
     },
 
+
+    contentWrapper: {
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        gap: 21,
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 10
+    },
+
+    otherOptionText: {
+        color: "#10182A",
+        fontSize: 15,
+        fontFamily: 'Sora_400Regular',
+    },
+
+    option: {
+        color: "#2DBAA4",
+        textDecorationLine: "underline"
+    },
 
     button: {
         width: "100%",

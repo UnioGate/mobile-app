@@ -19,11 +19,11 @@ export default function SignIn({ }) {
 
 
             {/* This is the bottom text on the page  */}
-            <Text style={styles.bottomText}  >Don’t have an account?
+            <Text style={styles.bottomText}  >Don’t have an account? {" "}
                 <Text
                     onPress={() => navigation.navigate('CreateAccount')}
                     style={styles.bottomTextLink}
-                > Register</Text></Text>
+                >Register</Text></Text>
         </SafeAreaView>
     )
 }
