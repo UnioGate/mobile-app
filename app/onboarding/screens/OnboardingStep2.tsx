@@ -2,10 +2,11 @@ import { useFonts } from '@expo-google-fonts/plus-jakarta-sans';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
-import { Animated, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { fonts } from '../../../fonts/fonts';
 
+const { width, height } = Dimensions.get('window');
 
 export default function OnboardingStep1() {
 
@@ -122,8 +123,8 @@ const styles = StyleSheet.create({
   },
 
   imageWrapper: {
-    width: 400,
-    height: 150,
+    width: width * 0.9,
+    height: height * 0.22,
     position: "relative",
     display: "flex",
     alignItems: "center",
@@ -131,7 +132,8 @@ const styles = StyleSheet.create({
   },
 
   stepImage: {
-    width: "85%",
+    width: "100%",
+    height: "100%",
     resizeMode: "contain",
   },
 

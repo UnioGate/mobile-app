@@ -1,12 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import type { AuthStackParamList } from './types';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CreateAccount from './screens/CreateAccount';
+import PersonalInformation from './screens/PersonalInformation';
 import SignIn from './screens/SignIn';
+import type { AuthStackParamList } from './types';
 
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
@@ -24,7 +25,7 @@ export default function Index() {
                     onPress={() => navigation.goBack()}
                 >
                     <Ionicons name="chevron-back" size={22} color="#10182A" />
-                </TouchableOpacity>
+            </TouchableOpacity>
 
 
                 <TouchableOpacity >
@@ -36,6 +37,7 @@ export default function Index() {
             <Stack.Navigator screenOptions={{ headerShown: false }} >
                 <Stack.Screen name="CreateAccount" component={CreateAccount} />
                 <Stack.Screen name="SignIn" component={SignIn} />
+                <Stack.Screen name="PersonalInformation" component={PersonalInformation} />
             </Stack.Navigator>
 
 

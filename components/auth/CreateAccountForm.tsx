@@ -1,10 +1,13 @@
+import { AuthStackParamList } from '@/app/auth/types';
 import { fonts } from '@/fonts/fonts';
 import { useFonts } from '@expo-google-fonts/plus-jakarta-sans';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import CountryPicker, { CountryCode } from 'react-native-country-picker-modal';
 import CustomCheckbox from '../ui/CustomCheckbox';
 import CustomInput from '../ui/ReusableInput';
-
 
 export default function CreateAccountForm() {
 
@@ -14,8 +17,11 @@ export default function CreateAccountForm() {
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
     const [phoneError, setPhoneError] = useState('');
+    const [countryCode, setCountryCode] = useState<CountryCode>('NG');
 
     const [fontsLoaded] = useFonts(fonts);
+
+        const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
     // Validation function
     const validateEmail = (value: string) => {
@@ -61,10 +67,16 @@ export default function CreateAccountForm() {
                             if (phoneError) setPhoneError("")
                         }}
                         leftElement={
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Image source={require('../../assets/onboarding/NG-flag.png')} style={{ width: 24, height: 16 }} />
-                                <Text style={{ marginLeft: 4, fontSize: 18, }}>+234</Text>
-                            </View>
+                            <CountryPicker
+
+                                countryCode={countryCode}
+                                withCallingCode
+                                withFlag
+                                withFilter
+                                onSelect={(country) => {
+                                    setCountryCode(country.cca2)
+                                }}
+                            />
                         }
                     />
                 </>
@@ -102,8 +114,9 @@ export default function CreateAccountForm() {
                 <TouchableOpacity
                     style={styles.button}
                     activeOpacity={0.7}
+                    onPress={() => navigation.navigate('PersonalInformation')}
                 >
-                    <Text style={styles.buttonText} >Sign up</Text>
+                    <Text style={styles.buttonText} > Sign up</Text>
                 </TouchableOpacity>
 
                 <Text style={styles.otherOptionText}

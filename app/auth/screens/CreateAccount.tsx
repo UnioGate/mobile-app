@@ -9,9 +9,10 @@ import { StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { AuthStackParamList } from '../types';
 
-export default function CreateAccount({ }) {
+
+export default function CreateAccount() {
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-    const [currentForm, setCurrentForm] = useState("otpForm")
+    const [currentForm, setCurrentForm] = useState("createAccountForm")
 
 
     const [fontsLoaded] = useFonts(fonts);

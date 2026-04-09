@@ -2,10 +2,12 @@ import { useFonts } from '@expo-google-fonts/plus-jakarta-sans';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef } from 'react';
-import { Animated, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { fonts } from '../../../fonts/fonts';
 
+
+const { width, height } = Dimensions.get('window');
 
 export default function OnboardingStep1({ navigation }: any) {
 
@@ -128,34 +130,32 @@ const styles = StyleSheet.create({
   },
 
   imageWrapper: {
-    width: 325,
-    height: 130,
+    width: width * 0.85,
+    height: height * 0.2,
     position: "relative",
-    display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: "23%",
+    marginTop: height * 0.05,
   },
 
   stepImage: {
-    width: "85%",
+    width: "100%",
+    height: "100%",
     resizeMode: "contain",
   },
 
   moneyImage: {
-    width: "100%",
-    maxWidth: 111,
+    width: width * 0.25,
     position: "absolute",
-    top: -85,
+    top: -height * 0.08,
     left: 0
   },
 
   cardImage: {
-    width: "100%",
-    maxWidth: 100,
+    width: width * 0.22,
     position: "absolute",
-    bottom: -42,
-    right: -6
+    bottom: -height * 0.05,
+    right: -width * 0.02
   },
 
   stepInfo: {
