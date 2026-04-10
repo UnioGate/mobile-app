@@ -1,13 +1,26 @@
 import DateOfBirthInput from '@/components/ui/DOBInput';
 import CustomInput from '@/components/ui/ReusableInput';
 import StepTracker from '@/components/ui/StepTracker';
-import { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import CountryPicker, { Country, CountryCode } from 'react-native-country-picker-modal';
+import { useMemo, useState } from 'react';
+import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+const COUNTRY_OPTIONS = [
+  'Nigeria',
+  'United States',
+  'United Kingdom',
+  'Canada',
+  'Ghana',
+  'South Africa',
+  'Kenya',
+  'Germany',
+  'France',
+  'India',
+  'Australia',
+];
 
 export default function PersonalInformation() {
-  const [countryCode, setCountryCode] = useState<CountryCode>('NG');
   const [countryName, setCountryName] = useState('Nigeria');
+  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
 
   const [formValues] = useState({
     firstname: '',
@@ -18,9 +31,11 @@ export default function PersonalInformation() {
     country: '',
   });
 
-  const handleCountrySelect = (country: Country) => {
-    setCountryCode(country.cca2);
-    setCountryName(country.name);
+  const sortedCountries = useMemo(() => [...COUNTRY_OPTIONS].sort((a, b) => a.localeCompare(b)), []);
+
+  const handleCountrySelect = (selectedCountry: string) => {
+    setCountryName(selectedCountry);
+    setIsCountryDropdownOpen(false);
   };
 
   return (
@@ -54,20 +69,29 @@ export default function PersonalInformation() {
           </View>
 
           <View style={{ flexBasis: '50%' }}>
-            <CustomInput
-              label="Country"
-              keyboardType="default"
-              value={countryName}
-              leftElement={
-                <CountryPicker
-                  countryCode={countryCode}
-                  withCallingCode
-                  withFlag
-                  withFilter
-                  onSelect={handleCountrySelect}
-                />
-              }
-            />
+            <Text style={styles.dropdownLabel}>Country</Text>
+            <Pressable style={styles.dropdownInput} onPress={() => setIsCountryDropdownOpen(true)}>
+              <Text style={styles.dropdownValue}>{countryName}</Text>
+              <Text style={styles.dropdownArrow}>▾</Text>
+            </Pressable>
+
+            <Modal
+              visible={isCountryDropdownOpen}
+              transparent
+              animationType="fade"
+              onRequestClose={() => setIsCountryDropdownOpen(false)}>
+              <Pressable style={styles.modalOverlay} onPress={() => setIsCountryDropdownOpen(false)}>
+                <View style={styles.dropdownMenu}>
+                  <ScrollView contentContainerStyle={styles.dropdownListContent}>
+                    {sortedCountries.map((country) => (
+                      <Pressable key={country} style={styles.dropdownOption} onPress={() => handleCountrySelect(country)}>
+                        <Text style={styles.dropdownOptionText}>{country}</Text>
+                      </Pressable>
+                    ))}
+                  </ScrollView>
+                </View>
+              </Pressable>
+            </Modal>
           </View>
         </View>
 
@@ -133,6 +157,62 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
     alignItems: 'center',
+  },
+
+  dropdownLabel: {
+    color: '#10182A',
+    marginBottom: 6,
+    fontSize: 14,
+  },
+
+  dropdownInput: {
+    borderWidth: 1,
+    borderColor: '#D7DCE5',
+    borderRadius: 10,
+    minHeight: 48,
+    paddingHorizontal: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#ffffff',
+  },
+
+  dropdownValue: {
+    color: '#10182A',
+    fontSize: 14,
+  },
+
+  dropdownArrow: {
+    color: '#7B8794',
+    fontSize: 16,
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+
+  dropdownMenu: {
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    maxHeight: 320,
+    paddingVertical: 8,
+  },
+
+  dropdownListContent: {
+    paddingVertical: 4,
+  },
+
+  dropdownOption: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+
+  dropdownOptionText: {
+    color: '#10182A',
+    fontSize: 15,
   },
 
   button: {
