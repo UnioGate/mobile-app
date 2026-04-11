@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "flex-start",
         flexDirection: "column",
-        gap: 8
+        gap: 4
     },
 
     label: {
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
-        borderWidth: 0.5,
+        borderWidth: 1,
         borderColor: '#10182A',
         borderRadius: 5,
         paddingHorizontal: 12,

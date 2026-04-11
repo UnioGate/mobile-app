@@ -1,23 +1,16 @@
-import DateOfBirthInput from "@/components/ui/DOBInput";
-import CustomInput from "@/components/ui/ReusableInput";
+import BusinessInformationForm from "@/components/auth/BusinessInformationForm";
 import StepTracker from "@/components/ui/StepTracker";
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import CountryPicker, { CountryCode } from 'react-native-country-picker-modal';
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 
 
 
 export default function PersonalInformation() {
-     const [countryCode, setCountryCode] = useState<CountryCode>('NG');
-    const [formValues, setFormValues] = useState({
-        firstname: "",
-        lastname: "",
-        emailAddress: "",
-        phone: "",
-        date: new Date(),
-        country: ""
-    })
+
+
+    const [error, setError] = useState("")
 
 
     return (
@@ -27,85 +20,17 @@ export default function PersonalInformation() {
             <View style={styles.heading} >
                 <Text style={styles.headingText} >Personal Information</Text>
 
-                <StepTracker currentStep={2} totalSteps={6} />
+                <StepTracker currentStep={1} totalSteps={2} />
             </View>
 
-
-            {/* profile picture */}
-            <View style={styles.profilePicWrapper} >
-                <Image source={require('../../../assets/auth/profile.png')} />
-                <Image source={require('../../../assets/auth/camera.png')} style={styles.camera} />
-            </View>
+            {/* The current step form  */}
+            {/* <PersonalInformationForm /> */}
+            <BusinessInformationForm/>
 
 
-            {/* the form inputs  */}
-            <View style={styles.formContent} >
-
-                <View style={styles.inputsWrapper} >
-                    {/* First name Input */}
-                    <View style={{ flexBasis: "50%" }}  >
-                        <CustomInput
-                            label="First name"
-                            keyboardType="default"
-                            value={formValues.firstname}
-                        />
-                    </View>
-
-                    {/* last name Input */}
-                    <View style={{ flexBasis: "50%" }}  >
-                        <CustomInput
-                            label="Last name"
-                            keyboardType="default"
-                            value={formValues.lastname}
-                        />
-                    </View>
-                </View>
-
-
-                {/* the email input  */}
-                <CustomInput
-                    label="Email Address"
-                    keyboardType="email-address"
-                    value={formValues.emailAddress}
-                />
-
-
-                {/* The D.O.B and Coubtry */}
-
-                <View style={styles.inputsWrapper} >
-                    {/* First Input */}
-                    <View style={{ flexBasis: "50%" }}  >
-                        <DateOfBirthInput />
-                    </View>
-
-                    {/* Second Input */}
-                    <View style={{ flexBasis: "50%" }}  >
-                        <CustomInput
-                        label='Country'
-                        keyboardType="default"
-                        value={countryCode}
-                        leftElement={
-                            <CountryPicker
-                                countryCode={countryCode}
-                                withCallingCode
-                                withFlag
-                                withFilter
-                                onSelect={(country) => {
-                                    setCountryCode(country.cca2)
-                                }}
-                            />
-                        }/>
-                    </View>
-                </View>
-
-
-                {/* Phone num */}
-                <CustomInput
-                    label='Phone number'
-                    keyboardType="phone-pad"
-                    value={formValues.phone}
-                />
-            </View>
+            {/* The error statement  */}
+            {error ? <Text style={styles.errorText}>
+                <Ionicons name="alert-circle" size={14} color="red" /> {error}</Text> : null}
 
 
             <TouchableOpacity
@@ -149,36 +74,6 @@ const styles = StyleSheet.create({
         fontSize: 27
     },
 
-    profilePicWrapper: {
-        width: 169,
-        height: 169,
-        borderRadius: "50%",
-        position: "relative"
-    },
-
-    camera: {
-        position: "absolute",
-        bottom: 10,
-        right: -6
-    },
-
-    formContent: {
-        height: "auto",
-        marginVertical: 30,
-        width: "100%",
-        gap: 10,
-    },
-
-    inputsWrapper: {
-        width: "100%",
-        display: "flex",
-        flexDirection: "row",
-        gap: 8,
-        alignItems: "center",
-    },
-
-
-
     button: {
         width: "100%",
         backgroundColor: "#253E86",
@@ -194,6 +89,13 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "#ffffff",
         fontSize: 18,
+        fontFamily: 'Sora_400Regular',
+    },
+
+    errorText: {
+        color: 'red',
+        fontSize: 12,
+        marginTop: 4,
         fontFamily: 'Sora_400Regular',
     },
 
