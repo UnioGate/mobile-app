@@ -1,6 +1,6 @@
 import { DropdownOption } from "@/types/types";
-import { State } from "country-state-city";
-import { useEffect, useState } from "react";
+import statesData from "@/data/states.json";
+import { useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 
@@ -12,21 +12,17 @@ import { Dropdown } from "react-native-element-dropdown";
 export default function CustomDropdown() {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
-    const [stateOptions, setStateOptions] = useState<DropdownOption[]>([])
-    const currentCountry = "NG"
-
-
-    useEffect(() => {
-        const fetchedStates = State.getStatesOfCountry(currentCountry)
-
-        const options = fetchedStates.map((state) => ({
-            label: state.name,
-            value: state.name
-        }))
-
-        setStateOptions(options)
-
-    }, [])
+    const currentCountry = "NG";
+    const stateOptions = useMemo<DropdownOption[]>(
+        () =>
+            statesData
+                .filter((state) => state.country_code === currentCountry)
+                .map((state) => ({
+                    label: state.name,
+                    value: state.name,
+                })),
+        [currentCountry]
+    );
 
 
 
