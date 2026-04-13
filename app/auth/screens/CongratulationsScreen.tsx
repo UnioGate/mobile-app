@@ -25,7 +25,7 @@ export default function CongratulationsSection() {
             <Text style={styles.heading} >Congratulations</Text>
             <Text style={styles.p} >Your account is ready to use</Text>
             <Text
-             onPress={() => router.push('/mai')}
+             onPress={() => router.replace('/main')}
             style={styles.p} >Go to main screen</Text>
         </View>
     )
