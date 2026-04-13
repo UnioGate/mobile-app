@@ -1,21 +1,27 @@
-import { DropdownOption } from "@/types/types";
 import statesData from "@/data/states.json";
+import { DropdownOption, StateOptionSource } from "@/types/types";
 import { useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 
 
 
+interface DropdownOptionProps{
+label: string
+}
 
 
 
-export default function CustomDropdown() {
+const STATE_OPTIONS_SOURCE = statesData as unknown as StateOptionSource[];
+
+
+export default function CustomDropdown({label}: DropdownOptionProps) {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
     const currentCountry = "NG";
     const stateOptions = useMemo<DropdownOption[]>(
         () =>
-            statesData
+            STATE_OPTIONS_SOURCE
                 .filter((state) => state.country_code === currentCountry)
                 .map((state) => ({
                     label: state.name,
@@ -30,7 +36,7 @@ export default function CustomDropdown() {
 
     return (
         <View style={styles.dropdownContainer}  >
-            <Text style={styles.labelText}  >State</Text>
+            <Text style={styles.labelText}  >{label}</Text>
             <Dropdown
                 style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
                 placeholderStyle={styles.placeholderStyle}

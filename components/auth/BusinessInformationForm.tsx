@@ -1,11 +1,13 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import CustomDropdown from "../ui/CustomDropdown";
 import CustomInput from "../ui/ReusableInput";
 
 
 
 export default function BusinessInformationForm() {
+    const [error, setError] = useState("")
     const [formValues, setFormValues] = useState({
         firstname: "",
         lastname: "",
@@ -41,7 +43,9 @@ export default function BusinessInformationForm() {
 
                 {/* State dropdown */}
                 <View style={{ flexBasis: "50%" }}  >
-                    <CustomDropdown />
+                    <CustomDropdown
+                        label="State"
+                    />
                 </View>
 
 
@@ -70,9 +74,16 @@ export default function BusinessInformationForm() {
 
                 {/* Primary currency dropdown */}
                 <View style={{ flexBasis: "50%" }}  >
-
+                    <CustomDropdown
+                        label="Primary Currency"
+                    />
                 </View>
             </View>
+
+
+            {/* The error statement  */}
+            {error ? <Text style={styles.errorText}>
+                <Ionicons name="alert-circle" size={14} color="red" /> {error}</Text> : null}
 
 
         </View>
@@ -100,5 +111,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
 
+    errorText: {
+        color: 'red',
+        fontSize: 12,
+        marginTop: 4,
+        fontFamily: 'Sora_400Regular',
+    },
 
 })

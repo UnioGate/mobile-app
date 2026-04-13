@@ -8,5 +8,8 @@ export type DropdownOption = {
 };
 
 
-
+export type StateOptionSource = {
+    name: string;
+    country_code: string;
+};
 

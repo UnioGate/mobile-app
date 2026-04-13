@@ -8,8 +8,6 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 
 export default function PersonalInformation() {
-
-
     const [error, setError] = useState("")
 
 
