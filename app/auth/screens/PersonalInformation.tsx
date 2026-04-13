@@ -34,7 +34,7 @@ export default function PersonalInformation() {
             <TouchableOpacity
                 style={styles.button}
                 activeOpacity={0.7}
-                onPress={() => navigation.navigate('PersonalInformation')}
+                onPress={() => navigation.navigate('Congratulations')}
             >
                 <Text style={styles.buttonText} > Continue</Text>
             </TouchableOpacity>

@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import CongratulationsSection from './screens/CongratulationsScreen';
 import CreateAccount from './screens/CreateAccount';
 import PersonalInformation from './screens/PersonalInformation';
 import SignIn from './screens/SignIn';
@@ -25,7 +26,7 @@ export default function Index() {
                     onPress={() => navigation.goBack()}
                 >
                     <Ionicons name="chevron-back" size={22} color="#10182A" />
-            </TouchableOpacity>
+                </TouchableOpacity>
 
 
                 <TouchableOpacity >
@@ -38,6 +39,7 @@ export default function Index() {
                 <Stack.Screen name="CreateAccount" component={CreateAccount} />
                 <Stack.Screen name="SignIn" component={SignIn} />
                 <Stack.Screen name="PersonalInformation" component={PersonalInformation} />
+                <Stack.Screen name="Congratulations" component={CongratulationsSection} />
             </Stack.Navigator>
 
 

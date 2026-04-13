@@ -1,5 +1,6 @@
 export type AuthStackParamList = {
   CreateAccount: undefined;
   SignIn: undefined;
-  PersonalInformation: undefined
+  PersonalInformation: undefined;
+  Congratulations: undefined
 };
