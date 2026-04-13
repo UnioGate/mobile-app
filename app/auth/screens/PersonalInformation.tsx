@@ -1,14 +1,17 @@
+import { AuthStackParamList } from '@/app/auth/types';
 import BusinessInformationForm from "@/components/auth/BusinessInformationForm";
 import StepTracker from "@/components/ui/StepTracker";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 
 
-
 export default function PersonalInformation() {
     const [error, setError] = useState("")
+    const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
 
     return (
@@ -23,7 +26,7 @@ export default function PersonalInformation() {
 
             {/* The current step form  */}
             {/* <PersonalInformationForm /> */}
-            <BusinessInformationForm/>
+            <BusinessInformationForm />
 
 
             {/* The error statement  */}

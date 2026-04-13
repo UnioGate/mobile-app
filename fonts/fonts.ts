@@ -8,6 +8,7 @@ import {
 import {
     Sora_300Light,
     Sora_400Regular,
+    Sora_600SemiBold
 } from '@expo-google-fonts/sora';
 
 
@@ -17,4 +18,5 @@ export const fonts = {
     PlusJakartaSans_600SemiBold,
     Sora_400Regular,
     Sora_300Light,
+    Sora_600SemiBold
 };
