@@ -1,11 +1,19 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image } from "expo-image";
+import { useRef, useState } from "react";
+import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import CustomDropdown from "../ui/CustomDropdown";
 import CustomInput from "../ui/ReusableInput";
 
+type UploadedLogo = {
+    name: string;
+    uri: string;
+};
+
 export default function BusinessInformationForm() {
     const [error, setError] = useState("");
+    const [logo, setLogo] = useState<UploadedLogo | null>(null);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [formValues, setFormValues] = useState({
         firstname: "",
         lastname: "",
@@ -16,6 +24,50 @@ export default function BusinessInformationForm() {
         companyName: "",
         address: "",
     });
+
+    const handleLogoUpload = () => {
+        setError("");
+
+        if (Platform.OS !== "web") {
+            setError("Image upload is currently supported on web only.");
+            return;
+        }
+
+        if (typeof document === "undefined") {
+            setError("Unable to access file picker in this environment.");
+            return;
+        }
+
+        if (!fileInputRef.current) {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "image/*";
+            input.onchange = () => {
+                const selectedFile = input.files?.[0];
+
+                if (!selectedFile) {
+                    return;
+                }
+
+                const maxFileSizeInBytes = 500 * 1024 * 1024;
+
+                if (selectedFile.size > maxFileSizeInBytes) {
+                    setError("Selected image is larger than 500MB.");
+                    return;
+                }
+
+                const objectUrl = URL.createObjectURL(selectedFile);
+                setLogo({
+                    name: selectedFile.name,
+                    uri: objectUrl,
+                });
+            };
+
+            fileInputRef.current = input;
+        }
+
+        fileInputRef.current.click();
+    };
 
     return (
         <View style={styles.container}>
@@ -69,12 +121,17 @@ export default function BusinessInformationForm() {
             {/* Business logo uploader */}
             <View style={styles.logoWrapper}>
                 <Text style={styles.logoLabel}>Business Logo (Optional)</Text>
-                <Pressable style={styles.uploadBox}>
+                <Pressable style={styles.uploadBox} onPress={handleLogoUpload}>
                     <View style={styles.uploadIconWrapper}>
                         <Ionicons name="image" size={18} color="#10182A" />
                     </View>
-                    <Text style={styles.uploadTitle}>Upload your image here</Text>
-                    <Text style={styles.uploadSubTitle}>Max file size up to 500mb</Text>
+                    <Text style={styles.uploadTitle}>
+                        {logo ? "Image selected" : "Upload your image here"}
+                    </Text>
+                    <Text style={styles.uploadSubTitle}>
+                        {logo?.name ?? "Max file size up to 500mb"}
+                    </Text>
+                    {logo ? <Image source={{ uri: logo.uri }} style={styles.logoPreview} contentFit="cover" /> : null}
                 </Pressable>
             </View>
 
@@ -129,6 +186,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         paddingHorizontal: 16,
+        paddingVertical: 12,
     },
 
     uploadIconWrapper: {
@@ -151,6 +209,13 @@ const styles = StyleSheet.create({
         color: "#6B7280",
         fontSize: 12,
         fontFamily: "Sora_400Regular",
+    },
+
+    logoPreview: {
+        width: "100%",
+        height: 120,
+        marginTop: 12,
+        borderRadius: 8,
     },
 
     errorText: {
