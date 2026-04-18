@@ -80,7 +80,7 @@ export default function Overview() {
                     {/* Withdraw */}
                     <Pressable style={styles.CTA_button} >
                         <View style={styles.circle} >
-                            <BanknoteArrowDown size={24} color="#253E86"  />
+                            <BanknoteArrowDown size={24} color="#253E86" />
                         </View>
                         <Text style={styles.CTA_button_text} >
                             Withdraw
@@ -91,7 +91,7 @@ export default function Overview() {
                     {/* Tap to pay  */}
                     <Pressable style={styles.CTA_button} >
                         <View style={styles.circle} >
-                            <SmartphoneNfc size={24} color="#253E86"  />
+                            <SmartphoneNfc size={24} color="#253E86" />
                         </View>
                         <Text style={styles.CTA_button_text} >
                             Tap to Pay
@@ -104,10 +104,32 @@ export default function Overview() {
 
 
 
-{/* Brief summary of today's activities */}
-<Text style={styles.briefSummary} >
-    Here's a quick look at your activity today.
-</Text>
+            {/* Brief summary of today's activities */}
+            <View style={styles.briefSummary} >
+
+                <View style={styles.leftSide} >
+                    <View style={styles.text_wrapper} >
+                        <Text style={styles.boldText} >24</Text>
+                        <Text style={styles.label} >Today's Transaction</Text>
+                    </View>
+                </View>
+
+
+                <View style={styles.rightSide} >
+                    <View style={styles.text_wrapper} >
+                        <Text style={styles.boldText} >128400</Text>
+                        <Text style={styles.label} >Today's Revenue</Text>
+                    </View>
+                </View>
+
+            </View>
+
+
+
+            {/* The transaction limit  */}
+            <View style={styles.tx_limit} >
+
+            </View>
 
 
 
@@ -285,8 +307,63 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "center"
+    },
+
+
+    briefSummary: {
+        backgroundColor: "#ffffff",
+        borderRadius: 20,
+        width: "100%",
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+
+    leftSide: {
+        flex: 1,
+        borderRightWidth: 0.5,
+        borderColor: "#D3D8E7",
+        paddingVertical: 23,
+        paddingHorizontal: 20,
+    },
+
+    rightSide: {
+        flex: 1,
+        paddingVertical: 23,
+        paddingHorizontal: 20,
+        borderLeftWidth: 0.5,
+        borderColor: "#D3D8E7",
+    },
+
+    text_wrapper: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 2
+    },
+
+    boldText: {
+        color: "#10182A",
+        fontSize: 24,
+        fontFamily: "Sora_400Regular"
+    },
+
+    label: {
+        color: "#797676",
+        fontSize: 11,
+        fontFamily: "Sora_400Regular"
+    },
+
+
+    tx_limit: {
+backgroundColor: "#ffffff",
+borderRadius: 20,
+width: "100%",
+paddingVertical: 23,
+paddingHorizontal: 15,
+display: "flex",
+alignItems: "center",
+justifyContent: "center"
     }
-
-
 
 })
