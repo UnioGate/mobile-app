@@ -9,7 +9,17 @@ export type DropdownOption = {
 
 
 export type StateOptionSource = {
-    name: string;
-    country_code: string;
+  name: string;
+  country_code: string;
 };
+
+export type LogoKey = "eth" | "btc";
+
+export type transaction_detail_type = {
+  method: string;
+  image: LogoKey;
+  tx_time: Date;
+  amount: number;
+  status: "Successful" | "Pending" | "Unsuccessful"
+}
 

@@ -1,16 +1,40 @@
+import { transactions } from "@/data/mock_tx";
 import { fonts } from "@/fonts/fonts";
+import { LogoKey } from "@/types/types";
 import { useFonts } from "@expo-google-fonts/sora";
 import { Ionicons } from "@expo/vector-icons";
 import { BanknoteArrowDown, SmartphoneNfc } from "lucide-react-native";
-import { Image, Pressable, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as Progress from 'react-native-progress';
 
 
 
 export default function Overview() {
-    const { width } = useWindowDimensions();
 
     const [fontsLoaded] = useFonts(fonts);
+
+
+    // This function gives the status color
+    const getStatusStyle = (status: string) => {
+        switch (status.toLowerCase()) {
+            case "successful":
+                return styles.successful;
+            case "pending":
+                return styles.pending;
+            case "unsuccessful":
+                return styles.unsuccessful;
+            default:
+                return {};
+        }
+    };
+
+
+
+    const logos: Record<LogoKey, any> = {
+    eth: require("../../../assets/logos/eth_icon.png"),
+    btc:  require("../../../assets/logos/eth_icon.png"),
+};
+
 
     if (!fontsLoaded) return null;
 
@@ -49,169 +73,185 @@ export default function Overview() {
                 </View>
             </View>
 
+            <ScrollView
+                style={{ maxHeight: "100%" }}
+                contentContainerStyle={styles.scrollView}
+                showsVerticalScrollIndicator={false}
+            >
+                {/* The banner showing the balance and call to action buttons  */}
+                <View style={styles.CTABannner} >
 
-            {/* The banner showing the balance and call to action buttons  */}
-            <View style={styles.CTABannner} >
+                    <View style={styles.brief_details} >
+                        <Text style={styles.availableBalance} >Available Balance</Text>
 
-                <View style={styles.brief_details} >
-                    <Text style={styles.availableBalance} >Available Balance</Text>
+                        <View style={styles.amount_wrapper} >
+                            <Text style={styles.amount} >₦247,850.50</Text>
+                            <TouchableOpacity >
+                                <Ionicons name="eye-off" size={19} color="#FFFFFF" /></TouchableOpacity>
+                        </View>
 
-                    <View style={styles.amount_wrapper} >
-                        <Text style={styles.amount} >₦247,850.50</Text>
-                        <TouchableOpacity >
-                            <Ionicons name="eye-off" size={19} color="#FFFFFF" /></TouchableOpacity>
+                        <Text style={styles.tierStatus} >Tier 2: Personal verified</Text>
                     </View>
 
-                    <Text style={styles.tierStatus} >Tier 2: Personal verified</Text>
-                </View>
+
+                    {/* CTA buttons */}
+                    <View style={styles.CTA_buttons_wrapper} >
 
 
-                {/* CTA buttons */}
-                <View style={styles.CTA_buttons_wrapper} >
-
-
-                    {/* New sale  */}
-                    <Pressable style={styles.CTA_button} >
-                        <View style={styles.circle} >
-                            <Ionicons name="add" size={25} color="#10182A" />
-                        </View>
-                        <Text style={styles.CTA_button_text} >New Sale</Text>
-                    </Pressable>
-
-
-                    {/* Withdraw */}
-                    <Pressable style={styles.CTA_button} >
-                        <View style={styles.circle} >
-                            <BanknoteArrowDown size={24} color="#253E86" />
-                        </View>
-                        <Text style={styles.CTA_button_text} >
-                            Withdraw
-                        </Text>
-                    </Pressable>
-
-
-                    {/* Tap to pay  */}
-                    <Pressable style={styles.CTA_button} >
-                        <View style={styles.circle} >
-                            <SmartphoneNfc size={24} color="#253E86" />
-                        </View>
-                        <Text style={styles.CTA_button_text} >
-                            Tap to Pay
-                        </Text>
-                    </Pressable>
-
-                </View>
-
-            </View>
-
-
-
-            {/* Brief summary of today's activities */}
-            <View style={styles.briefSummary} >
-
-                <View style={styles.leftSide} >
-                    <View style={styles.text_wrapper} >
-                        <Text style={styles.boldText} >24</Text>
-                        <Text style={styles.label} >Today's Transaction</Text>
-                    </View>
-                </View>
-
-
-                <View style={styles.rightSide} >
-                    <View style={styles.text_wrapper} >
-                        <Text style={styles.boldText} >128400</Text>
-                        <Text style={styles.label} >Today's Revenue</Text>
-                    </View>
-                </View>
-
-            </View>
-
-
-
-            {/* The transaction limit tracker  */}
-            <View style={styles.tx_limit} >
-                <View style={styles.tx_limit_tracker_heading} >
-                    <Text style={styles.tx_limit_tracker_head_text} >Daily Transaction Limit  </Text>
-                    <Text style={styles.tx_limit_tracker_head_text} >Tier 2</Text>
-                </View>
-
-                <View style={{ width: "100%", paddingHorizontal: 1, display: "flex", flexDirection: "column", gap: 5 }}>
-                    <Progress.Bar
-                        progress={0.5}
-                        color="#253E86"
-                        unfilledColor="#D3D8E7"
-                        borderWidth={0}
-                        borderRadius={30}
-                        width={null}
-                        height={12}
-                    />
-                    <Text style={styles.transacted_amount} >₦3.2M / ₦5M</Text>
-                </View>
-
-
-                <Pressable>
-                    <Text style={styles.upgrade_limit_text} >Upgrade to increase limit</Text>
-                </Pressable>
-
-            </View>
-
-
-
-
-            {/* The transaction history  */}
-            <View style={styles.tx_history_wrapper} >
-                {/* the heading  */}
-                <View style={styles.tx_history_wrapper_heading} >
-                    <Text style={styles.tx_heading_text} >Transactions</Text>
-
-                    <Pressable style={styles.view_all_btn} >
-                        <Text style={styles.view_all_btn_text} >View all </Text>
-                    </Pressable>
-                </View>
-
-                <Text style={styles.today_text} >Today </Text>
-
-
-
-                {/* The history  */}
-                <View style={styles.history} >
-
-                    <View style={styles.history_card} >
-
-                        <View style={styles.history_card_left_side} >
-
-                            <Image
-                                source={require("../../../assets/logos/logos_bitcoin.png")}
-                                style={{ width: 30, height: 30, marginTop: 7 }}
-                            />
-
-                            <View
-                                style={{
-                                    width: "auto",
-                                    display: "flex",
-                                    alignItems: "flex-start",
-                                    justifyContent: "center"
-                                }}
-                            >
-                                <Text style={styles.curreny}  >USDT</Text>
-                                <Text style={styles.time} >Today 09:21 AM</Text>
+                        {/* New sale  */}
+                        <Pressable style={styles.CTA_button} >
+                            <View style={styles.circle} >
+                                <Ionicons name="add" size={25} color="#10182A" />
                             </View>
-                        </View>
+                            <Text style={styles.CTA_button_text} >New Sale</Text>
+                        </Pressable>
 
 
+                        {/* Withdraw */}
+                        <Pressable style={styles.CTA_button} >
+                            <View style={styles.circle} >
+                                <BanknoteArrowDown size={24} color="#253E86" />
+                            </View>
+                            <Text style={styles.CTA_button_text} >
+                                Withdraw
+                            </Text>
+                        </Pressable>
 
-                        <View style={styles.history_card_right_side} >
-                            <Text style={styles.history_amount} >₦20,000.00</Text>
-                            <Text style={styles.history_status} >Successful</Text>
-                        </View>
+
+                        {/* Tap to pay  */}
+                        <Pressable style={styles.CTA_button} >
+                            <View style={styles.circle} >
+                                <SmartphoneNfc size={24} color="#253E86" />
+                            </View>
+                            <Text style={styles.CTA_button_text} >
+                                Tap to Pay
+                            </Text>
+                        </Pressable>
 
                     </View>
 
                 </View>
 
 
-            </View>
 
+                {/* Brief summary of today's activities */}
+                <View style={styles.briefSummary} >
+
+                    <View style={styles.leftSide} >
+                        <View style={styles.text_wrapper} >
+                            <Text style={styles.boldText} >24</Text>
+                            <Text style={styles.label} >Today's Transaction</Text>
+                        </View>
+                    </View>
+
+
+                    <View style={styles.rightSide} >
+                        <View style={styles.text_wrapper} >
+                            <Text style={styles.boldText} >128400</Text>
+                            <Text style={styles.label} >Today's Revenue</Text>
+                        </View>
+                    </View>
+
+                </View>
+
+
+
+                {/* The transaction limit tracker  */}
+                <View style={styles.tx_limit} >
+                    <View style={styles.tx_limit_tracker_heading} >
+                        <Text style={styles.tx_limit_tracker_head_text} >Daily Transaction Limit  </Text>
+                        <Text style={styles.tx_limit_tracker_head_text} >Tier 2</Text>
+                    </View>
+
+                    <View style={{ width: "100%", paddingHorizontal: 1, display: "flex", flexDirection: "column", gap: 5 }}>
+                        <Progress.Bar
+                            progress={0.5}
+                            color="#253E86"
+                            unfilledColor="#D3D8E7"
+                            borderWidth={0}
+                            borderRadius={30}
+                            width={null}
+                            height={12}
+                        />
+                        <Text style={styles.transacted_amount} >₦3.2M / ₦5M</Text>
+                    </View>
+
+
+                    <Pressable>
+                        <Text style={styles.upgrade_limit_text} >Upgrade to increase limit</Text>
+                    </Pressable>
+
+                </View>
+
+
+
+
+                {/* The transaction history  */}
+                <View style={styles.tx_history_wrapper} >
+                    {/* the heading  */}
+                    <View style={styles.tx_history_wrapper_heading} >
+                        <Text style={styles.tx_heading_text} >Transactions</Text>
+
+                        <Pressable style={styles.view_all_btn} >
+                            <Text style={styles.view_all_btn_text} >View all </Text>
+                        </Pressable>
+                    </View>
+
+                    <Text style={styles.today_text} >Today </Text>
+
+
+
+                    {/* The history  */}
+                    <View style={styles.history} >
+
+                        {/* The individual history card  */}
+                        {
+                            transactions.map((tx, i) => (
+                                <View key={i} style={styles.history_card} >
+
+                                    <View style={styles.history_card_left_side} >
+
+                                        <Image
+                                            source={logos[tx.image]}
+                                            style={{ width: 30, height: 30, marginTop: 7 }}
+                                        />
+
+                                        <View
+                                            style={{
+                                                width: "auto",
+                                                display: "flex",
+                                                alignItems: "flex-start",
+                                                justifyContent: "center"
+                                            }}
+                                        >
+                                            <Text style={styles.curreny}  >{tx.method} </Text>
+                                            <Text style={styles.time} >{tx.tx_time.toDateString()} </Text>
+                                        </View>
+                                    </View>
+
+
+
+                                    <View style={styles.history_card_right_side} >
+                                        <Text style={styles.history_amount} >
+                                            ₦{tx.amount.toLocaleString(
+                                                undefined, {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            }
+                                            )} </Text>
+
+                                        <Text style={[styles.history_status, getStatusStyle(tx.status)]} >{tx.status} </Text>
+                                    </View>
+
+                                </View>
+                            ))
+                        }
+
+                    </View>
+
+
+                </View>
+            </ScrollView>
 
 
         </View>
@@ -299,6 +339,11 @@ const styles = StyleSheet.create({
         right: 0,
     },
 
+    scrollView: {
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+    },
 
     CTABannner: {
         width: "100%",
@@ -336,7 +381,7 @@ const styles = StyleSheet.create({
     amount: {
         fontSize: 40,
         color: "#FFFFFF",
-        fontFamily: "sora400Regular"
+        fontFamily: "Sora_400Regular"
     },
 
     tierStatus: {
@@ -403,13 +448,13 @@ const styles = StyleSheet.create({
         flex: 1,
         borderRightWidth: 0.5,
         borderColor: "#D3D8E7",
-        paddingVertical: 23,
+        paddingVertical: 18,
         paddingHorizontal: 20,
     },
 
     rightSide: {
         flex: 1,
-        paddingVertical: 23,
+        paddingVertical: 18,
         paddingHorizontal: 20,
         borderLeftWidth: 0.5,
         borderColor: "#D3D8E7",
@@ -529,7 +574,7 @@ const styles = StyleSheet.create({
         width: "100%",
         display: "flex",
         alignItems: "center",
-        gap: 20
+        gap: 20,
     },
 
     history_card: {
@@ -577,9 +622,20 @@ const styles = StyleSheet.create({
     },
 
     history_status: {
-        color: "#009A49",
         fontSize: 10,
         fontFamily: "sora300Light"
+    },
+
+    successful: {
+        color: "#009A49"
+    },
+
+    pending: {
+        color: "#F7931A"
+    },
+
+    unsuccessful: {
+        color: "#FF0707"
     }
 
 
