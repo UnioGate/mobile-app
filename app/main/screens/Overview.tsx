@@ -2,11 +2,13 @@ import { fonts } from "@/fonts/fonts";
 import { useFonts } from "@expo-google-fonts/sora";
 import { Ionicons } from "@expo/vector-icons";
 import { BanknoteArrowDown, SmartphoneNfc } from "lucide-react-native";
-import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import * as Progress from 'react-native-progress';
 
 
 
 export default function Overview() {
+    const { width } = useWindowDimensions();
 
     const [fontsLoaded] = useFonts(fonts);
 
@@ -126,8 +128,87 @@ export default function Overview() {
 
 
 
-            {/* The transaction limit  */}
+            {/* The transaction limit tracker  */}
             <View style={styles.tx_limit} >
+                <View style={styles.tx_limit_tracker_heading} >
+                    <Text style={styles.tx_limit_tracker_head_text} >Daily Transaction Limit  </Text>
+                    <Text style={styles.tx_limit_tracker_head_text} >Tier 2</Text>
+                </View>
+
+                <View style={{ width: "100%", paddingHorizontal: 1, display: "flex", flexDirection: "column", gap: 5 }}>
+                    <Progress.Bar
+                        progress={0.5}
+                        color="#253E86"
+                        unfilledColor="#D3D8E7"
+                        borderWidth={0}
+                        borderRadius={30}
+                        width={null}
+                        height={12}
+                    />
+                    <Text style={styles.transacted_amount} >₦3.2M / ₦5M</Text>
+                </View>
+
+
+                <Pressable>
+                    <Text style={styles.upgrade_limit_text} >Upgrade to increase limit</Text>
+                </Pressable>
+
+            </View>
+
+
+
+
+            {/* The transaction history  */}
+            <View style={styles.tx_history_wrapper} >
+                {/* the heading  */}
+                <View style={styles.tx_history_wrapper_heading} >
+                    <Text style={styles.tx_heading_text} >Transactions</Text>
+
+                    <Pressable style={styles.view_all_btn} >
+                        <Text style={styles.view_all_btn_text} >View all </Text>
+                    </Pressable>
+                </View>
+
+                <Text style={styles.today_text} >Today </Text>
+
+
+
+                {/* The history  */}
+                <View style={styles.history} >
+
+                    <View style={styles.history_card} >
+
+                        <View style={styles.history_card_left_side} >
+
+                            <Image
+                                source={require("../../../assets/logos/logos_bitcoin.png")}
+                                style={{ width: 30, height: 30, marginTop: 7 }}
+                            />
+
+                            <View
+                                style={{
+                                    width: "auto",
+                                    display: "flex",
+                                    alignItems: "flex-start",
+                                    justifyContent: "center"
+                                }}
+                            >
+                                <Text style={styles.curreny}  >USDT</Text>
+                                <Text style={styles.time} >Today 09:21 AM</Text>
+                            </View>
+                        </View>
+
+
+
+                        <View style={styles.history_card_right_side} >
+                            <Text style={styles.history_amount} >₦20,000.00</Text>
+                            <Text style={styles.history_status} >Successful</Text>
+                        </View>
+
+                    </View>
+
+                </View>
+
 
             </View>
 
@@ -356,14 +437,152 @@ const styles = StyleSheet.create({
 
 
     tx_limit: {
-backgroundColor: "#ffffff",
-borderRadius: 20,
-width: "100%",
-paddingVertical: 23,
-paddingHorizontal: 15,
-display: "flex",
-alignItems: "center",
-justifyContent: "center"
+        backgroundColor: "#ffffff",
+        borderRadius: 20,
+        width: "100%",
+        paddingVertical: 10,
+        paddingHorizontal: 18,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 16
+    },
+
+    tx_limit_tracker_heading: {
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 10
+    },
+
+    tx_limit_tracker_head_text: {
+        color: "#10182A",
+        fontSize: 14,
+        fontFamily: "Sora_400Regular"
+    },
+
+    upgrade_limit_text: {
+        color: "#253E86",
+        textDecorationLine: "underline",
+        fontFamily: "Sora_600SemiBold",
+        fontSize: 13
+    },
+
+    transacted_amount: {
+        fontSize: 10,
+        color: "#10182A",
+        fontFamily: "Sora_400Regular",
+        marginLeft: "auto"
+    },
+
+    tx_history_wrapper: {
+        backgroundColor: "#ffffff",
+        borderRadius: 20,
+        width: "100%",
+        paddingHorizontal: 18,
+        paddingVertical: 20
+    },
+
+    tx_history_wrapper_heading: {
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 10
+    },
+
+    tx_heading_text: {
+        fontSize: 16,
+        color: "#10182A",
+        fontFamily: "Sora_600SemiBold",
+    },
+
+    view_all_btn: {
+        borderWidth: 0.5,
+        borderColor: "#253E86",
+        paddingVertical: 4,
+        paddingHorizontal: 9,
+        borderRadius: 5,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 6
+    },
+
+    view_all_btn_text: {
+        fontSize: 12,
+        color: "#10182A",
+        fontFamily: "Sora_400Regular",
+    },
+
+    today_text: {
+        fontSize: 10,
+        color: "#253E86",
+        fontFamily: "Sora_300Light",
+        marginVertical: 12
+    },
+
+    history: {
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        gap: 20
+    },
+
+    history_card: {
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexDirection: "row",
+        padding: 2
+    },
+
+    history_card_left_side: {
+        width: "auto",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        flexDirection: "row"
+    },
+
+    curreny: {
+        fontSize: 14,
+        color: "#10182A",
+        fontFamily: "Sora_400Regular"
+    },
+
+    time: {
+        fontSize: 10,
+        color: "#B3B3B3",
+        fontFamily: "Sora_300Light"
+    },
+
+
+
+    history_card_right_side: {
+        display: "flex",
+        alignItems: "flex-end",
+        flexDirection: "column",
+        gap: 3,
+    },
+
+    history_amount: {
+        color: "#10182A",
+        fontSize: 13,
+        fontFamily: "Sora_400Regular"
+    },
+
+    history_status: {
+        color: "#009A49",
+        fontSize: 10,
+        fontFamily: "sora300Light"
     }
+
+
+
 
 })
