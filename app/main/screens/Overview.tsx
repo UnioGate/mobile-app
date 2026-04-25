@@ -4,16 +4,19 @@ import { LogoKey } from "@/types/types";
 import { useFonts } from "@expo-google-fonts/sora";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { BanknoteArrowDown, SmartphoneNfc } from "lucide-react-native";
 import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as Progress from 'react-native-progress';
+import { MainStackParamList } from "../type";
 
-
+type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList, "overview">;
 
 export default function Overview() {
 
     const [fontsLoaded] = useFonts(fonts);
-    const navigation = useNavigation()
+    const navigation = useNavigation<OverviewNavigationProp>()
+
 
 
     // This function gives the status color

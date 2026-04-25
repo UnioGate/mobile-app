@@ -21,5 +21,14 @@ export type transaction_detail_type = {
   tx_time: Date;
   amount: number;
   status: "Successful" | "Pending" | "Unsuccessful"
-}
+};
 
+
+export type methodKey = "card" | "crypto" | "nfc"
+
+export type method_option_type = {
+  title: string;
+  subtitle: string;
+  image: methodKey;
+
+}
