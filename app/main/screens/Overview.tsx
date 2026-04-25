@@ -3,6 +3,7 @@ import { fonts } from "@/fonts/fonts";
 import { LogoKey } from "@/types/types";
 import { useFonts } from "@expo-google-fonts/sora";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { BanknoteArrowDown, SmartphoneNfc } from "lucide-react-native";
 import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as Progress from 'react-native-progress';
@@ -12,6 +13,7 @@ import * as Progress from 'react-native-progress';
 export default function Overview() {
 
     const [fontsLoaded] = useFonts(fonts);
+    const navigation = useNavigation()
 
 
     // This function gives the status color
@@ -31,9 +33,9 @@ export default function Overview() {
 
 
     const logos: Record<LogoKey, any> = {
-    eth: require("../../../assets/logos/eth_icon.png"),
-    btc:  require("../../../assets/logos/eth_icon.png"),
-};
+        eth: require("../../../assets/logos/eth_icon.png"),
+        btc: require("../../../assets/logos/logos_bitcoin.png"),
+    };
 
 
     if (!fontsLoaded) return null;
@@ -99,7 +101,9 @@ export default function Overview() {
 
 
                         {/* New sale  */}
-                        <Pressable style={styles.CTA_button} >
+                        <Pressable
+                            onPress={() => navigation.navigate('sales')}
+                            style={styles.CTA_button} >
                             <View style={styles.circle} >
                                 <Ionicons name="add" size={25} color="#10182A" />
                             </View>
