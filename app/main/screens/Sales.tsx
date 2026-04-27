@@ -6,8 +6,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Delete } from "lucide-react-native";
 import { useMemo, useState } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
-import Toast from "react-native-toast-message";
 import { MainStackParamList } from '../type';
+import { showSuccessToast } from "@/utils/toastConfig";
 
 
 type NavigationProp = NativeStackNavigationProp<
@@ -67,16 +67,8 @@ export default function Sales() {
 
     const handleClear = () => {
         setAmount("0");
+        showSuccessToast("Cleared", "Amount has been reset");
     };
-
-
-    Toast.show({
-  type: 'error',
-  text1: 'Payment Failed',
-  text2: 'Amount exceeds transaction limit',
-  position: 'top',
-  topOffset: 60,
-});
 
 
     return (
