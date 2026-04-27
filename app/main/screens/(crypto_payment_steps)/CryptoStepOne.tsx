@@ -1,8 +1,10 @@
+import { stableCoinData } from "@/data/stableCoinData";
+import { stableCoinKey } from "@/types/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { MainStackParamList } from "../../type";
 
 
@@ -13,10 +15,20 @@ type NavigationProp = NativeStackNavigationProp<
     'stepOne'
 >;
 
+
+const icon: Record<stableCoinKey, any> = {
+    cngn: require("../../../../assets/logos/CNGN.png"),
+    usdt: require("../../../../assets/logos/USDT.png"),
+    usdc: require("../../../../assets/logos/USDC.png")
+}
+
+
+
 export default function CryptoStepOne() {
     const navigation = useNavigation<NavigationProp>();
     const [stableCoin, setStableCoin] = useState("")
     const [network, setNetwork] = useState("")
+    const [checked, setChecked] = useState(false);
 
     return (
 
@@ -91,22 +103,42 @@ export default function CryptoStepOne() {
 
                 <View style={styles.drawer_grid} >
 
-                    <View style={styles.drawer_option} >
-                        <Text>hello</Text>
+                    {
+                        stableCoinData.map((option, i) => (
+                            <Pressable
+                                onPress={() => setStableCoin(option.title)}
+                                key={i} style={styles.drawer_option}
+                            >
+                                <View
+                                    style={{ marginLeft: "auto" }}>
+                                    <Ionicons
+                                        name={stableCoin === option.title ? 'checkbox-outline' : 'square-outline'}
+                                        size={20}
+                                        color="#1D1B20"
+                                    />
+                                </View>
 
 
-                        <View
-                            style={{
-                                gap: 5,
-                                alignItems: "center",
-                                justifyContent: "center"
-                            }}
-                        >
-                            <Text style={styles.drawer_option_heading} >USDT</Text>
-                            <Text style={styles.drawer_option_subtitle} >1 USDT = ₦1,650</Text>
-                        </View>
+                                <Image
+                                    source={icon[option.img]}
+                                    style={{ width: 50, height: 50, objectFit: "contain", }}
+                                />
 
-                    </View>
+
+                                <View
+                                    style={{
+                                        gap: 5,
+                                        alignItems: "center",
+                                        justifyContent: "center"
+                                    }}
+                                >
+                                    <Text style={styles.drawer_option_heading} > {option.title} </Text>
+                                    <Text style={styles.drawer_option_subtitle} > {option.rate} </Text>
+                                </View>
+
+                            </Pressable>
+                        ))
+                    }
 
                 </View>
 
@@ -209,13 +241,12 @@ const styles = StyleSheet.create({
     drawer_grid: {
         width: "100%",
         flexDirection: "row",
-        flexWrap: "wrap",
         justifyContent: "space-between",
-        gap: 8
+        gap: 5
     },
 
     drawer_option: {
-        width: "32%",
+        width: "31%",
         backgroundColor: "#fff",
         flexDirection: "column",
         borderRadius: 8,
@@ -237,7 +268,8 @@ const styles = StyleSheet.create({
     drawer_option_subtitle: {
         fontSize: 12,
         color: "#10182A80",
-        fontFamily: "Sora_300Light"
+        fontFamily: "Sora_300Light",
+        marginBottom: 5
     },
 
 
@@ -256,6 +288,6 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "#ffffff",
         fontSize: 18,
-        fontFamily: 'Sora_400Regular',
+        fontFamily: 'Sora_400Regular', 
     },
 })

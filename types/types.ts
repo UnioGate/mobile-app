@@ -32,3 +32,13 @@ export type method_option_type = {
   image: methodKey;
 
 }
+
+
+export type stableCoinKey = "usdt" | "usdc" | "cngn"
+
+
+export type stableCoinOptionData = {
+  title: string;
+  rate: string;
+  img: stableCoinKey;
+}
