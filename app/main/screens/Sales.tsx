@@ -1,3 +1,4 @@
+import CustomInput from "@/components/ui/ReusableInput";
 import { payment_method } from "@/data/payment_methods";
 import { methodKey } from "@/types/types";
 import { Ionicons } from "@expo/vector-icons";
@@ -5,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Delete } from "lucide-react-native";
 import { useMemo, useState } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, Modal, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { MainStackParamList } from '../type';
 
@@ -22,6 +23,13 @@ export default function Sales() {
     const [selectedMethod, setSelectedMethod] = useState('crypto')
     const [amount, setAmount] = useState("0");
     const [addCustomer, setAddCustomer] = useState(false);
+    const [showRecipientModal, setShowRecipientModal] = useState(false);
+
+    const [recipient, setRecipient] = useState({
+        customer_Name: "",
+        customer_phone: "",
+        customer_email_address: "",
+    });
 
 
     const formattedAmount = useMemo(() => {
@@ -71,12 +79,12 @@ export default function Sales() {
 
 
     Toast.show({
-  type: 'error',
-  text1: 'Payment Failed',
-  text2: 'Amount exceeds transaction limit',
-  position: 'top',
-  topOffset: 60,
-});
+        type: 'error',
+        text1: 'Payment Failed',
+        text2: 'Amount exceeds transaction limit',
+        position: 'top',
+        topOffset: 60,
+    });
 
 
     return (
@@ -243,9 +251,58 @@ export default function Sales() {
             <TouchableOpacity
                 style={styles.button}
                 activeOpacity={0.7}
+                onPress={() => setShowRecipientModal(true)}
             >
                 <Text style={styles.buttonText} > Continue</Text>
             </TouchableOpacity>
+
+
+            <Modal
+                visible={showRecipientModal}
+                transparent
+                animationType="slide"
+                onRequestClose={() => setShowRecipientModal(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+
+
+                        {/* Customer name input */}
+                        <CustomInput
+                            value={recipient.customer_Name}
+                            label="Customer Name"
+                        />
+
+                        {/* Customer phone number input */}
+                        <CustomInput
+                            value={recipient.customer_Name}
+                        />
+
+
+                        {/* Customer email input */}
+                        <CustomInput
+                            value={recipient.customer_Name}
+                        />
+
+
+                        <TouchableOpacity
+                            style={styles.modalButton}
+                            onPress={() => {
+                                setShowRecipientModal(true);
+                            }}
+                        >
+                            <Text style={styles.modalButtonText}>Complete</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                        style={[styles.modalButton, {backgroundColor: "#F24822", marginTop: 0}]}
+                        onPress={() => setShowRecipientModal(false)}>
+                            <Text style={styles.modalButtonText}>Cancel</Text>
+                        </TouchableOpacity>
+
+                    </View>
+                </View>
+            </Modal>
 
         </View>
     )
@@ -442,5 +499,44 @@ const styles = StyleSheet.create({
     },
 
 
+    // Modal styles
 
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: "rgba(0,0,0,0.5)",
+        justifyContent: "center",
+        padding: 20,
+    },
+
+    modalContent: {
+        backgroundColor: "#fff",
+        borderRadius: 20,
+        padding: 23,
+        gap: 12,
+    },
+
+    input: {
+        borderWidth: 1,
+        borderColor: "#ddd",
+        borderRadius: 10,
+        padding: 10,
+    },
+
+    modalButton: {
+        backgroundColor: "#253E86",
+        paddingHorizontal: 12,
+        borderRadius: 10,
+        alignItems: "center",
+        marginTop: 23,
+        maxWidth: 321,
+        width: "100%",
+        paddingVertical: 15
+    },
+
+    modalButtonText: {
+        color: "#fff",
+        fontWeight: "600",
+        fontSize: 18,
+        fontFamily: "Sora_400Regular",
+    },
 })
