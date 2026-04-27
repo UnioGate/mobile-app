@@ -1,29 +1,31 @@
 import CustomInput from "@/components/ui/ReusableInput";
 import { payment_method } from "@/data/payment_methods";
 import { methodKey } from "@/types/types";
+import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Delete } from "lucide-react-native";
 import { useMemo, useState } from "react";
 import { Image, Modal, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
-import Toast from "react-native-toast-message";
 import { MainStackParamList } from '../type';
 
 
 type NavigationProp = NativeStackNavigationProp<
     MainStackParamList,
-    'sales'
+    'sales',
+    'stepOne'
 >;
 
 
 
 export default function Sales() {
     const navigation = useNavigation<NavigationProp>();
-    const [selectedMethod, setSelectedMethod] = useState('crypto')
+    const [selectedMethod, setSelectedMethod] = useState('Crypto')
     const [amount, setAmount] = useState("0");
     const [addCustomer, setAddCustomer] = useState(false);
     const [showRecipientModal, setShowRecipientModal] = useState(false);
+
 
     const [recipient, setRecipient] = useState({
         customer_Name: "",
@@ -75,16 +77,41 @@ export default function Sales() {
 
     const handleClear = () => {
         setAmount("0");
+        showErrorToast("Cleared", "Amount has been reset");
     };
 
 
-    Toast.show({
-        type: 'error',
-        text1: 'Payment Failed',
-        text2: 'Amount exceeds transaction limit',
-        position: 'top',
-        topOffset: 60,
-    });
+    // Handle change function
+    const handleChange = (id: string, value: string) => {
+        setRecipient(prev => ({
+            ...prev,
+            [id]: value
+        }))
+    }
+
+
+    const handleContinue = () => {
+        if (!selectedMethod || selectedMethod.trim() === "") {
+            showErrorToast("Select a payment method",
+                "Select a payment method from the options")
+            return;
+        }
+
+        if (selectedMethod === "Card/Transfer") {
+            setShowRecipientModal(true)
+            return;
+        }
+
+        else if (selectedMethod === "Crypto") {
+            navigation.navigate("cryptoStepOne")
+            return;
+        }
+
+        if (selectedMethod === "Tap to Pay") {
+            showSuccessToast("NFC selected", "Let’s tap and pay");
+            return;
+        }
+    }
 
 
     return (
@@ -199,7 +226,8 @@ export default function Sales() {
                 <View style={styles.save_customer_section} >
                     <Text
                         style={styles.save_customer_text}
-                    >Add Customer Info</Text>
+                    >
+                        Add Customer Info</Text>
 
 
                     <Switch
@@ -251,7 +279,7 @@ export default function Sales() {
             <TouchableOpacity
                 style={styles.button}
                 activeOpacity={0.7}
-                onPress={() => setShowRecipientModal(true)}
+                onPress={handleContinue}
             >
                 <Text style={styles.buttonText} > Continue</Text>
             </TouchableOpacity>
@@ -271,17 +299,28 @@ export default function Sales() {
                         <CustomInput
                             value={recipient.customer_Name}
                             label="Customer Name"
+                            keyboardType="default"
+                            id="customer_Name"
+                            onChangeText={(text) => handleChange("customer_Name", text)}
                         />
 
                         {/* Customer phone number input */}
                         <CustomInput
-                            value={recipient.customer_Name}
+                            label="Phone Number"
+                            value={recipient.customer_phone}
+                            id="customer_phone"
+                            keyboardType="phone-pad"
+                            onChangeText={(text) => handleChange("customer_phone", text)}
                         />
 
 
                         {/* Customer email input */}
                         <CustomInput
-                            value={recipient.customer_Name}
+                            label="Email Address"
+                            id="customer_email_address"
+                            value={recipient.customer_email_address}
+                            keyboardType="email-address"
+                            onChangeText={(text) => handleChange("customer_email_address", text)}
                         />
 
 
@@ -295,8 +334,8 @@ export default function Sales() {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                        style={[styles.modalButton, {backgroundColor: "#F24822", marginTop: 0}]}
-                        onPress={() => setShowRecipientModal(false)}>
+                            style={[styles.modalButton, { backgroundColor: "#F24822", marginTop: 0 }]}
+                            onPress={() => setShowRecipientModal(false)}>
                             <Text style={styles.modalButtonText}>Cancel</Text>
                         </TouchableOpacity>
 
@@ -512,7 +551,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         borderRadius: 20,
         padding: 23,
-        gap: 12,
+        gap: 13,
     },
 
     input: {
@@ -530,7 +569,7 @@ const styles = StyleSheet.create({
         marginTop: 23,
         maxWidth: 321,
         width: "100%",
-        paddingVertical: 15
+        paddingVertical: 10
     },
 
     modalButtonText: {
