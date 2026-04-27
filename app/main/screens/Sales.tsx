@@ -3,9 +3,12 @@ import { methodKey } from "@/types/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useState } from "react";
-import { Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Delete } from "lucide-react-native";
+import { useMemo, useState } from "react";
+import { Image, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-toast-message";
 import { MainStackParamList } from '../type';
+
 
 type NavigationProp = NativeStackNavigationProp<
     MainStackParamList,
@@ -17,6 +20,21 @@ type NavigationProp = NativeStackNavigationProp<
 export default function Sales() {
     const navigation = useNavigation<NavigationProp>();
     const [selectedMethod, setSelectedMethod] = useState('crypto')
+    const [amount, setAmount] = useState("0");
+    const [addCustomer, setAddCustomer] = useState(false);
+
+
+    const formattedAmount = useMemo(() => {
+        if (!amount) return "0";
+
+        const parts = amount.split(".");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        return parts.join(".");
+    }, [amount]);
+
+
+
 
     const icon: Record<methodKey, any> = {
         card: require("../../../assets/logos/card.png"),
@@ -26,9 +44,44 @@ export default function Sales() {
 
 
 
+    const handleKeyPress = (value: string | number) => {
+        setAmount(prev => {
+            // prevent multiple dots
+            if (value === "." && prev.includes(".")) return prev;
+
+            // replace initial 0
+            if (prev === "0" && value !== ".") {
+                return String(value);
+            }
+
+            return prev + value;
+        });
+    };
+
+    const handleDelete = () => {
+        setAmount(prev => {
+            if (prev.length <= 1) return "0";
+            return prev.slice(0, -1);
+        });
+    };
+
+    const handleClear = () => {
+        setAmount("0");
+    };
+
+
+    Toast.show({
+  type: 'error',
+  text1: 'Payment Failed',
+  text2: 'Amount exceeds transaction limit',
+  position: 'top',
+  topOffset: 60,
+});
+
 
     return (
         <View style={styles.container} >
+
 
             {/* The header */}
             <View style={styles.header} >
@@ -47,7 +100,9 @@ export default function Sales() {
 
 
 
-                <Pressable>
+                <Pressable
+                    onPress={handleClear}
+                >
                     <Text style={styles.clear_btn} >
                         Clear
                     </Text>
@@ -60,7 +115,7 @@ export default function Sales() {
             <View style={styles.amount_display} >
 
                 <View style={styles.amount_wrapper} >
-                    <Text style={styles.amount} >₦ 0</Text>
+                    <Text style={styles.amount} >₦ {formattedAmount}</Text>
                 </View>
 
                 {/* description section  */}
@@ -73,66 +128,123 @@ export default function Sales() {
             </View>
 
 
-            {/* Payment method section  */}
-            <View style={styles.payment_method_wrapper} >
-                <Text style={styles.payment_method_text} >Select Payment Method</Text>
+            <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={styles.scrollView_container}
+                showsVerticalScrollIndicator={false}
+            >
+                {/* Payment method section  */}
+                <View style={styles.payment_method_wrapper} >
+                    <Text style={styles.payment_method_text} >Select Payment Method</Text>
 
 
-                {/* The methods grid  */}
-                <View style={styles.methods_grid} >
+                    {/* The methods grid  */}
+                    <View style={styles.methods_grid} >
+                        {
+                            payment_method.map((option, i) => (
+                                <Pressable
+                                    onPress={() => setSelectedMethod(option.title)}
+                                    key={i}
+                                    style={styles.method_item} >
+                                    <Image
+                                        source={icon[option.image]}
+                                        style={{ width: 20, height: 20, }}
+                                    />
 
+                                    <View style={{
+                                        gap: 6
+                                    }} >
 
-                    {
-                        payment_method.map((option, i) => (
-                            <Pressable
-                                onPress={() => setSelectedMethod(option.title)}
-                                key={i}
-                                style={styles.method_item} >
-                                <Image
-                                    source={icon[option.image]}
-                                    style={{ width: 20, height: 20, }}
-                                />
+                                        <Text
+                                            style={styles.method_title}
+                                        > {option.title} </Text>
 
-                                <View style={{
-                                    gap: 6
-                                }} >
-
-                                    <Text
-                                        style={styles.method_title}
-                                    > {option.title} </Text>
-
-                                    <Text
-                                        style={styles.method_subtitle}
-                                    > {option.subtitle} </Text>
-                                </View>
-
-                                {selectedMethod === option.title && (
-                                    <View
-                                        style={styles.selected}
-                                    >
-
-                                        <Ionicons
-                                            name="checkmark-circle"
-                                            size={18}
-                                            color="#10182A"
-                                        />
+                                        <Text
+                                            style={styles.method_subtitle}
+                                        > {option.subtitle} </Text>
                                     </View>
 
-                                )}
+                                    {selectedMethod === option.title && (
+                                        <View
+                                            style={styles.selected}
+                                        >
 
-                            </Pressable>
-                        ))
-                    }
+                                            <Ionicons
+                                                name="checkmark-circle"
+                                                size={18}
+                                                color="#10182A"
+                                            />
+                                        </View>
+
+                                    )}
+
+                                </Pressable>
+                            ))
+                        }
+
+                    </View>
 
                 </View>
 
-            </View>
+
+                {/* Save customer info  */}
+                <View style={styles.save_customer_section} >
+                    <Text
+                        style={styles.save_customer_text}
+                    >Add Customer Info</Text>
+
+
+                    <Switch
+                        value={addCustomer}
+                        onValueChange={setAddCustomer}
+                        trackColor={{ false: "#3C3C434D", true: "#34C759" }}
+                        thumbColor={"#ffffff"}
+                        ios_backgroundColor={'#d1d5db'}
+                    />
+                </View>
+
+
+                {/* keypad  */}
+                <View style={styles.keypad_grid} >
+
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, ".", 0].map((char, i) => (
+                        <TouchableOpacity
+                            key={i}
+                            style={styles.key}
+                            onPress={() => handleKeyPress(char)}
+                            activeOpacity={0.7}
+                        >
+
+                            <Text
+                                style={styles.key_text}
+                            >
+                                {char}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+
+                    <TouchableOpacity
+                        style={styles.key}
+                        onPress={handleDelete}
+                    >
+                        <Text
+                            style={styles.key_text}
+                        >
+                            <Delete color={"#10182A"} size={26} />
+                        </Text>
+                    </TouchableOpacity>
+
+                </View>
+
+
+            </ScrollView>
+
 
             <TouchableOpacity
                 style={styles.button}
                 activeOpacity={0.7}
             >
-                <Text style={styles.buttonText} > Sign up</Text>
+                <Text style={styles.buttonText} > Continue</Text>
             </TouchableOpacity>
 
         </View>
@@ -146,12 +258,19 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#E9ECF3',
         display: "flex",
-        alignItems: "center",
         flexDirection: "column",
         gap: 17,
         paddingHorizontal: 19,
         paddingBottom: 15,
-        paddingTop: 30
+        paddingTop: 30,
+    },
+
+    scrollView_container: {
+        display: "flex",
+        alignItems: "stretch",
+        flexDirection: "column",
+        gap: 17,
+        width: "100%"
     },
 
     header: {
@@ -182,7 +301,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        paddingHorizontal: 10
     },
 
     amount_wrapper: {
@@ -235,7 +355,6 @@ const styles = StyleSheet.create({
 
     method_item: {
         width: "48%",
-        // height: 80,
         backgroundColor: "#fff",
         flexDirection: "row",
         borderRadius: 10,
@@ -266,7 +385,42 @@ const styles = StyleSheet.create({
         fontFamily: "Sora_400Regular",
     },
 
+    save_customer_section: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%"
+    },
 
+    save_customer_text: {
+        color: "#000000",
+        fontSize: 15,
+        fontFamily: "Sora_400Regular"
+    },
+
+    keypad_grid: {
+        width: "100%",
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        gap: 10
+    },
+
+    key: {
+        width: "31%",
+        height: 60,
+        backgroundColor: "#fff",
+        borderRadius: 20,
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 7,
+        position: "relative"
+    },
+
+    key_text: {
+        fontSize: 24,
+        fontFamily: "PlusJakartaSans_600SemiBold"
+    },
 
 
     button: {
