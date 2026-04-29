@@ -42,3 +42,13 @@ export type stableCoinOptionData = {
   rate: string;
   img: stableCoinKey;
 }
+
+
+
+export type networkKey = "eth" | "tron" | "base"
+
+
+export type networkOptionData = {
+  title: string;
+  img: networkKey;
+}
