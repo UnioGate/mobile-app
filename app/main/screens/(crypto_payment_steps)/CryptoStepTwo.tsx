@@ -1,23 +1,357 @@
 
-import { Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { MainStackParamList } from "../../type";
 
 
 
 
-
+type NavigationProp = NativeStackNavigationProp<
+    MainStackParamList,
+    'sales',
+    'stepOne'
+>;
 
 
 
 export default function CryptoStepTwo() {
+    const navigation = useNavigation<NavigationProp>();
+
+
     return (
 
-        <View>
+        <View style={styles.container}>
 
-            <Text >
-                hello
-            </Text>
+            <View style={styles.content}>
+
+                {/* The header */}
+                <View style={styles.header} >
+
+                    <Pressable
+                        aria-label="back-button"
+                        onPress={() => navigation.goBack()}
+                    >
+                        <Ionicons name="chevron-back" size={22} color="#10182A" />
+                    </Pressable>
+
+
+                    <Text style={styles.heading} >
+                        Crypto Payment
+                    </Text>
+
+
+
+                    <Text
+                    >
+                        10:00
+                    </Text>
+                </View>
+
+
+
+                <ScrollView
+                    style={{ flex: 1 }}
+                    contentContainerStyle={styles.mainContent}
+                    showsVerticalScrollIndicator={false} >
+
+
+                    {/* stable coin display */}
+                    <View style={styles.cryptoDisplayWrapper} >
+
+                        {/* USDT display */}
+                        <View style={[styles.item, { borderTopLeftRadius: 9999, borderBottomLeftRadius: 9999, borderRightWidth: 1, borderRightColor: "#B3B3B3" }]}  >
+                            <Text style={[styles.item_text,]} >
+                                USDT
+                            </Text>
+                        </View>
+
+                        {/* USDC display  */}
+                        <View style={[styles.item]}  >
+                            <Text style={[styles.item_text,]} >
+                                USDC
+                            </Text>
+                        </View>
+
+
+                        {/* CNGN Display */}
+                        <View style={[styles.item, { borderTopRightRadius: 9999, borderBottomRightRadius: 9999, borderLeftWidth: 1, borderLeftColor: "#B3B3B3" }]}  >
+                            <Text style={[styles.item_text,]} >
+                                USDT
+                            </Text>
+                        </View>
+
+                    </View>
+
+
+                    {/* The network display  */}
+                    <Text style={styles.network_text} >Ethereum</Text>
+
+
+                    {/* amount display  */}
+                    <View style={styles.amount_display} >
+                        <Text style={styles.amount_text} >₦ 8,500</Text>
+
+                        <View style={styles.exchange_rate} >
+                            <Text style={styles.equivalent} >5.15 USDT</Text>
+                            <Text style={styles.rate} >1 USDT = ₦1,650</Text>
+                        </View>
+                    </View>
+
+
+                    {/* QR code display  */}
+                    <View style={styles.qr_wrapper} >
+
+
+                        <View style={styles.qr_box} >
+
+                        </View>
+
+                        <Text style={styles.qr_text} >Scan to Pay</Text>
+                    </View>
+
+
+                    {/* wallet address display */}
+                    <View style={styles.wallet_address_wrapper} >
+                        <Text style={styles.Wallet_address_wrapper_text} >Or copy address</Text>
+
+                        <View style={styles.address_container} >
+                            <Text style={styles.wallet_address} >
+                                TRX1234****************90</Text>
+
+                            <Pressable>
+                                <Ionicons
+                                    name={'copy-outline'}
+                                    size={20}
+                                    color="#10182A"
+                                />
+                            </Pressable>
+                        </View>
+                    </View>
+
+
+                    <View style={styles.status} >
+
+                        <Ionicons
+                            name="alert-circle"
+                            size={23}
+                            color={"#253E86"}
+                        />
+
+                        <Text style={styles.status_text} >Waiting for payment... then animation</Text>
+                    </View>
+
+
+                </ScrollView>
+
+                <TouchableOpacity
+                    onPress={() => navigation.navigate("CryptoSuccess")}
+                    style={styles.button}
+                    activeOpacity={0.7}
+                >
+                    <Text style={styles.buttonText} > Cancel Payment</Text>
+                </TouchableOpacity>
+
+            </View>
 
         </View>
 
     )
 }
+
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#E9ECF3",
+    },
+
+
+    content: {
+        flex: 1,
+        paddingHorizontal: 19,
+        paddingTop: 19,
+        flexDirection: "column",
+        gap: 20
+    },
+
+
+    header: {
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexDirection: "row",
+    },
+
+    heading: {
+        color: "#10182A",
+        fontFamily: "PlusJakartaSans_500Medium",
+        fontSize: 22
+    },
+
+    mainContent: {
+        gap: 17,
+        alignItems: "center",
+        paddingBottom: 10
+    },
+
+    cryptoDisplayWrapper: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 1,
+        marginHorizontal: "auto"
+    },
+
+    item: {
+        backgroundColor: "#ffffff",
+        paddingVertical: 10,
+        paddingHorizontal: 23,
+        width: "33%"
+    },
+
+    item_text: {
+        color: "#10182AB2",
+        fontSize: 15,
+        fontFamily: "Sora_300Light"
+    },
+
+    network_text: {
+        fontSize: 14,
+        color: "#10182ACC",
+        fontFamily: "Sora_400Regular"
+    },
+
+    amount_display: {
+        width: "100%",
+        paddingVertical: 17,
+        borderRadius: 10,
+        backgroundColor: "#ffffff",
+        alignItems: "center",
+    },
+
+    amount_text: {
+        color: "#10182A",
+        fontSize: 40,
+        fontFamily: "Sora_400Regular",
+        marginBottom: 10
+    },
+
+    exchange_rate: {
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+        borderTopWidth: 0.5,
+        borderTopColor: "#E9ECF3",
+        paddingVertical: 10,
+        gap: 6
+    },
+
+    equivalent: {
+        color: "#10182ACC",
+        fontSize: 20,
+        fontFamily: "Sora_400Regular",
+    },
+
+    rate: {
+        color: "#10182A80",
+        fontSize: 15,
+        fontFamily: "Sora_400Regular",
+    },
+
+    qr_wrapper: {
+        width: "100%",
+        paddingVertical: 17,
+        borderRadius: 20,
+        backgroundColor: "#ffffff",
+        alignItems: "center",
+        gap: 15
+
+    },
+
+    qr_box: {
+        width: 240,
+        height: 240,
+        backgroundColor: "#E9ECF3"
+    },
+
+    qr_text: {
+        color: "#000000",
+        fontFamily: "Sora_400Regular",
+        fontSize: 18
+    },
+
+    wallet_address_wrapper: {
+        width: "100%",
+        alignItems: "flex-start",
+        gap: 6,
+    },
+
+    Wallet_address_wrapper_text: {
+        color: "#10182ACC",
+        fontSize: 14,
+        fontFamily: "Sora_400Regular",
+    },
+
+    address_container: {
+        width: "100%",
+        borderWidth: 0.5,
+        borderColor: "#10182ACC",
+        backgroundColor: "#CCCCCC1A",
+        borderRadius: 5,
+        padding: 15,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
+    },
+
+    wallet_address: {
+        color: "#000000",
+        fontSize: 16,
+        fontFamily: "Sora_400Regular",
+    },
+
+
+    status: {
+        backgroundColor: "#FFFFFF",
+        boxShadow: "0px 4px 4px 0px #00000040",
+        width: "97%",
+        paddingVertical: 16,
+        paddingHorizontal: 16,
+        borderRadius: 15,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10
+    },
+
+    status_text: {
+        color: "#000000",
+        fontSize: 14,
+        fontFamily: "Sora_400Regular",
+    },
+
+
+    button: {
+        width: "100%",
+        borderWidth: 1,
+        borderColor: "#253E86",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        paddingVertical: 16,
+        borderRadius: 10,
+        marginBottom: 11,
+        marginTop: "auto"
+    },
+
+    buttonText: {
+        color: "#253E86",
+        fontSize: 18,
+        fontFamily: 'Sora_400Regular',
+    },
+
+
+
+})
