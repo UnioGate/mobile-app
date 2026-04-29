@@ -78,7 +78,7 @@ export default function CryptoStepOne() {
                     </View>
 
 
-                    {/* select netwirk coin */}
+                    {/* select network coin */}
                     <View style={styles.customSelect} >
 
                         <Text style={styles.customSelectText} >
@@ -121,7 +121,8 @@ export default function CryptoStepOne() {
 
                                 <Image
                                     source={icon[option.img]}
-                                    style={{ width: 50, height: 50, objectFit: "contain", }}
+                                    style={{ width: 50, height: 50, }}
+                                    resizeMode="contain"
                                 />
 
 
@@ -221,7 +222,7 @@ const styles = StyleSheet.create({
         width: "100%",
         height: "auto",
         position: "absolute",
-        bottom: 0,
+        bottom: -700,
         left: 0,
         paddingHorizontal: 10,
         paddingVertical: 30,
@@ -288,6 +289,6 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "#ffffff",
         fontSize: 18,
-        fontFamily: 'Sora_400Regular', 
+        fontFamily: 'Sora_400Regular',
     },
 })
