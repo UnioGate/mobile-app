@@ -1,11 +1,18 @@
-import SuccessSVG from "@/components/success";
+
+import SuccessSVG from "@/components/Success";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { MainStackParamList } from "../../type";
 
 
-
+type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList, "CryptoSuccess">;
 
 export default function CryptoSuccess() {
+    const navigation = useNavigation<OverviewNavigationProp>()
+
+
     return (
         <View style={styles.container} >
 
@@ -88,7 +95,7 @@ export default function CryptoSuccess() {
                         marginTop: 6
                     }]}
                     activeOpacity={0.7}
-                    onPress={() => navigation.navigate("cryptoStepTwo")}
+                    onPress={() => navigation.navigate("sales")}
                 >
                     <Text style={[styles.buttonText, {
                         color: "#ffffff"
@@ -96,9 +103,10 @@ export default function CryptoSuccess() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => navigation.navigate("CryptoSuccess")}
+                    onPress={() => navigation.navigate("overview")}
                     style={styles.button}
                     activeOpacity={0.7}
+
                 >
                     <Text style={styles.buttonText} > Done</Text>
                 </TouchableOpacity>

@@ -27,7 +27,6 @@ export default function Index() {
                 <Stack.Screen name="cryptoStepTwo" component={CryptoStepTwo} />
                 <Stack.Screen name="CryptoSuccess" component={CryptoSuccess} />
 
-
             </Stack.Navigator>
 
 
