@@ -6,6 +6,7 @@ import CryptoStepTwo from "./screens/(crypto_payment_steps)/CryptoStepTwo";
 import CryptoSuccess from "./screens/(crypto_payment_steps)/CryptoSuccess";
 import Overview from './screens/Overview';
 import Sales from './screens/Sales';
+import Withdraw from "./screens/withdraw";
 import { MainStackParamList } from './type';
 
 
@@ -26,6 +27,7 @@ export default function Index() {
                 <Stack.Screen name="cryptoStepOne" component={CryptoStepOne} />
                 <Stack.Screen name="cryptoStepTwo" component={CryptoStepTwo} />
                 <Stack.Screen name="CryptoSuccess" component={CryptoSuccess} />
+                <Stack.Screen name="withdraw" component={Withdraw} />
 
             </Stack.Navigator>
 

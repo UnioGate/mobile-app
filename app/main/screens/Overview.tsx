@@ -115,7 +115,9 @@ export default function Overview() {
 
 
                         {/* Withdraw */}
-                        <Pressable style={styles.CTA_button} >
+                        <Pressable
+                            onPress={() => navigation.navigate('withdraw')}
+                            style={styles.CTA_button} >
                             <View style={styles.circle} >
                                 <BanknoteArrowDown size={24} color="#253E86" />
                             </View>
