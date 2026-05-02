@@ -552,6 +552,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 23,
         gap: 13,
+        alignItems: "center"
     },
 
     input: {

@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         gap: 12,
         paddingHorizontal: 19,
-        paddingVertical: 30
+        paddingVertical: 20
     },
 
     header: {

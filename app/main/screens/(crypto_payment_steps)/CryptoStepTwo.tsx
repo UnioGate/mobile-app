@@ -2,6 +2,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { MainStackParamList } from "../../type";
 
@@ -18,6 +19,7 @@ type NavigationProp = NativeStackNavigationProp<
 
 export default function CryptoStepTwo() {
     const navigation = useNavigation<NavigationProp>();
+    const [timeOut, setTimeout] = useState(true)
 
 
     return (
@@ -50,108 +52,141 @@ export default function CryptoStepTwo() {
                 </View>
 
 
+                {timeOut ? (
+                    <View style={styles.timeout_wrapper} >
 
-                <ScrollView
-                    style={{ flex: 1 }}
-                    contentContainerStyle={styles.mainContent}
-                    showsVerticalScrollIndicator={false} >
+                        <Ionicons name="warning" color={"#FF0707"} size={63} />
 
+                        <Text style={styles.timeout_heading} >TIMEOUT</Text>
 
-                    {/* stable coin display */}
-                    <View style={styles.cryptoDisplayWrapper} >
-
-                        {/* USDT display */}
-                        <View style={[styles.item, { borderTopLeftRadius: 9999, borderBottomLeftRadius: 9999, borderRightWidth: 1, borderRightColor: "#B3B3B3" }]}  >
-                            <Text style={[styles.item_text,]} >
-                                USDT
-                            </Text>
-                        </View>
-
-                        {/* USDC display  */}
-                        <View style={[styles.item]}  >
-                            <Text style={[styles.item_text,]} >
-                                USDC
-                            </Text>
-                        </View>
-
-
-                        {/* CNGN Display */}
-                        <View style={[styles.item, { borderTopRightRadius: 9999, borderBottomRightRadius: 9999, borderLeftWidth: 1, borderLeftColor: "#B3B3B3" }]}  >
-                            <Text style={[styles.item_text,]} >
-                                USDT
-                            </Text>
-                        </View>
-
+                        <TouchableOpacity
+                            onPress={() => navigation.replace("sales")}
+                            style={[styles.button, {
+                                width: "auto",
+                                padding: 10,
+                                paddingVertical: 10,
+                                marginTop: 7,
+                                borderColor: "#253E86"
+                            }]}
+                            activeOpacity={0.7}
+                        >
+                            <Text style={[styles.buttonText, {
+                                color: "#000000",
+                                fontSize: 20
+                            }]} > Restart Payment</Text>
+                        </TouchableOpacity>
                     </View>
+                )
+                    :
+
+                    (
+                        <>
+                            <ScrollView
+                                style={{ flex: 1 }}
+                                contentContainerStyle={styles.mainContent}
+                                showsVerticalScrollIndicator={false} >
 
 
-                    {/* The network display  */}
-                    <Text style={styles.network_text} >Ethereum</Text>
+                                {/* stable coin display */}
+                                <View style={styles.cryptoDisplayWrapper} >
+
+                                    {/* USDT display */}
+                                    <View style={[styles.item, { borderTopLeftRadius: 9999, borderBottomLeftRadius: 9999, borderRightWidth: 1, borderRightColor: "#B3B3B3" }]}  >
+                                        <Text style={[styles.item_text,]} >
+                                            USDT
+                                        </Text>
+                                    </View>
+
+                                    {/* USDC display  */}
+                                    <View style={[styles.item]}  >
+                                        <Text style={[styles.item_text,]} >
+                                            USDC
+                                        </Text>
+                                    </View>
 
 
-                    {/* amount display  */}
-                    <View style={styles.amount_display} >
-                        <Text style={styles.amount_text} >₦ 8,500</Text>
+                                    {/* CNGN Display */}
+                                    <View style={[styles.item, { borderTopRightRadius: 9999, borderBottomRightRadius: 9999, borderLeftWidth: 1, borderLeftColor: "#B3B3B3" }]}  >
+                                        <Text style={[styles.item_text,]} >
+                                            USDT
+                                        </Text>
+                                    </View>
 
-                        <View style={styles.exchange_rate} >
-                            <Text style={styles.equivalent} >5.15 USDT</Text>
-                            <Text style={styles.rate} >1 USDT = ₦1,650</Text>
-                        </View>
-                    </View>
-
-
-                    {/* QR code display  */}
-                    <View style={styles.qr_wrapper} >
+                                </View>
 
 
-                        <View style={styles.qr_box} >
-
-                        </View>
-
-                        <Text style={styles.qr_text} >Scan to Pay</Text>
-                    </View>
+                                {/* The network display  */}
+                                <Text style={styles.network_text} >Ethereum</Text>
 
 
-                    {/* wallet address display */}
-                    <View style={styles.wallet_address_wrapper} >
-                        <Text style={styles.Wallet_address_wrapper_text} >Or copy address</Text>
+                                {/* amount display  */}
+                                <View style={styles.amount_display} >
+                                    <Text style={styles.amount_text} >₦ 8,500</Text>
 
-                        <View style={styles.address_container} >
-                            <Text style={styles.wallet_address} >
-                                TRX1234****************90</Text>
-
-                            <Pressable>
-                                <Ionicons
-                                    name={'copy-outline'}
-                                    size={20}
-                                    color="#10182A"
-                                />
-                            </Pressable>
-                        </View>
-                    </View>
+                                    <View style={styles.exchange_rate} >
+                                        <Text style={styles.equivalent} >5.15 USDT</Text>
+                                        <Text style={styles.rate} >1 USDT = ₦1,650</Text>
+                                    </View>
+                                </View>
 
 
-                    <View style={styles.status} >
-
-                        <Ionicons
-                            name="alert-circle"
-                            size={23}
-                            color={"#253E86"}
-                        />
-
-                        <Text style={styles.status_text} >Waiting for payment... then animation</Text>
-                    </View>
+                                {/* QR code display  */}
+                                <View style={styles.qr_wrapper} >
 
 
-                </ScrollView>
+                                    <View style={styles.qr_box} >
 
-                <TouchableOpacity
-                    onPress={() => navigation.navigate("CryptoSuccess")}
-                    style={styles.button}
-                    activeOpacity={0.7}
-                >
-                    <Text style={styles.buttonText} > Cancel Payment</Text>
-                </TouchableOpacity>
+                                    </View>
+
+                                    <Text style={styles.qr_text} >Scan to Pay</Text>
+                                </View>
+
+
+                                {/* wallet address display */}
+                                <View style={styles.wallet_address_wrapper} >
+                                    <Text style={styles.Wallet_address_wrapper_text} >Or copy address</Text>
+
+                                    <View style={styles.address_container} >
+                                        <Text style={styles.wallet_address} >
+                                            TRX1234****************90</Text>
+
+                                        <Pressable>
+                                            <Ionicons
+                                                name={'copy-outline'}
+                                                size={20}
+                                                color="#10182A"
+                                            />
+                                        </Pressable>
+                                    </View>
+                                </View>
+
+
+                                <View style={styles.status} >
+
+                                    <Ionicons
+                                        name="alert-circle"
+                                        size={23}
+                                        color={"#253E86"}
+                                    />
+
+                                    <Text style={styles.status_text} >Waiting for payment... then animation</Text>
+                                </View>
+
+
+                            </ScrollView>
+
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate("CryptoSuccess")}
+                                style={styles.button}
+                                activeOpacity={0.7}
+                            >
+                                <Text style={styles.buttonText} > Cancel Payment</Text>
+                            </TouchableOpacity>
+                        </>
+                    )
+                }
+
+
 
             </View>
 
@@ -351,6 +386,23 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontFamily: 'Sora_400Regular',
     },
+
+
+
+    // --------------------- styles for the timeout banner  ----------------------------- //
+    timeout_wrapper: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 16
+    },
+
+    timeout_heading: {
+        color: "#FF0707",
+        fontSize: 48,
+        fontFamily: "Sora_400Regular",
+        marginVertical: 7
+    }
 
 
 
