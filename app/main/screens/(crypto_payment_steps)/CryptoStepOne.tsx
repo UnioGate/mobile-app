@@ -190,7 +190,7 @@ export default function CryptoStepOne() {
                         <TouchableOpacity
                             style={styles.button}
                             activeOpacity={0.7}
-                        onPress={() => navigation.navigate("cryptoStepOne")}
+                        onPress={() => navigation.navigate("cryptoStepTwo")}
                         >
                             <Text style={styles.buttonText} > Continue</Text>
                         </TouchableOpacity>
@@ -360,7 +360,6 @@ const styles = StyleSheet.create({
     },
 
     mainContent: {
-        display: "flex",
         gap: 20,
         marginTop: 50
     },

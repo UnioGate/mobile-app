@@ -147,7 +147,7 @@ export default function Overview() {
                     <View style={styles.leftSide} >
                         <View style={styles.text_wrapper} >
                             <Text style={styles.boldText} >24</Text>
-                            <Text style={styles.label} >Today's Transaction</Text>
+                            <Text style={styles.label} >Today&apos;s Transaction</Text>
                         </View>
                     </View>
 
@@ -155,7 +155,7 @@ export default function Overview() {
                     <View style={styles.rightSide} >
                         <View style={styles.text_wrapper} >
                             <Text style={styles.boldText} >128400</Text>
-                            <Text style={styles.label} >Today's Revenue</Text>
+                            <Text style={styles.label} >Today&apos;s Revenue</Text>
                         </View>
                     </View>
 

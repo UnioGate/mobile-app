@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CryptoStepOne from "./screens/(crypto_payment_steps)/CryptoStepOne";
 import CryptoStepTwo from "./screens/(crypto_payment_steps)/CryptoStepTwo";
+import CryptoSuccess from "./screens/(crypto_payment_steps)/CryptoSuccess";
 import Overview from './screens/Overview';
 import Sales from './screens/Sales';
 import { MainStackParamList } from './type';
@@ -24,7 +25,7 @@ export default function Index() {
                 <Stack.Screen name="sales" component={Sales} />
                 <Stack.Screen name="cryptoStepOne" component={CryptoStepOne} />
                 <Stack.Screen name="cryptoStepTwo" component={CryptoStepTwo} />
-
+                <Stack.Screen name="CryptoSuccess" component={CryptoSuccess} />
 
             </Stack.Navigator>
 
