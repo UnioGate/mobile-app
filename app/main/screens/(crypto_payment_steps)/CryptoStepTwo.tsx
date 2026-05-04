@@ -19,7 +19,7 @@ type NavigationProp = NativeStackNavigationProp<
 
 export default function CryptoStepTwo() {
     const navigation = useNavigation<NavigationProp>();
-    const [timeOut, setTimeout] = useState(true)
+    const [timeOut, setTimeout] = useState(false)
 
 
     return (

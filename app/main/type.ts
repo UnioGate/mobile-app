@@ -5,5 +5,6 @@ export type MainStackParamList = {
   cryptoStepTwo: undefined,
   CryptoSuccess: undefined,
   withdraw: undefined,
+  withdraw_initiated: undefined
 };
 

@@ -1,8 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { View } from "lucide-react-native";
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { MainStackParamList } from "../type";
 
 type NavigationProp = NativeStackNavigationProp<
@@ -33,7 +32,222 @@ export default function Withdraw() {
                     Withdraw funds
                 </Text>
 
+
+                <Text></Text>
+
             </View>
+
+
+            {/* balance */}
+            <View style={styles.balance_box} >
+                <Text style={styles.balance_box_heading} >Available to withdraw</Text>
+                <Text style={styles.balance} >₦ 247,850.50</Text>
+            </View>
+
+
+
+
+            <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={styles.scrollView_container}
+                showsVerticalScrollIndicator={false}
+            >
+
+                {/* Amount to withdraw section   */}
+                <View style={styles.withdraw_form} >
+
+                    {/* The amount input  */}
+                    <View style={styles.amount_wrapper} >
+                        <Text style={styles.amount_wrapper_heading}  >Amount to withdraw</Text>
+
+                        {/* the amount input  */}
+                        <View style={styles.amount_input_wrapper} >
+
+                            <View style={{
+                                width: "60%",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                gap: 2,
+                            }} >
+                                <Text style={styles.naira_sign} >₦</Text>
+                                <TextInput
+                                    keyboardType="number-pad"
+                                    style={styles.text_input}
+                                />
+                            </View>
+
+                            <TouchableOpacity style={styles.amount_wrapper_button} >
+                                <Text style={styles.amount_wrapper_button_text} >Withdraw</Text>
+                            </TouchableOpacity>
+                        </View>
+
+
+                        {/* The fee */}
+                        <Text style={styles.fee} >Fee:
+                            <Text style={{
+                                fontFamily: "Sora_600SemiBold"
+                            }}> ₦ 0</Text>
+                        </Text>
+
+
+                        {/* The line break */}
+                        <View style={styles.hr} />
+
+
+                        {/* save account button */}
+                        <Pressable>
+                            <Text style={styles.save_button_text} >Saved bank account</Text>
+                        </Pressable>
+
+                        {/* Account details  */}
+                        <View style={styles.account_details_wrapper} >
+
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    gap: 8
+                                }}
+                            >
+                                <Image
+                                    source={{ uri: "https://res.cloudinary.com/dwedz2laa/image/upload/v1777704436/mtsddnvmqt1qlijnqvhh.png" }}
+                                    style={{ width: 20, height: 20 }}
+                                    resizeMode="cover"
+                                />
+
+                                <View style={{
+                                    gap: 8
+                                }}>
+                                    <Text style={styles.account_number} >GTBank - 0123456789 </Text>
+                                    <Text style={styles.account_name} >John Doe</Text>
+                                </View>
+                            </View>
+
+
+                            <Pressable style={styles.change_bank_button} >
+
+                                <Text style={[styles.save_button_text, {
+                                    color: "#253E86",
+                                    fontSize: 12,
+                                    fontFamily: "Sora_600SemiBold"
+                                }]} >Change Bank</Text>
+
+                                <Ionicons name="chevron-forward" color={"#253E86"} size={11} />
+                            </Pressable>
+                        </View>
+
+
+                        {/* note input  */}
+                        <View style={styles.amount_input_wrapper} >
+
+                            <TextInput
+                                keyboardType="default"
+                                style={[styles.text_input, {
+                                    color: "#808080",
+                                    fontSize: 12,
+                                    textAlign: "center"
+                                }]}
+                                placeholder="Add note (optional)"
+                            />
+
+
+                        </View>
+
+                    </View>
+
+                </View>
+
+
+                <View style={styles.amount_breakdown}  >
+
+                    <View style={{
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        flexDirection: "row",
+                        gap: 10,
+                        paddingVertical: 8
+                    }} >
+                        <Text style={styles.amount_breakdown_row_heading} >Withdrawal Amount</Text>
+                        <Text style={styles.amount_breakdown_row_value} >₦ 0</Text>
+                    </View>
+
+
+                    <View
+                        style={{
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            flexDirection: "row",
+                            gap: 10,
+                            paddingVertical: 8,
+                            borderTopWidth: 0.5,
+                            borderBottomWidth: 0.5,
+                            borderColor: "#B3B3B3"
+                        }}
+                    >
+                        <Text style={styles.amount_breakdown_row_heading} >Total to Receive</Text>
+                        <Text style={styles.amount_breakdown_row_value}>₦ 0</Text>
+                    </View>
+
+
+                    <View
+                        style={{
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            flexDirection: "row",
+                            gap: 10,
+                            paddingVertical: 8
+                        }}
+                    >
+                        <Text style={styles.amount_breakdown_row_heading}>Funds arrive in 5 -30 minutes</Text>
+                    </View>
+
+                </View>
+
+
+                {/* Limit error */}
+                <View style={styles.limit} >
+
+                    <Ionicons
+                        name="alert-circle"
+                        size={23}
+                        color={"#FF070B"}
+                    />
+
+                    <Text style={styles.limit_text} >You have ₦0 remaining in your daily limit</Text>
+                </View>
+
+
+                {/* note */}
+                <View style={styles.note} >
+                    <Text style={styles.note_text} >You’ll receive an OTP to confirm this withdrawal</Text>
+                </View>
+
+
+                {/* Buttons */}
+                <View style={styles.button_wrapper} >
+
+                    <TouchableOpacity style={[styles.button]} >
+                        <Text style={[styles.button_text, {
+                            color: "#253E86"
+                        }]} >Cancel</Text>
+                    </TouchableOpacity>
+
+
+                    <TouchableOpacity
+                    onPress={() => navigation.navigate("withdraw_initiated")}
+                    style={[styles.button, {
+                        backgroundColor: "#253E86"
+                    }]} >
+                        <Text style={[styles.button_text, {
+                            color: "#ffffff"
+                        }]} >Withdraw 0</Text>
+                    </TouchableOpacity>
+
+                </View>
+
+            </ScrollView>
+
+
 
         </View>
     )
@@ -76,4 +290,222 @@ const styles = StyleSheet.create({
         fontSize: 22
     },
 
+    balance_box: {
+        width: "100%",
+        backgroundColor: "#ffffff",
+        borderRadius: 10,
+        padding: 18,
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8
+    },
+
+    balance_box_heading: {
+        color: "#808080",
+        fontSize: 14,
+        fontFamily: "Sora_400Regular"
+    },
+
+    balance: {
+        color: "#10182A",
+        fontSize: 32,
+        fontFamily: "Sora_600SemiBold"
+    },
+
+    withdraw_form: {
+        width: "100%",
+        backgroundColor: "#ffffff",
+        borderRadius: 10,
+        padding: 18,
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 4
+    },
+
+    amount_wrapper: {
+        width: "100%",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: 4
+    },
+
+    amount_wrapper_heading: {
+        color: "#808080",
+        fontSize: 12,
+        fontFamily: "Sora_400Regular"
+    },
+
+    amount_input_wrapper: {
+        width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        borderWidth: 0.5,
+        borderColor: "#B3B3B3",
+        paddingHorizontal: 7,
+        paddingVertical: 1,
+        borderRadius: 5
+    },
+
+    amount_wrapper_button: {
+        backgroundColor: "#253E86",
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+        borderRadius: 5
+    },
+
+    amount_wrapper_button_text: {
+        color: "#ffffff",
+        fontSize: 13,
+        fontFamily: "Sora_400Regular"
+    },
+
+    text_input: {
+        width: "100%",
+        height: "100%",
+        fontSize: 24,
+        fontFamily: "Sora_400Regular",
+        color: "#000000"
+    },
+
+    naira_sign: {
+        fontSize: 24,
+        fontFamily: "Sora_400Regular",
+        color: "#000000"
+    },
+
+    fee: {
+        color: "#808080",
+        fontSize: 12,
+        fontFamily: "PlusJakartaSans_600SemiBold",
+        marginHorizontal: "auto",
+        marginVertical: 4,
+    },
+
+    hr: {
+        width: "100%",
+        height: 1,
+        backgroundColor: "#E0E0E0",
+        marginVertical: 10,
+    },
+
+    save_button_text: {
+        color: "#808080",
+        fontSize: 12,
+        fontFamily: "Sora_400Regular"
+    },
+
+    account_details_wrapper: {
+        borderColor: "#B3B3B3",
+        borderWidth: 0.5,
+        width: "100%",
+        padding: 13,
+        borderRadius: 5,
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexDirection: "row",
+        marginBottom: 15
+    },
+
+    change_bank_button: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 4
+    },
+
+    account_number: {
+        color: "#000000",
+        fontSize: 13,
+        fontFamily: "Sora_400Regular"
+    },
+
+    account_name: {
+        color: "#514B4B",
+        fontSize: 10,
+        marginLeft: "auto"
+    },
+
+    amount_breakdown: {
+        width: "100%",
+        backgroundColor: "#ffffff",
+        borderRadius: 10,
+        padding: 18,
+        gap: 8
+    },
+
+    amount_breakdown_row_heading: {
+        color: "#808080",
+        fontSize: 12,
+        fontFamily: "Sora_400Regular"
+    },
+
+    amount_breakdown_row_value: {
+        fontSize: 20,
+        color: "#000000",
+        fontFamily: "Sora_400Regular"
+    },
+
+    note: {
+        paddingVertical: 13,
+        alignItems: "center",
+        justifyContent: "center",
+        borderTopWidth: 0.7,
+        borderBottomWidth: 0.7,
+        borderColor: "#727171"
+    },
+
+    note_text: {
+        fontFamily: "Sora_400Regular",
+        fontSize: 13,
+        color: "#727171"
+    },
+
+
+    button_wrapper: {
+        width: "100%",
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        gap: 16
+    },
+
+    button: {
+        width: "47%",
+        alignItems: "center",
+        justifyContent: "center",
+        paddingVertical: 14,
+        paddingHorizontal: 30,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: "#253E86",
+        marginBottom: 20
+    },
+
+    button_text: {
+        fontFamily: "Sora_400Regular",
+        fontSize: 13,
+    },
+
+
+    limit: {
+        backgroundColor: "#FFFFFF",
+        boxShadow: "0px 4px 4px 0px #00000040",
+        width: "97%",
+        paddingVertical: 16,
+        paddingHorizontal: 16,
+        borderRadius: 15,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10
+    },
+
+    limit_text: {
+        color: "#FF070B",
+        fontSize: 14,
+        fontFamily: "Sora_400Regular",
+    }
+
+
+
 })
+
