@@ -1,9 +1,18 @@
 import SuccessSVG from "@/components/ui/success";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { MainStackParamList } from "../../type";
 
-
+type NavigationProp = NativeStackNavigationProp<
+    MainStackParamList
+>;
 
 export default function Withdrawal_Initiated() {
+    const navigation = useNavigation<NavigationProp>();
+
+
+
     return (
 
         <ScrollView
@@ -25,10 +34,57 @@ export default function Withdrawal_Initiated() {
                 <View style={styles.line_break} />
 
 
+                {/* amount */}
+                <View style={styles.withdrawal_summary_row} >
+                    <Text style={styles.withdrawal_summary_row_heading} >Amount</Text>
+                    <Text style={styles.withdrawal_summary_row_value} >₦0</Text>
+                </View>
 
-                <View>
-                    <Text>Amount</Text>
-                    <Text>₦0</Text>
+                {/* bank */}
+                <View style={styles.withdrawal_summary_row} >
+                    <Text style={styles.withdrawal_summary_row_heading} >Bank:</Text>
+                    <Text style={styles.withdrawal_summary_row_value} >GTBank - *****4567</Text>
+                </View>
+
+
+                {/* account name  */}
+                <View style={styles.withdrawal_summary_row} >
+                    <Text style={styles.withdrawal_summary_row_heading} >Account Name:</Text>
+                    <Text style={styles.withdrawal_summary_row_value} >John Doe</Text>
+                </View>
+
+                {/* reference */}
+                <View style={styles.withdrawal_summary_row} >
+                    <Text style={styles.withdrawal_summary_row_heading} >Reference:</Text>
+                    <Text style={styles.withdrawal_summary_row_value} >WD-2026306-0012</Text>
+                </View>
+
+                {/* status  */}
+                <View style={styles.withdrawal_summary_row} >
+                    <Text style={styles.withdrawal_summary_row_heading} >Status:</Text>
+                    <Text style={[styles.withdrawal_summary_row_value, {
+                        color: "#F7AA1A"
+                    }]} >Pending</Text>
+                </View>
+
+                {/* initiated at  */}
+                <View style={[styles.withdrawal_summary_row, {
+                    borderTopWidth: 1,
+                    borderBottomWidth: 1,
+                    borderColor: "#B3B3B3",
+                    paddingVertical: 13
+                }]} >
+                    <Text style={styles.withdrawal_summary_row_heading} >Initiated At:</Text>
+                    <Text style={styles.withdrawal_summary_row_value} >March 6, 2026 at 3:15 PM</Text>
+                </View>
+
+
+                {/* estimated arrival  */}
+                <View style={[styles.withdrawal_summary_row, {
+                    paddingVertical: 13
+                }]} >
+                    <Text style={styles.withdrawal_summary_row_heading} >Estimated Arrival:</Text>
+                    <Text style={styles.withdrawal_summary_row_value} >By 3:45 PM today</Text>
                 </View>
 
             </View>
@@ -44,7 +100,7 @@ export default function Withdrawal_Initiated() {
             {/* Buttons  */}
             <View>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate("withdraw_initiated")}
+                    onPress={() => navigation.navigate("withdraw_details")}
                     style={[styles.button, {
                         backgroundColor: "#253E86"
                     }]} >
@@ -109,6 +165,26 @@ const styles = StyleSheet.create({
         fontFamily: "Sora_600SemiBold",
     },
 
+    withdrawal_summary_row: {
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: "row",
+        gap: 10,
+        paddingVertical: 3,
+    },
+
+    withdrawal_summary_row_heading: {
+        color: "#808080",
+        fontSize: 12,
+        fontFamily: "Sora_400Regular"
+    },
+
+    withdrawal_summary_row_value: {
+        fontSize: 14,
+        color: "#000000",
+        fontFamily: "Sora_600SemiBold"
+    },
+
     line_break: {
         width: "100%",
         borderTopWidth: 1,
@@ -116,7 +192,6 @@ const styles = StyleSheet.create({
         marginTop: 4,
         marginBottom: 7
     },
-
 
     note: {
         paddingVertical: 13,

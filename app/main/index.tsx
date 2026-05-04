@@ -4,10 +4,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CryptoStepOne from "./screens/(crypto_payment_steps)/CryptoStepOne";
 import CryptoStepTwo from "./screens/(crypto_payment_steps)/CryptoStepTwo";
 import CryptoSuccess from "./screens/(crypto_payment_steps)/CryptoSuccess";
+import Withdraw_Details from "./screens/(withdraw_screens)/Withdraw_Details";
+import Withdrawal_Initiated from "./screens/(withdraw_screens)/Withdrawal_Initiated";
 import Overview from './screens/Overview';
 import Sales from './screens/Sales';
 import Withdraw from "./screens/withdraw";
-import Withdrawal_Initiated from "./screens/withdraw_screens/Withdrawal_Initiated";
 import { MainStackParamList } from './type';
 
 
@@ -30,6 +31,7 @@ export default function Index() {
                 <Stack.Screen name="CryptoSuccess" component={CryptoSuccess} />
                 <Stack.Screen name="withdraw" component={Withdraw} />
                 <Stack.Screen name="withdraw_initiated" component={Withdrawal_Initiated} />
+                <Stack.Screen name="withdraw_details" component={Withdraw_Details} />
 
             </Stack.Navigator>
 
