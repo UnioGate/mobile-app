@@ -98,7 +98,7 @@ export default function Sales() {
         }
 
         if (selectedMethod === "Card/Transfer") {
-            setShowRecipientModal(true)
+             navigation.navigate("transferStepOne")
             return;
         }
 

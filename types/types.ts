@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { ReactNode } from "react";
 
 export type DropdownOption = {
@@ -30,7 +31,6 @@ export type method_option_type = {
   title: string;
   subtitle: string;
   image: methodKey;
-
 }
 
 
@@ -51,4 +51,14 @@ export type networkKey = "eth" | "tron" | "base"
 export type networkOptionData = {
   title: string;
   img: networkKey;
+}
+
+
+
+export type transfer_method_option_type = {
+  title: string;
+  subtitle: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  textColor: string;
+  background_color: string;
 }
