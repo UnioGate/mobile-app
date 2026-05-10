@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
-    Dimensions,
+    useWindowDimensions,
     Pressable,
     ScrollView,
     StyleSheet,
@@ -16,10 +16,9 @@ import { MainStackParamList } from "../../type";
 
 type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
-const screenWidth = Dimensions.get("window").width;
-
 export default function PayWithCard() {
     const navigation = useNavigation<NavigationProp>();
+    const { width } = useWindowDimensions();
 
     return (
         <View style={styles.container}>
@@ -71,7 +70,7 @@ export default function PayWithCard() {
                 {/* QR Section */}
                 <View style={styles.qrWrapper}>
 
-                    <View style={styles.qrBox} />
+                    <View style={[styles.qrBox, { width: Math.min(width * 0.65, 320) }]} />
 
                     <Text style={styles.qrText}>
                         Scan to Pay
@@ -218,7 +217,6 @@ const styles = StyleSheet.create({
     },
 
     qrBox: {
-        width: screenWidth * 0.65,
         aspectRatio: 1,
         borderRadius: 14,
         backgroundColor: "#E9ECF3",

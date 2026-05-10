@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
     },
 
     amount_display: {
-        height: 180,
+        minHeight: 180,
         width: "100%",
         backgroundColor: "#ffffff",
         borderRadius: 20,
@@ -504,7 +504,7 @@ const styles = StyleSheet.create({
 
     key: {
         width: "31%",
-        height: 60,
+        minHeight: 56,
         backgroundColor: "#fff",
         borderRadius: 20,
         alignItems: "center",

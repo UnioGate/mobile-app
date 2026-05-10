@@ -2,28 +2,38 @@
 import SignInForm from '@/components/auth/SignInForm';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { StyleSheet, Text } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { AuthStackParamList } from '../types';
 
-export default function SignIn({ }) {
+export default function SignIn() {
        const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
 
     return (
         <SafeAreaView style={styles.container} >
-            <SignInForm/>
+            <KeyboardAvoidingView
+                style={styles.keyboardContainer}
+                behavior={Platform.OS === "ios" ? "padding" : undefined}
+            >
+                <ScrollView
+                    contentContainerStyle={styles.content}
+                    showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
+                >
+                    <SignInForm />
 
-
-
-
-
-            {/* This is the bottom text on the page  */}
-            <Text style={styles.bottomText}  >Don’t have an account? {" "}
-                <Text
-                    onPress={() => navigation.navigate('CreateAccount')}
-                    style={styles.bottomTextLink}
-                >Register</Text></Text>
+                    {/* This is the bottom text on the page  */}
+                    <View style={styles.bottomTextWrapper}>
+                        <Text style={styles.bottomText}  >Don’t have an account? {" "}
+                            <Text
+                                onPress={() => navigation.navigate('CreateAccount')}
+                                style={styles.bottomTextLink}
+                            >Register</Text>
+                        </Text>
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     )
 }
@@ -35,12 +45,23 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#ffffff",
+    },
+
+    keyboardContainer: {
+        flex: 1,
+    },
+
+    content: {
+        flexGrow: 1,
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         flexDirection: "column"
     },
 
+    bottomTextWrapper: {
+        paddingBottom: 12
+    },
 
     bottomText: {
         color: "#CCCCCCCC",
