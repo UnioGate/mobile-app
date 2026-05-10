@@ -8,7 +8,8 @@ export const transfer_payment_method: transfer_method_option_type[] = [
         title: "Pay with Card",
         icon: "card",
         background_color: "#FF070733",
-        textColor: "#FF0707"
+        textColor: "#FF0707",
+        route: "pay_with_card"
     },
 
         {
@@ -16,7 +17,8 @@ export const transfer_payment_method: transfer_method_option_type[] = [
         title: "Direct transfer",
         icon: "business",
         background_color: "#14AE5C33",
-        textColor: "#14AE5C"
+        textColor: "#14AE5C",
+        route: "bank_transfer"
     },
 
 
@@ -25,6 +27,7 @@ export const transfer_payment_method: transfer_method_option_type[] = [
         title: "USSD",
         icon: "phone-portrait-outline",
         background_color: "#253E861A",
-        textColor: "#253E86"
+        textColor: "#253E86",
+        route: "pay_with_card"
     },
 ]

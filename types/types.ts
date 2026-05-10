@@ -1,3 +1,4 @@
+import { MainStackParamList } from "@/app/main/type";
 import { Ionicons } from "@expo/vector-icons";
 import { ReactNode } from "react";
 
@@ -61,4 +62,5 @@ export type transfer_method_option_type = {
   icon: keyof typeof Ionicons.glyphMap;
   textColor: string;
   background_color: string;
+  route: keyof MainStackParamList
 }

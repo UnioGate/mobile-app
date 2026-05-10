@@ -52,7 +52,9 @@ export default function TransferStepOne() {
                 {transfer_payment_method.map((option, i) => (
                     <Pressable
                         key={i}
-                        style={styles.option_wrapper} >
+                        style={styles.option_wrapper}
+                        onPress={() => navigation.navigate(option.route)}
+                    >
                         {/* left side  */}
                         <View style={styles.leftside_wrapper} >
                             {/* Icon  */}

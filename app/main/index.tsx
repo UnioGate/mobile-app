@@ -4,6 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CryptoStepOne from "./screens/(crypto_payment_steps)/CryptoStepOne";
 import CryptoStepTwo from "./screens/(crypto_payment_steps)/CryptoStepTwo";
 import CryptoSuccess from "./screens/(crypto_payment_steps)/CryptoSuccess";
+import BankTransfer from "./screens/(transfer_payment_steps)/BankTransfer";
+import PayWithCard from "./screens/(transfer_payment_steps)/PayWithCard";
 import TransferStepOne from "./screens/(transfer_payment_steps)/Transfer_step_one";
 import Withdraw_Details from "./screens/(withdraw_screens)/Withdraw_Details";
 import Withdrawal_Initiated from "./screens/(withdraw_screens)/Withdrawal_Initiated";
@@ -34,6 +36,8 @@ export default function Index() {
                 <Stack.Screen name="withdraw_initiated" component={Withdrawal_Initiated} />
                 <Stack.Screen name="withdraw_details" component={Withdraw_Details} />
                 <Stack.Screen name="transferStepOne" component={TransferStepOne} />
+                <Stack.Screen name="pay_with_card" component={PayWithCard} />
+                <Stack.Screen name="bank_transfer" component={BankTransfer} />
 
             </Stack.Navigator>
 

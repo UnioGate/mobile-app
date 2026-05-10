@@ -7,6 +7,8 @@ export type MainStackParamList = {
   withdraw: undefined,
   withdraw_initiated: undefined;
   withdraw_details: undefined;
-  transferStepOne: undefined
+  transferStepOne: undefined;
+  pay_with_card: undefined
+  bank_transfer: undefined
 };
 
