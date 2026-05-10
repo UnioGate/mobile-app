@@ -10,5 +10,6 @@ export type MainStackParamList = {
   transferStepOne: undefined;
   pay_with_card: undefined
   bank_transfer: undefined
+ussd_payments: undefined
 };
 

@@ -28,6 +28,6 @@ export const transfer_payment_method: transfer_method_option_type[] = [
         icon: "phone-portrait-outline",
         background_color: "#253E861A",
         textColor: "#253E86",
-        route: "pay_with_card"
+        route: "ussd_payments"
     },
 ]

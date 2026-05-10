@@ -1,4 +1,5 @@
 import SuccessSVG from "@/components/ui/success";
+import { scaleFont } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -262,7 +263,7 @@ const styles = StyleSheet.create({
 
     heading_text: {
         color: "#10182A",
-        fontSize: 20,
+        fontSize: scaleFont(20),
         fontFamily: "Sora_600SemiBold",
     },
 

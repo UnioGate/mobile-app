@@ -1,3 +1,4 @@
+import { scaleFont } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -128,7 +129,7 @@ export default function Withdraw() {
 
                                 <Text style={[styles.save_button_text, {
                                     color: "#253E86",
-                                    fontSize: 12,
+                                    fontSize: scaleFont(10),
                                     fontFamily: "Sora_600SemiBold"
                                 }]} >Change Bank</Text>
 
@@ -287,7 +288,7 @@ const styles = StyleSheet.create({
     heading: {
         color: "#10182A",
         fontFamily: "PlusJakartaSans_500Medium",
-        fontSize: 22
+        fontSize: scaleFont(22)
     },
 
     balance_box: {
@@ -302,13 +303,13 @@ const styles = StyleSheet.create({
 
     balance_box_heading: {
         color: "#808080",
-        fontSize: 14,
+        fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular"
     },
 
     balance: {
         color: "#10182A",
-        fontSize: 32,
+        fontSize: scaleFont(32),
         fontFamily: "Sora_600SemiBold"
     },
 
@@ -331,7 +332,7 @@ const styles = StyleSheet.create({
 
     amount_wrapper_heading: {
         color: "#808080",
-        fontSize: 12,
+        fontSize: scaleFont(12),
         fontFamily: "Sora_400Regular"
     },
 
@@ -356,27 +357,27 @@ const styles = StyleSheet.create({
 
     amount_wrapper_button_text: {
         color: "#ffffff",
-        fontSize: 13,
+        fontSize: scaleFont(12),
         fontFamily: "Sora_400Regular"
     },
 
     text_input: {
         width: "100%",
         height: "100%",
-        fontSize: 24,
+        fontSize: scaleFont(24),
         fontFamily: "Sora_400Regular",
         color: "#000000"
     },
 
     naira_sign: {
-        fontSize: 24,
+        fontSize: scaleFont(24),
         fontFamily: "Sora_400Regular",
         color: "#000000"
     },
 
     fee: {
         color: "#808080",
-        fontSize: 12,
+        fontSize: scaleFont(12),
         fontFamily: "PlusJakartaSans_600SemiBold",
         marginHorizontal: "auto",
         marginVertical: 4,
@@ -391,7 +392,7 @@ const styles = StyleSheet.create({
 
     save_button_text: {
         color: "#808080",
-        fontSize: 12,
+        fontSize: scaleFont(12),
         fontFamily: "Sora_400Regular"
     },
 
@@ -400,11 +401,13 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         width: "100%",
         padding: 13,
+        paddingHorizontal: 8,
         borderRadius: 5,
         alignItems: "center",
         justifyContent: "space-between",
         flexDirection: "row",
-        marginBottom: 15
+        marginBottom: 15,
+        gap: 10
     },
 
     change_bank_button: {
@@ -415,13 +418,13 @@ const styles = StyleSheet.create({
 
     account_number: {
         color: "#000000",
-        fontSize: 13,
+        fontSize: scaleFont(13),
         fontFamily: "Sora_400Regular"
     },
 
     account_name: {
         color: "#514B4B",
-        fontSize: 10,
+        fontSize: scaleFont(10),
         marginLeft: "auto"
     },
 
@@ -435,7 +438,7 @@ const styles = StyleSheet.create({
 
     amount_breakdown_row_heading: {
         color: "#808080",
-        fontSize: 12,
+        fontSize: scaleFont(12),
         fontFamily: "Sora_400Regular"
     },
 
@@ -456,7 +459,7 @@ const styles = StyleSheet.create({
 
     note_text: {
         fontFamily: "Sora_400Regular",
-        fontSize: 13,
+        fontSize: scaleFont(13),
         color: "#727171"
     },
 
@@ -483,7 +486,7 @@ const styles = StyleSheet.create({
 
     button_text: {
         fontFamily: "Sora_400Regular",
-        fontSize: 13,
+        fontSize: scaleFont(13),
     },
 
 
@@ -501,7 +504,7 @@ const styles = StyleSheet.create({
 
     limit_text: {
         color: "#FF070B",
-        fontSize: 14,
+        fontSize: scaleFont(13),
         fontFamily: "Sora_400Regular",
     }
 

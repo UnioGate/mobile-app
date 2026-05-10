@@ -7,6 +7,7 @@ import CryptoSuccess from "./screens/(crypto_payment_steps)/CryptoSuccess";
 import BankTransfer from "./screens/(transfer_payment_steps)/BankTransfer";
 import PayWithCard from "./screens/(transfer_payment_steps)/PayWithCard";
 import TransferStepOne from "./screens/(transfer_payment_steps)/Transfer_step_one";
+import UssdPayment from "./screens/(transfer_payment_steps)/UssdPayment";
 import Withdraw_Details from "./screens/(withdraw_screens)/Withdraw_Details";
 import Withdrawal_Initiated from "./screens/(withdraw_screens)/Withdrawal_Initiated";
 import Overview from './screens/Overview';
@@ -38,6 +39,7 @@ export default function Index() {
                 <Stack.Screen name="transferStepOne" component={TransferStepOne} />
                 <Stack.Screen name="pay_with_card" component={PayWithCard} />
                 <Stack.Screen name="bank_transfer" component={BankTransfer} />
+                <Stack.Screen name="ussd_payments" component={UssdPayment} />
 
             </Stack.Navigator>
 

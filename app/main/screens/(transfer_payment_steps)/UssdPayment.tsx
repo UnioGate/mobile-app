@@ -15,7 +15,7 @@ import { MainStackParamList } from "../../type";
 
 type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
-export default function BankTransfer() {
+export default function UssdPayment() {
     const navigation = useNavigation<NavigationProp>();
 
     return (
@@ -36,7 +36,7 @@ export default function BankTransfer() {
                 </Pressable>
 
                 <Text style={styles.heading}>
-                    Bank Transfer
+                    USSD Payment
                 </Text>
 
                 <View style={{ width: 20 }} />
@@ -52,69 +52,34 @@ export default function BankTransfer() {
                 {/* Amount Display */}
                 <View style={styles.amountDisplay}>
 
-                    <Text style={styles.amountText}>
-                        ₦ 8,500
-                    </Text>
-
-                    <View style={styles.feeBreakdownWrapper}>
-                        <Text style={styles.feeBreakdownText}>
-                            ₦ 8500 + ₦ 152 fee = ₦ 8652 total
+                    <View style={styles.title_wrapper} >
+                        <Text style={styles.title_text} >
+                            Amount to pay
                         </Text>
                     </View>
 
-                </View>
-
-
-                {/* Bank details  */}
-                <View style={styles.bank_details_wrapper} >
-
-                    <View style={styles.detail_category}  >
-                        <Text style={styles.detail_category_title} >Bank Name</Text>
-                        <View>
-                            <Text style={[styles.detail_category_value, {
-                                fontSize: scaleFont(16)
-                            }]} >Zenith Bank</Text>
-                        </View>
-                    </View>
-
-
-                    <View style={styles.detail_category} >
-                        <Text style={styles.detail_category_title}>Account Number</Text>
-                        <Text style={[styles.detail_category_value, {
-                            fontSize: scaleFont(24)
-                        }]}>1234567890</Text>
-                    </View>
-
-
-                    <View style={styles.detail_category} >
-                        <Text style={styles.detail_category_title}>Account Name</Text>
-                        <Text style={[styles.detail_category_value, {
-                            fontSize: scaleFont(20)
-                        }]}>Konfam</Text>
-                    </View>
-
-
-                    <View style={[styles.detail_category, {
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        borderBottomWidth: 0,
-                        paddingVertical: 5
-                    }]} >
-                        <Text style={[styles.detail_category_value, {
-                            fontSize: scaleFont(12)
-                        }]} >Valid for 30 minutes</Text>
-                        <Ionicons name="timer" size={18} color={"#F24822"} />
-                    </View>
+                    <Text style={styles.amountText}>
+                        ₦ 8,500
+                        <Text style={styles.extra_info} >(including fee)</Text>
+                    </Text>
 
                 </View>
 
 
+                {/* ussd code section  */}
+                <View style={styles.ussd_wrapper} >
+                    <View style={styles.title_wrapper} >
+                        <Text style={styles.title_text} >
+                            USSD Code
+                        </Text>
+                    </View>
 
-                <Text style={styles.info_text} >
-                    Transfer exactly ₦ 8652 to the account above.
-                    Payment will be confirmed automatically.
-                </Text>
+
+                    <View>
+
+                    </View>
+
+                </View>
 
 
                 {/* Status */}
@@ -127,7 +92,7 @@ export default function BankTransfer() {
                     />
 
                     <Text style={styles.statusText}>
-                        Waiting for transfer... then animation
+                        Waiting for USSD confirmation... then animation
                     </Text>
 
                 </View>
@@ -183,73 +148,40 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         borderRadius: 12,
         alignItems: "center",
-        paddingVertical: 22,
+    },
+
+    title_wrapper: {
+        width: "100%",
+        borderBottomWidth: 0.5,
+        borderBottomColor: "#B3B3B3",
+        paddingHorizontal: 13,
+        paddingVertical: 10
+    },
+
+    title_text: {
+        fontFamily: "Sora_300Light",
+        color: "#10182A",
+        fontSize: scaleFont(14)
     },
 
     amountText: {
         color: "#10182A",
         fontSize: scaleFont(40),
         fontFamily: "Sora_400Regular",
-        marginBottom: 12,
+        marginVertical: 24
     },
 
-    feeBreakdownWrapper: {
-        width: "100%",
-        borderTopWidth: 1,
-        borderColor: "#D5D5D5",
-        alignItems: "center",
-        justifyContent: "center",
-        paddingTop: 16,
-    },
-
-    feeBreakdownText: {
-        color: "#10182A",
-        fontSize: scaleFont(15),
-        fontFamily: "Sora_300Light",
-    },
-
-
-
-
-    bank_details_wrapper: {
-        backgroundColor: "#FFFFFF",
-        borderRadius: 20,
-        paddingVertical: 6,
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: 3
-    },
-
-    detail_category: {
-        width: "100%",
-        paddingHorizontal: 16,
-        gap: 10,
-        paddingVertical: 13,
-        borderBottomWidth: 0.5,
-        borderBottomColor: "#B3B3B3"
-    },
-
-
-    detail_category_title: {
-        color: "#10182AB2",
-        fontSize: scaleFont(14),
-        fontFamily: "Sora_400Regular"
-    },
-
-
-    detail_category_value: {
+    extra_info: {
         color: "#000000",
+        fontSize: scaleFont(12),
         fontFamily: "Sora_400Regular"
     },
 
-
-    info_text: {
-        fontSize: scaleFont(13),
+    ussd_wrapper: {
         width: "100%",
-        fontFamily: "Sora_400Regular",
-        textAlign: "center",
-        marginVertical: 16,
-        lineHeight: 28
+        backgroundColor: "#FFFFFF",
+        borderRadius: 12,
+        alignItems: "center",
     },
 
     status: {

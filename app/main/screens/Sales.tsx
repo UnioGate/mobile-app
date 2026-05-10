@@ -2,6 +2,7 @@ import CustomInput from "@/components/ui/ReusableInput";
 import { payment_method } from "@/data/payment_methods";
 import { methodKey } from "@/types/types";
 import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
+import { scaleFont } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -98,7 +99,7 @@ export default function Sales() {
         }
 
         if (selectedMethod === "Card/Transfer") {
-             navigation.navigate("transferStepOne")
+            navigation.navigate("transferStepOne")
             return;
         }
 
@@ -380,7 +381,7 @@ const styles = StyleSheet.create({
     heading: {
         color: "#10182A",
         fontFamily: "PlusJakartaSans_500Medium",
-        fontSize: 22
+        fontSize: scaleFont(22)
     },
 
     clear_btn: {
@@ -411,7 +412,7 @@ const styles = StyleSheet.create({
     amount: {
         fontFamily: "Sora_400Regular",
         color: "#10182A",
-        fontSize: 40
+        fontSize: scaleFont(40)
     },
 
     description_section: {
@@ -425,7 +426,7 @@ const styles = StyleSheet.create({
     description_input: {
         color: "#10182AB2",
         fontFamily: "Sora_400Regular",
-        fontSize: 13
+        fontSize: scaleFont(13)
     },
 
     payment_method_wrapper: {
@@ -435,7 +436,7 @@ const styles = StyleSheet.create({
     },
 
     payment_method_text: {
-        fontSize: 15,
+        fontSize: scaleFont(15),
         color: "#10182A",
         fontFamily: "Sora_400Regular",
     },
@@ -445,7 +446,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         flexWrap: "wrap",
         justifyContent: "space-between",
-        gap: 14
+        gap: "4%"
     },
 
 
@@ -471,14 +472,17 @@ const styles = StyleSheet.create({
 
     method_title: {
         color: "#000000",
-        fontSize: 14,
+        fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular",
     },
 
     method_subtitle: {
+        maxWidth: "90%",
         color: "#B3B3B3",
-        fontSize: 13,
+        fontSize: scaleFont(13),
         fontFamily: "Sora_400Regular",
+        flexWrap: "wrap",
+        flexShrink: 1,
     },
 
     save_customer_section: {
@@ -490,7 +494,7 @@ const styles = StyleSheet.create({
 
     save_customer_text: {
         color: "#000000",
-        fontSize: 15,
+        fontSize: scaleFont(15),
         fontFamily: "Sora_400Regular"
     },
 
@@ -514,7 +518,7 @@ const styles = StyleSheet.create({
     },
 
     key_text: {
-        fontSize: 24,
+        fontSize: scaleFont(24),
         fontFamily: "PlusJakartaSans_600SemiBold"
     },
 
@@ -533,7 +537,7 @@ const styles = StyleSheet.create({
 
     buttonText: {
         color: "#ffffff",
-        fontSize: 18,
+        fontSize: scaleFont(18),
         fontFamily: 'Sora_400Regular',
     },
 
@@ -576,7 +580,7 @@ const styles = StyleSheet.create({
     modalButtonText: {
         color: "#fff",
         fontWeight: "600",
-        fontSize: 18,
+        fontSize: scaleFont(18),
         fontFamily: "Sora_400Regular",
     },
 })
