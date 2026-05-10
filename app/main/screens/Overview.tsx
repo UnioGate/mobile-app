@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     profilePicWrapper: {
         width: 45,
         height: 45,
-        borderRadius: "50%",
+        borderRadius: 22.5,
         borderWidth: 1,
         borderColor: "#253E86",
         overflow: "hidden",
@@ -335,14 +335,14 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: "50%",
+        borderRadius: 18,
     },
 
     redDot: {
         backgroundColor: "#FF0707",
         height: 10,
         width: 10,
-        borderRadius: "50%",
+        borderRadius: 5,
         position: "absolute",
         top: 0,
         right: 0,

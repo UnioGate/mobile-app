@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     profilePicWrapper: {
         width: 169,
         height: 169,
-        borderRadius: "50%",
+        borderRadius: 84.5,
         position: "relative"
     },
 
