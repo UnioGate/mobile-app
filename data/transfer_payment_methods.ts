@@ -12,7 +12,7 @@ export const transfer_payment_method: transfer_method_option_type[] = [
         route: "pay_with_card"
     },
 
-        {
+    {
         subtitle: "Bank Transfer",
         title: "Direct transfer",
         icon: "business",
@@ -22,7 +22,7 @@ export const transfer_payment_method: transfer_method_option_type[] = [
     },
 
 
-        {
+    {
         subtitle: "Dial code to pay",
         title: "USSD",
         icon: "phone-portrait-outline",
@@ -30,4 +30,5 @@ export const transfer_payment_method: transfer_method_option_type[] = [
         textColor: "#253E86",
         route: "ussd_payments"
     },
+
 ]

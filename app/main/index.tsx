@@ -12,6 +12,7 @@ import Withdraw_Details from "./screens/(withdraw_screens)/Withdraw_Details";
 import Withdrawal_Initiated from "./screens/(withdraw_screens)/Withdrawal_Initiated";
 import Overview from './screens/Overview';
 import Sales from './screens/Sales';
+import TapToPay from "./screens/TapToPay";
 import Withdraw from "./screens/withdraw";
 import { MainStackParamList } from './type';
 
@@ -40,6 +41,7 @@ export default function Index() {
                 <Stack.Screen name="pay_with_card" component={PayWithCard} />
                 <Stack.Screen name="bank_transfer" component={BankTransfer} />
                 <Stack.Screen name="ussd_payments" component={UssdPayment} />
+                <Stack.Screen name="tap_to_pay" component={TapToPay} />
 
             </Stack.Navigator>
 

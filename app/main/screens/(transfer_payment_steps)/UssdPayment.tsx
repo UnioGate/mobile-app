@@ -11,12 +11,30 @@ import {
     View
 } from "react-native";
 
+import { ussd_steps } from "@/data/ussd_steps";
 import { MainStackParamList } from "../../type";
 
 type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
+type ItemProps = {
+    title: string
+    index: number
+};
+
+const Item = ({ title, index }: ItemProps) => (
+    <View style={[styles.item, {
+        borderBottomWidth: index + 1 <3 ? 0.5 : 0,
+        borderBottomColor: index + 1 <3 ? "#B3B3B3" : "transparent"
+    }]}>
+        <Text style={styles.step_number} > {index + 1} </Text>
+        <Text style={styles.title}>{title}</Text>
+    </View>
+);
+
+
 export default function UssdPayment() {
     const navigation = useNavigation<NavigationProp>();
+
 
     return (
         <View style={styles.container}>
@@ -74,12 +92,39 @@ export default function UssdPayment() {
                         </Text>
                     </View>
 
+                    <View style={styles.ussd_text_wrapper} >
 
-                    <View>
+                        <View style={styles.text_holder} >
+                            <Text style={styles.ussd_text} >
+                                *7375*123456#
+                            </Text>
+
+
+                            <TouchableOpacity style={styles.copy_btn} >
+                                <Ionicons name="copy" size={26} color={"#FFFFFF"} />
+                            </TouchableOpacity>
+                        </View>
 
                     </View>
 
                 </View>
+
+
+
+                {/* steps on using USSD payment method  */}
+                <View style={styles.steps_wrapper}>
+                    {ussd_steps.map((item, i) => (
+                        <Item
+                            key={item.id}
+                            title={item.title}
+                            index={i}
+                        />
+                    ))}
+                </View>
+
+
+
+
 
 
                 {/* Status */}
@@ -184,6 +229,62 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
 
+
+    ussd_text_wrapper: {
+        paddingTop: 16,
+        paddingBottom: 33,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+
+    text_holder: {
+        width: "90%",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        flexDirection: "row",
+        backgroundColor: "#CCCCCC80",
+        height: "100%",
+        maxHeight: 47,
+        borderRadius: 5
+    },
+
+    ussd_text: {
+        paddingHorizontal: 13,
+        width: "85%",
+        alignItems: "center",
+        justifyContent: "center",
+        display: "flex",
+        textAlign: "center",
+        fontSize: scaleFont(28),
+        color: "#10182A",
+        borderWidth: 0.5,
+        borderColor: "#B3B3B3",
+        height: "100%",
+        borderTopLeftRadius: 5,
+        borderBottomLeftRadius: 5,
+         fontFamily: "Sora_400Regular",
+    },
+
+    copy_btn: {
+        width: "15%",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#253E86",
+        height: "100%",
+        borderWidth: 0.5,
+        borderColor: "#B3B3B3",
+        borderTopRightRadius: 5,
+        borderBottomRightRadius: 5
+    },
+
+
+    steps_wrapper: {
+        width: "100%",
+        backgroundColor: "#FFFFFF",
+        borderRadius: 12,
+        alignItems: "center",
+    },
+
     status: {
         width: "100%",
         backgroundColor: "#FFFFFF",
@@ -228,4 +329,34 @@ const styles = StyleSheet.create({
         fontFamily: "Sora_400Regular",
     },
 
+
+    item: {
+        paddingVertical: 23,
+        paddingHorizontal: 13,
+        paddingBottom: 26,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        width: "100%",
+        gap: 15
+    },
+
+    step_number: {
+        width: 27,
+        height: 27,
+        backgroundColor: "#253E86",
+        color: "#ffffff",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: scaleFont(16),
+        fontFamily: "Sora_600SemiBold",
+        textAlign: "center",
+        borderRadius: 999
+    },
+
+    title: {
+        fontSize: scaleFont(16),
+        fontFamily: "Sora_400Regular",
+        color: "#000000"
+    },
 });

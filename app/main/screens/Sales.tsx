@@ -1,7 +1,7 @@
 import CustomInput from "@/components/ui/ReusableInput";
 import { payment_method } from "@/data/payment_methods";
 import { methodKey } from "@/types/types";
-import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
+import { showErrorToast } from "@/utils/toastConfig";
 import { scaleFont } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
@@ -109,7 +109,7 @@ export default function Sales() {
         }
 
         if (selectedMethod === "Tap to Pay") {
-            showSuccessToast("NFC selected", "Let’s tap and pay");
+             navigation.navigate("tap_to_pay")
             return;
         }
     }
@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         gap: 17,
         paddingHorizontal: 19,
-        paddingBottom: 15,
+        paddingBottom:40,
         paddingTop: 30,
     },
 
