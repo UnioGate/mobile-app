@@ -1,7 +1,10 @@
+import { transactions } from "@/data/mock_tx";
+import { transaction_detail_type } from "@/types/types";
 import { scaleFont } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { MainStackParamList } from "../../type";
 
@@ -18,6 +21,25 @@ export default function TransactionDetails() {
     const route = useRoute<TransactionRouteProp>()
     const { id } = route.params
     const navigation = useNavigation<NavigationProp>();
+    const [currentTransaction, setCurrentTransaction] = useState<transaction_detail_type>()
+
+    useEffect(() => {
+        const currentTx = transactions.find((tx) => tx.id === id)
+
+        setCurrentTransaction(currentTx)
+    }, [id])
+
+
+
+    const statusColor =
+        currentTransaction?.status === "Completed"
+            ? "#009A49"
+            : currentTransaction?.status === "Pending"
+                ? "#F7AA1A"
+                : currentTransaction?.status === "Failed"
+                    ? "#FF0707"
+                    : "#B3B3B3";
+
 
     return (
         <View style={styles.container} >
@@ -52,9 +74,11 @@ export default function TransactionDetails() {
                 contentContainerStyle={styles.main_content}
                 showsVerticalScrollIndicator={false} >
 
-                <View style={styles.label} >
+                <View style={[styles.label, {
+                    backgroundColor: statusColor
+                }]} >
                     <Ionicons name="checkmark-circle" size={40} color={"#FFFFFF"} />
-                    <Text style={styles.label_text} >Completed</Text>
+                    <Text style={styles.label_text} > {currentTransaction?.status} </Text>
                 </View>
 
 
@@ -75,7 +99,7 @@ export default function TransactionDetails() {
                             alignItems: "center",
                             gap: 10
                         }}>
-                            <Text style={styles.details_value} >KON-202606-1234</Text>
+                            <Text style={styles.details_value} > {currentTransaction?.id.slice(0, 10)} </Text>
 
                             <Pressable>
                                 <Ionicons name="copy-outline" color={"#1E1E1E"} size={14.4} />
@@ -112,7 +136,7 @@ export default function TransactionDetails() {
                             alignItems: "center",
                             gap: 10
                         }}>
-                            <Text style={styles.details_value} >USDT on Tron Network</Text>
+                            <Text style={styles.details_value} >{currentTransaction?.method} </Text>
                         </View>
                     </View>
 
@@ -178,7 +202,7 @@ export default function TransactionDetails() {
                             <Text style={[styles.details_value, {
                                 fontFamily: "Sora_600SemiBold",
                                 fontSize: scaleFont(20)
-                            }]} >₦ 8500</Text>
+                            }]} >₦ {currentTransaction?.amount}</Text>
                         </View>
                     </View>
 
@@ -339,6 +363,53 @@ export default function TransactionDetails() {
 
 
 
+                {/* View on TronScan button  */}
+                <Pressable style={styles.tronscan_btn} >
+                    <Text style={styles.tronscan_text} >View on TronScan</Text>
+                </Pressable>
+
+
+                <View style={styles.utilities_btn_wrapper} >
+                    <Pressable style={styles.utilities_btn} >
+                        <Ionicons
+                            name="share-social-outline"
+                            size={20}
+                            color={"#1E1E1E"} />
+                        <Text style={styles.utilities_btn_text} >Share Receipt</Text>
+                    </Pressable>
+
+
+                    <Pressable style={styles.utilities_btn} >
+                        <Ionicons
+                            name="print"
+                            size={20}
+                            color={"#1E1E1E"} />
+                        <Text style={styles.utilities_btn_text} >Print Receipt</Text>
+                    </Pressable>
+                </View>
+
+
+                <View style={styles.utilities_btn_wrapper} >
+                    <Pressable style={styles.utilities_btn} >
+                        <Ionicons
+                            name="return-up-back-outline"
+                            size={20}
+                            color={"#1E1E1E"} />
+                        <Text style={styles.utilities_btn_text} >Issue Refund</Text>
+                    </Pressable>
+
+
+                    <Pressable style={styles.utilities_btn} >
+                        <Ionicons
+                            name="alert-circle-outline"
+                            size={20}
+                            color={"#1E1E1E"} />
+                        <Text style={styles.utilities_btn_text} >Report Issue</Text>
+                    </Pressable>
+                </View>
+
+
+
             </ScrollView>
 
 
@@ -383,7 +454,6 @@ const styles = StyleSheet.create({
     },
 
     label: {
-        backgroundColor: "#009A49",
         borderRadius: 100,
         flexDirection: "row",
         alignItems: "center",
@@ -482,6 +552,46 @@ const styles = StyleSheet.create({
     },
 
     blockchain_wrapper_value: {
+        color: "#000000",
+        fontSize: scaleFont(14),
+        fontFamily: "Sora_400Regular"
+    },
+
+
+    tronscan_btn: {
+        width: "auto",
+        marginHorizontal: "auto"
+    },
+
+    tronscan_text: {
+        color: "#253E86",
+        fontFamily: "Sora_400Regular",
+        fontSize: scaleFont(14)
+    },
+
+    utilities_btn_wrapper: {
+        width: "93%",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexDirection: "row",
+        marginHorizontal: "auto"
+    },
+
+    utilities_btn: {
+        backgroundColor: "#FFFFFF",
+        padding: 10,
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 6,
+        borderRadius: 5,
+        flexDirection: "row",
+        borderWidth: 0.5,
+        borderColor: "#B3B3B3",
+        width: "45%"
+    },
+
+
+    utilities_btn_text: {
         color: "#000000",
         fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular"

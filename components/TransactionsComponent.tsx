@@ -102,7 +102,7 @@ export default function TransactionsComponent() {
                                         styles.status,
                                         {
                                             color:
-                                                tx.status === "Successful"
+                                                tx.status === "Completed"
                                                     ? "#009A49"
                                                     : tx.status === "Pending"
                                                         ? "#E8A317"

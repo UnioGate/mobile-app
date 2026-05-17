@@ -22,11 +22,11 @@ export default function Overview() {
     // This function gives the status color
     const getStatusStyle = (status: string) => {
         switch (status.toLowerCase()) {
-            case "successful":
+            case "completed":
                 return styles.successful;
             case "pending":
                 return styles.pending;
-            case "unsuccessful":
+            case "failed":
                 return styles.unsuccessful;
             default:
                 return {};
@@ -202,8 +202,8 @@ export default function Overview() {
                         <Text style={styles.tx_heading_text} >Transactions</Text>
 
                         <Pressable
-                        onPress={() => navigation.navigate("transactions")}
-                        style={styles.view_all_btn} >
+                            onPress={() => navigation.navigate("transactions")}
+                            style={styles.view_all_btn} >
                             <Text style={styles.view_all_btn_text} >View all </Text>
                         </Pressable>
                     </View>
@@ -218,7 +218,12 @@ export default function Overview() {
                         {/* The individual history card  */}
                         {
                             transactions.map((tx, i) => (
-                                <View key={i} style={styles.history_card} >
+                                <Pressable
+                                    onPress={() => navigation.navigate("transaction_details", {
+                                        id: tx.id
+                                    })}
+                                    key={i}
+                                    style={styles.history_card} >
 
                                     <View style={styles.history_card_left_side} >
 
@@ -254,7 +259,7 @@ export default function Overview() {
                                         <Text style={[styles.history_status, getStatusStyle(tx.status)]} >{tx.status} </Text>
                                     </View>
 
-                                </View>
+                                </Pressable>
                             ))
                         }
 
