@@ -12,6 +12,12 @@ export type MainStackParamList = {
   bank_transfer: undefined
   ussd_payments: undefined;
   tap_to_pay: undefined;
-  transactions: undefined
+  transactions: undefined;
+
+  transaction_details: {
+    id: string
+  };
+
+
 };
 

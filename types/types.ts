@@ -28,7 +28,8 @@ export type transaction_detail_type = {
   tx_time: Date;
   amount: number;
   status: TransactionStatus,
-  recipient: string
+  recipient: string,
+  id: string,
 };
 
 

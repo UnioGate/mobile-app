@@ -1,16 +1,19 @@
+import { MainStackParamList } from "@/app/main/type";
 import { transactions } from "@/data/mock_tx";
 import { GroupedTx } from "@/types/types";
 import { scaleFont } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useMemo } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 
 
-
+type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 export default function TransactionsComponent() {
-
+    const navigation = useNavigation<NavigationProp>()
 
     const groupedTransactions = useMemo(() => {
 
@@ -70,7 +73,14 @@ export default function TransactionsComponent() {
 
                         {/* Transactions */}
                         {group.transactions.map((tx, index) => (
-                            <View key={index} style={styles.tx_row}>
+                            <Pressable
+                                key={index}
+                                onPress={() => navigation.navigate("transaction_details", {
+                                    id: tx.id
+                                })}
+
+                                style={styles.tx_row}>
+
                                 <View style={styles.name}>
                                     <Image
                                         source={require("../assets/logos/eth_icon.png")}
@@ -106,14 +116,15 @@ export default function TransactionsComponent() {
                                 <Text style={styles.time}>
                                     {new Date(tx.tx_time).toLocaleTimeString([], {
                                         hour: "2-digit",
-                                        minute: "2-digit"
-                                    })}
+                                        minute: "2-digit",
+                                        hour12: true,
+                                    }).toUpperCase()}
                                 </Text>
 
                                 <Pressable style={styles.view_button}>
                                     <Ionicons name="chevron-forward" size={13} color="#10182AB2" />
                                 </Pressable>
-                            </View>
+                            </Pressable>
                         ))}
 
                     </View>
@@ -184,7 +195,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 7,
         flexDirection: "row",
         alignItems: "flex-start",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        gap: 10
     },
 
     name: {

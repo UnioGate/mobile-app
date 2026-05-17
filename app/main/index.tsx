@@ -14,6 +14,7 @@ import Overview from './screens/Overview';
 import Sales from './screens/Sales';
 import TapToPay from "./screens/TapToPay";
 import Transactions from "./screens/Transactions";
+import TransactionDetails from "./screens/transactions/[id]";
 import Withdraw from "./screens/withdraw";
 import { MainStackParamList } from './type';
 
@@ -44,6 +45,7 @@ export default function Index() {
                 <Stack.Screen name="ussd_payments" component={UssdPayment} />
                 <Stack.Screen name="tap_to_pay" component={TapToPay} />
                 <Stack.Screen name="transactions" component={Transactions} />
+                <Stack.Screen name="transaction_details" component={TransactionDetails} />
 
             </Stack.Navigator>
 
