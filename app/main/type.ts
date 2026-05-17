@@ -11,6 +11,7 @@ export type MainStackParamList = {
   pay_with_card: undefined
   bank_transfer: undefined
   ussd_payments: undefined;
-  tap_to_pay: undefined
+  tap_to_pay: undefined;
+  transactions: undefined
 };
 

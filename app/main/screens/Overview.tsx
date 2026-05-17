@@ -201,7 +201,9 @@ export default function Overview() {
                     <View style={styles.tx_history_wrapper_heading} >
                         <Text style={styles.tx_heading_text} >Transactions</Text>
 
-                        <Pressable style={styles.view_all_btn} >
+                        <Pressable
+                        onPress={() => navigation.navigate("transactions")}
+                        style={styles.view_all_btn} >
                             <Text style={styles.view_all_btn_text} >View all </Text>
                         </Pressable>
                     </View>

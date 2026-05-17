@@ -14,10 +14,12 @@ import {
 import { MainStackParamList } from "../type";
 
 
+
 type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 export default function TapToPay() {
     const navigation = useNavigation<NavigationProp>();
+
 
     return (
         <View style={styles.container}>

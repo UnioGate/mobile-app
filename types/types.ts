@@ -17,14 +17,27 @@ export type StateOptionSource = {
 
 export type LogoKey = "eth" | "btc";
 
+export type TransactionStatus = "Completed" | "Pending" | "Failed" | "Successful";
+
+export type PaymentMethod = "USDT (Tron)" | "Card";
+
+
 export type transaction_detail_type = {
-  method: string;
+  method: PaymentMethod;
   image: LogoKey;
   tx_time: Date;
   amount: number;
-  status: "Successful" | "Pending" | "Unsuccessful"
+  status: TransactionStatus,
+  recipient: string
 };
 
+
+export type GroupedTx = {
+  date: string
+  transactions: transaction_detail_type[]
+  totalAmount: number
+  totalCount: number
+}
 
 export type methodKey = "card" | "crypto" | "nfc"
 
@@ -64,3 +77,4 @@ export type transfer_method_option_type = {
   background_color: string;
   route: keyof MainStackParamList
 }
+
