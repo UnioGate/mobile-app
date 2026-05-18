@@ -6,7 +6,7 @@ export type MainStackParamList = {
   CryptoSuccess: undefined,
   withdraw: undefined,
   withdraw_initiated: undefined;
-  withdraw_details: undefined;
+withdraw_details: undefined;
   transferStepOne: undefined;
   pay_with_card: undefined
   bank_transfer: undefined
@@ -17,6 +17,8 @@ export type MainStackParamList = {
   transaction_details: {
     id: string
   };
+
+  profile_details: undefined
 
 
 };

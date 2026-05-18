@@ -11,6 +11,7 @@ import UssdPayment from "./screens/(transfer_payment_steps)/UssdPayment";
 import Withdraw_Details from "./screens/(withdraw_screens)/Withdraw_Details";
 import Withdrawal_Initiated from "./screens/(withdraw_screens)/Withdrawal_Initiated";
 import Overview from './screens/Overview';
+import ProfileDetails from "./screens/Profile/ProfileDetails";
 import Sales from './screens/Sales';
 import TapToPay from "./screens/TapToPay";
 import Transactions from "./screens/Transactions";
@@ -46,6 +47,7 @@ export default function Index() {
                 <Stack.Screen name="tap_to_pay" component={TapToPay} />
                 <Stack.Screen name="transactions" component={Transactions} />
                 <Stack.Screen name="transaction_details" component={TransactionDetails} />
+                <Stack.Screen name="profile_details" component={ProfileDetails} />
 
             </Stack.Navigator>
 

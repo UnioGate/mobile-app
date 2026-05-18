@@ -50,9 +50,11 @@ export default function Overview() {
             <View style={styles.header} >
 
                 <View style={styles.greeting} >
-                    <View style={styles.profilePicWrapper}  >
+                    <Pressable
+                        onPress={() => navigation.navigate("profile_details")}
+                        style={styles.profilePicWrapper}  >
                         <Image source={require("../../../assets/overview/user.png")} style={{ width: 40, height: 40, marginTop: 7 }} />
-                    </View>
+                    </Pressable>
 
                     <Text style={styles.hellotext} >
                         Hello, <Text style={styles.userName} >UnioGate</Text></Text>
