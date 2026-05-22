@@ -63,7 +63,24 @@ export default function Balance() {
                         </Pressable>
                     </View>
 
-                    <Text style={styles.date_text} >Last updated: Today 2:45 PM</Text>
+
+                    <View style={{
+                        width: "auto",
+                        alignItems: "center",
+                        flexDirection: "row",
+                        gap: 6
+                    }} >
+
+                        <View style={[styles.dot, {
+                            backgroundColor: "#FFFFFF",
+                            borderRadius: 999,
+                            width: 4,
+                            height: 4,
+                        }]} />
+                        <Text style={styles.date_text} >Last updated: Today 2:45 PM</Text>
+
+                    </View>
+
                 </View>
 
 
@@ -76,7 +93,7 @@ export default function Balance() {
 
                             <View style={styles.dot} />
 
-                            <View>
+                            <View style={styles.text_wrapper}>
                                 <Text style={styles.row_title} >Cleared</Text>
                                 <Text style={styles.row_subtitle} >Available now</Text>
                             </View>
@@ -100,7 +117,7 @@ export default function Balance() {
                                 backgroundColor: "#FEFB2D"
                             }]} />
 
-                            <View>
+                            <View style={styles.text_wrapper} >
                                 <Text style={styles.row_title} >Pending</Text>
                                 <Text style={styles.row_subtitle} >Pending settlement</Text>
                             </View>
@@ -120,7 +137,7 @@ export default function Balance() {
                                 borderRadius: 999
                             }]} />
 
-                            <View>
+                            <View style={styles.text_wrapper}>
                                 <Text style={styles.row_title} >On Hold</Text>
                                 <Text style={styles.row_subtitle} >Flagged transaction</Text>
                             </View>
@@ -163,7 +180,7 @@ export default function Balance() {
 
                     <Text style={[styles.button_text, {
                         color: "#253E86"
-                    }]} > Schedule</Text>
+                    }]} > Settlement Schedule</Text>
                 </TouchableOpacity>
 
 
@@ -227,19 +244,23 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#253E86",
         marginBottom: 20,
-        gap: 8
+        gap: 8,
+        flexWrap: "nowrap",
+        textAlign: "center"
     },
 
     button_text: {
         fontFamily: "Sora_400Regular",
         fontSize: scaleFont(14),
+        flexWrap: "nowrap",
+        textAlign: "center"
     },
 
 
     main_component: {
         backgroundColor: "#253E86",
-        padding: 20,
-        borderRadius: 16,
+        padding: 14,
+        borderRadius: 20,
         flexDirection: "column",
         alignItems: "flex-start",
         width: "100%",
@@ -250,21 +271,21 @@ const styles = StyleSheet.create({
     balance_details: {
         width: "auto",
         alignItems: "flex-start",
-        gap: 10
+        gap: 4
     },
 
 
     balance_text: {
-        color: "#FFFFFFB2",
-        fontSize: scaleFont(11),
-        fontFamily: "Sora_600SemiBold"
+        color: "#FFFFFF",
+        fontSize: scaleFont(14),
+        fontFamily: "Sora_300Light"
     },
 
 
     date_text: {
-        color: "#FFFFFFB2",
+        color: "#FFFFFF",
         fontFamily: "Sora_300Light",
-        fontSize: scaleFont(11),
+        fontSize: scaleFont(10),
     },
 
     balance_wrapper: {
@@ -284,9 +305,9 @@ const styles = StyleSheet.create({
 
     breakdown_wrapper: {
         width: "100%",
-        backgroundColor: "#D0D8E80D",
-        padding: 6,
-        borderRadius: 8,
+        backgroundColor: "#FFFFFF",
+        padding: 14,
+        borderRadius: 10,
         gap: 7
     },
 
@@ -314,14 +335,20 @@ const styles = StyleSheet.create({
         gap: 10
     },
 
+    text_wrapper: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 14
+    },
+
     row_title: {
-        color: "#ffffff",
+        color: "#000000",
         fontSize: scaleFont(12),
         fontFamily: "Sora_600SemiBold"
     },
 
     row_subtitle: {
-        color: "#FFFFFFB2",
+        color: "#000000",
         fontSize: scaleFont(10),
         fontFamily: "Sora_200ExtraLight"
     },
@@ -329,8 +356,8 @@ const styles = StyleSheet.create({
 
 
     right_side_text: {
-        color: "#ffffff",
-        fontSize: scaleFont(13),
+        color: "#000000",
+        fontSize: scaleFont(12),
         fontFamily: "Sora_600SemiBold"
     }
 
