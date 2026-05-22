@@ -158,7 +158,6 @@ export default function Balance() {
             {/* Buttons */}
             <View style={styles.button_wrapper} >
 
-
                 <TouchableOpacity
                     onPress={() => navigation.navigate("withdraw")}
                     style={[styles.button, {
@@ -183,6 +182,68 @@ export default function Balance() {
                     }]} > Settlement Schedule</Text>
                 </TouchableOpacity>
 
+            </View>
+
+
+
+            {/* Automatic settlement */}
+            <View style={styles.automatic_settlement_wrapper} >
+
+                <View style={{
+                    width: "auto",
+                    alignItems: "flex-start",
+                    flexDirection: "row",
+                    gap: 8,
+
+                }} >
+                    <Ionicons
+                        name="time-sharp"
+                        color={"#10182A"}
+                        size={22}
+                    />
+
+
+
+                    <View>
+
+                        <Text style={{
+                            color: "#000000",
+                            fontSize: scaleFont(16),
+                            fontFamily: "Sora_400Regular"
+                        }} >Automatic</Text>
+
+                        <Text style={{
+                            color: "#000000",
+                            fontFamily: "Sora_300Light",
+                            marginVertical: 8
+                        }} >Weekly on Fridays at 5:00 PM</Text>
+
+                        <Text
+                            style={{
+                                color: "#000000",
+                                fontSize: scaleFont(14),
+                                fontFamily: "Sora_400Regular"
+                            }}
+                        >Next: March 8, 2026</Text>
+                    </View>
+                </View>
+
+
+
+                <TouchableOpacity style={styles.settings_button} >
+
+                    <Ionicons
+                        name="settings-sharp"
+                        color={"#253E86"}
+                        size={15} />
+
+                    <Text style={[styles.button_text, {
+                        color: "#253E86",
+                        fontFamily: "PlusJakartaSans_600SemiBold",
+                        fontSize: scaleFont(10)
+                    }]} > Change Settings</Text>
+
+                </TouchableOpacity>
 
             </View>
 
@@ -230,7 +291,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection: "row",
         justifyContent: "space-between",
-        gap: 5
+        gap: 5,
     },
 
     button: {
@@ -243,15 +304,15 @@ const styles = StyleSheet.create({
         borderRadius: 7,
         borderWidth: 1,
         borderColor: "#253E86",
-        marginBottom: 20,
         gap: 8,
         flexWrap: "nowrap",
-        textAlign: "center"
+        textAlign: "center",
+        height: "auto"
     },
 
     button_text: {
         fontFamily: "Sora_400Regular",
-        fontSize: scaleFont(14),
+        fontSize: scaleFont(10),
         flexWrap: "nowrap",
         textAlign: "center"
     },
@@ -359,7 +420,38 @@ const styles = StyleSheet.create({
         color: "#000000",
         fontSize: scaleFont(12),
         fontFamily: "Sora_600SemiBold"
-    }
+    },
+
+
+    automatic_settlement_wrapper: {
+        width: "100%",
+        backgroundColor: "#FFFFFF",
+        borderRadius: 7,
+        paddingHorizontal: 14,
+        paddingVertical: 18,
+        flexDirection: "row",
+        gap: 12,
+        justifyContent: "space-between",
+        alignItems: "flex-start"
+    },
+
+    settings_button: {
+        width: "auto",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        paddingVertical: scaleVerticalPadding(8),
+        paddingHorizontal: scaleHorizontalPadding(7),
+        borderRadius: 7,
+        borderWidth: 1,
+        borderColor: "#253E86",
+        gap: 4,
+        flexWrap: "nowrap",
+        textAlign: "center",
+        height: "auto"
+    },
+
+
 
 
 
