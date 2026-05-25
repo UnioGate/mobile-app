@@ -239,12 +239,57 @@ export default function Balance() {
 
                     <Text style={[styles.button_text, {
                         color: "#253E86",
-                        fontFamily: "PlusJakartaSans_600SemiBold",
+                        fontFamily: "Sora_600SemiBold",
                         fontSize: scaleFont(10)
                     }]} > Change Settings</Text>
 
                 </TouchableOpacity>
 
+            </View>
+
+
+
+            {/* Recent withdrawals section */}
+            <View style={styles.recent_withdrawal_section} >
+                {/* top  */}
+                <View style={styles.recent_withdrawal_section_top} >
+
+                    <View style={{
+                        width: "auto",
+                        alignItems: "center",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        gap: 8
+                    }} >
+                        <Ionicons
+                            name="card"
+                            size={16}
+                            color={"#1E1E1E"} />
+                        <Text style={styles.recent_withdrawal_section_title} >Recent Withdrawals</Text>
+                    </View>
+
+
+                    <Pressable style={{
+                        width: "auto",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 4
+                    }}>
+                        <Text style={styles.view_all_btn} >View All</Text>
+                        <Ionicons
+                            name="chevron-forward"
+                            color={"#253E86"}
+                            size={17} />
+                    </Pressable>
+
+                </View>
+
+
+                {/* bottom */}
+                <View style={styles.recent_withdrawal_section_bottom} >
+
+
+                </View>
             </View>
 
 
@@ -452,6 +497,49 @@ const styles = StyleSheet.create({
     },
 
 
+    recent_withdrawal_section: {
+        width: "100%",
+        backgroundColor: "#ffffff",
+        borderWidth: 1,
+        borderColor: "#B3B3B3",
+        borderRadius: 7,
+        alignItems: "flex-start",
+        justifyContent: "center",
+        paddingHorizontal: scaleHorizontalPadding(13),
+        paddingVertical: scaleVerticalPadding(13),
+        gap: 14
+    },
+
+    view_all_btn: {
+        color: "#253E86",
+        fontFamily: "Sora_600SemiBold",
+        fontSize: scaleFont(14)
+    },
+
+
+    recent_withdrawal_section_top: {
+        width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 10
+    },
+
+    recent_withdrawal_section_title: {
+        color: "#000000",
+        fontFamily: "Sora_600SemiBold",
+        fontSize: scaleFont(16)
+    },
+
+
+    recent_withdrawal_section_bottom: {
+        borderColor: "#B3B3B3",
+        borderWidth: 0.4,
+        borderRadius: 7,
+        paddingHorizontal: scaleHorizontalPadding(13),
+        paddingVertical: scaleVerticalPadding(13),
+        width: "100%"
+    }
 
 
 
