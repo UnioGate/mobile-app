@@ -19,7 +19,8 @@ export type MainStackParamList = {
   };
 
   profile_details: undefined;
-balance: undefined
+  balance: undefined;
+  settlement_settings: undefined;
 
 
 };

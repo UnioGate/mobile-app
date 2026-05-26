@@ -14,6 +14,7 @@ import Balance from "./screens/Balance";
 import Overview from './screens/Overview';
 import ProfileDetails from "./screens/Profile/ProfileDetails";
 import Sales from './screens/Sales';
+import SettlementSettings from "./screens/Settlements_settings";
 import TapToPay from "./screens/TapToPay";
 import Transactions from "./screens/Transactions";
 import TransactionDetails from "./screens/transactions/[id]";
@@ -50,6 +51,7 @@ export default function Index() {
                 <Stack.Screen name="transaction_details" component={TransactionDetails} />
                 <Stack.Screen name="profile_details" component={ProfileDetails} />
                 <Stack.Screen name="balance" component={Balance} />
+                <Stack.Screen name="settlement_settings" component={SettlementSettings} />
 
             </Stack.Navigator>
 

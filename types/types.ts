@@ -79,3 +79,16 @@ export type transfer_method_option_type = {
   route: keyof MainStackParamList
 }
 
+
+
+export type WithdrawalStatus = "Completed" | "Pending" | "Failed";
+
+
+export interface Withdrawal {
+  id: string;
+  amount: number;
+  bank: string;
+  accountMasked: string;
+  status: WithdrawalStatus;
+  date: string;
+}
