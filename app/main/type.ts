@@ -21,6 +21,9 @@ export type MainStackParamList = {
   profile_details: undefined;
   balance: undefined;
   settlement_settings: undefined;
+  payment_methods: undefined;
+  display_currency_screen: undefined;
+  team_members: undefined
 
 
 };

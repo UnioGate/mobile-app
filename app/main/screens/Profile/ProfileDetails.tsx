@@ -117,7 +117,9 @@ export default function ProfileDetails() {
                         </Pressable>
 
 
-                        <View style={styles.category_card_row} >
+                        <Pressable
+                            onPress={() => navigation.navigate("settlement_settings")}
+                            style={styles.category_card_row} >
 
                             {/* left side */}
                             <View style={styles.left_side} >
@@ -131,7 +133,7 @@ export default function ProfileDetails() {
                                 <Ionicons name="chevron-forward" size={15} color={"#4B4848"} />
                             </View>
 
-                        </View>
+                        </Pressable>
 
 
 
@@ -167,7 +169,9 @@ export default function ProfileDetails() {
 
                     <View style={styles.category_card} >
 
-                        <View style={styles.category_card_row} >
+                        <Pressable
+                            onPress={() => navigation.navigate("payment_methods")}
+                            style={styles.category_card_row} >
 
                             {/* left side */}
                             <View style={styles.left_side} >
@@ -182,12 +186,14 @@ export default function ProfileDetails() {
                                 <Ionicons name="chevron-forward" size={15} color={"#4B4848"} />
                             </View>
 
-                        </View>
+                        </Pressable>
 
 
-                        <View style={[styles.category_card_row, {
-                            borderBottomWidth: 0
-                        }]} >
+                        <Pressable
+                            onPress={() => navigation.navigate("display_currency_screen")}
+                            style={[styles.category_card_row, {
+                                borderBottomWidth: 0
+                            }]} >
 
                             {/* left side */}
                             <View style={styles.left_side} >
@@ -201,7 +207,7 @@ export default function ProfileDetails() {
                                 <Ionicons name="chevron-forward" size={15} color={"#4B4848"} />
                             </View>
 
-                        </View>
+                        </Pressable>
 
                     </View>
                 </View>
@@ -213,7 +219,9 @@ export default function ProfileDetails() {
 
                     <View style={styles.category_card} >
 
-                        <View style={styles.category_card_row} >
+                        <Pressable
+                            onPress={() => navigation.navigate("team_members")}
+                            style={styles.category_card_row} >
 
                             {/* left side */}
                             <View style={styles.left_side} >
@@ -228,7 +236,7 @@ export default function ProfileDetails() {
                                 <Ionicons name="chevron-forward" size={15} color={"#4B4848"} />
                             </View>
 
-                        </View>
+                        </Pressable>
 
 
                         <View style={[styles.category_card_row, {
@@ -324,9 +332,9 @@ export default function ProfileDetails() {
                 <Text style={styles.category_title} >SUPPORT & LEGAL</Text>
 
 
-            </ScrollView>
+            </ScrollView >
 
-        </View>
+        </View >
     )
 }
 

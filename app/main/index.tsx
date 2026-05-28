@@ -11,11 +11,14 @@ import UssdPayment from "./screens/(transfer_payment_steps)/UssdPayment";
 import Withdraw_Details from "./screens/(withdraw_screens)/Withdraw_Details";
 import Withdrawal_Initiated from "./screens/(withdraw_screens)/Withdrawal_Initiated";
 import Balance from "./screens/Balance";
+import DisplayCurrencyScreen from "./screens/DisplayCurrencyScreen";
 import Overview from './screens/Overview';
+import PaymentMethods from "./screens/PaymentMethods";
 import ProfileDetails from "./screens/Profile/ProfileDetails";
 import Sales from './screens/Sales';
 import SettlementSettings from "./screens/Settlements_settings";
 import TapToPay from "./screens/TapToPay";
+import TeamMembers from "./screens/TeamMembers";
 import Transactions from "./screens/Transactions";
 import TransactionDetails from "./screens/transactions/[id]";
 import Withdraw from "./screens/withdraw";
@@ -52,6 +55,9 @@ export default function Index() {
                 <Stack.Screen name="profile_details" component={ProfileDetails} />
                 <Stack.Screen name="balance" component={Balance} />
                 <Stack.Screen name="settlement_settings" component={SettlementSettings} />
+                <Stack.Screen name="payment_methods" component={PaymentMethods} />
+                <Stack.Screen name="display_currency_screen" component={DisplayCurrencyScreen} />
+                <Stack.Screen name="team_members" component={TeamMembers} />
 
             </Stack.Navigator>
 
