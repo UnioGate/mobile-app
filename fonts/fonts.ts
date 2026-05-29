@@ -22,5 +22,5 @@ export const fonts = {
     Sora_400Regular,
     Sora_300Light,
     Sora_600SemiBold,
-    Sora_200ExtraLight
+    Sora_200ExtraLight,
 };

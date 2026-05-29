@@ -24,6 +24,8 @@ export type MainStackParamList = {
   payment_methods: undefined;
   display_currency_screen: undefined;
   team_members: undefined
+  add_team_members: undefined;
+  invitation_sent: undefined;
 
 
 };

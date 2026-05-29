@@ -10,8 +10,10 @@ import TransferStepOne from "./screens/(transfer_payment_steps)/Transfer_step_on
 import UssdPayment from "./screens/(transfer_payment_steps)/UssdPayment";
 import Withdraw_Details from "./screens/(withdraw_screens)/Withdraw_Details";
 import Withdrawal_Initiated from "./screens/(withdraw_screens)/Withdrawal_Initiated";
+import AddTeamMember from "./screens/AddTeamMember";
 import Balance from "./screens/Balance";
 import DisplayCurrencyScreen from "./screens/DisplayCurrencyScreen";
+import InvitationSection from "./screens/InvitationSent";
 import Overview from './screens/Overview';
 import PaymentMethods from "./screens/PaymentMethods";
 import ProfileDetails from "./screens/Profile/ProfileDetails";
@@ -58,6 +60,8 @@ export default function Index() {
                 <Stack.Screen name="payment_methods" component={PaymentMethods} />
                 <Stack.Screen name="display_currency_screen" component={DisplayCurrencyScreen} />
                 <Stack.Screen name="team_members" component={TeamMembers} />
+                <Stack.Screen name="add_team_members" component={AddTeamMember} />
+                <Stack.Screen name="invitation_sent" component={InvitationSection} />
 
             </Stack.Navigator>
 
