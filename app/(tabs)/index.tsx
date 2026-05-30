@@ -75,9 +75,17 @@ export default function HomeScreen() {
         </ThemedText>
 
         <Button
-      title="Go to Onboarding"
-      onPress={() => router.push('../onboarding')}
-    />
+          title="Go to Onboarding"
+          onPress={() => router.push('../onboarding')}
+        />
+
+
+        <Button
+          title="Last page"
+          onPress={() => router.push('/main/screens/TeamMemberDetails')}
+        />
+
+
       </ThemedView>
     </ParallaxScrollView>
   );
