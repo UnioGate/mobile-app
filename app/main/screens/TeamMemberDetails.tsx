@@ -87,7 +87,7 @@ export default function TeamMemberDetails() {
                                 width: "auto",
                                 borderWidth: 1,
                                 borderColor: "#009A49",
-                                marginTop: 6
+                                marginTop: 3
                             }} >
 
                                 <Text

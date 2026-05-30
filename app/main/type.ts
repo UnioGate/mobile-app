@@ -26,8 +26,8 @@ export type MainStackParamList = {
   team_members: undefined
   add_team_members: undefined;
   invitation_sent: undefined;
-  team_member_detail: undefined
-
+  team_member_detail: undefined;
+  roles_and_permission: undefined;
 
 };
 

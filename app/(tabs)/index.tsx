@@ -82,7 +82,7 @@ export default function HomeScreen() {
 
         <Button
           title="Last page"
-          onPress={() => router.push('/main/screens/TeamMemberDetails')}
+          onPress={() => router.push('/main/screens/Roles&Permissions')}
         />
 
 

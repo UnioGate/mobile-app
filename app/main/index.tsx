@@ -17,6 +17,7 @@ import InvitationSection from "./screens/InvitationSent";
 import Overview from './screens/Overview';
 import PaymentMethods from "./screens/PaymentMethods";
 import ProfileDetails from "./screens/Profile/ProfileDetails";
+import Roles_And_Permissions from "./screens/Roles&Permissions";
 import Sales from './screens/Sales';
 import SettlementSettings from "./screens/Settlements_settings";
 import TapToPay from "./screens/TapToPay";
@@ -64,6 +65,7 @@ export default function Index() {
                 <Stack.Screen name="add_team_members" component={AddTeamMember} />
                 <Stack.Screen name="invitation_sent" component={InvitationSection} />
                 <Stack.Screen name="team_member_detail" component={TeamMemberDetails} />
+                <Stack.Screen name="roles_and_permission" component={Roles_And_Permissions} />
 
             </Stack.Navigator>
 
