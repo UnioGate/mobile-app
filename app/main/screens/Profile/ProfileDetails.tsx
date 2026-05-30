@@ -308,9 +308,11 @@ export default function ProfileDetails() {
                         </View>
 
 
-                        <View style={[styles.category_card_row, {
-                            borderBottomWidth: 0
-                        }]} >
+                        <Pressable
+                            onPress={() => navigation.navigate("bank_account")}
+                            style={[styles.category_card_row, {
+                                borderBottomWidth: 0
+                            }]} >
 
                             {/* left side */}
                             <View style={styles.left_side} >
@@ -325,7 +327,7 @@ export default function ProfileDetails() {
                                 <Ionicons name="chevron-forward" size={15} color={"#4B4848"} />
                             </View>
 
-                        </View>
+                        </Pressable>
 
                     </View>
                 </View>

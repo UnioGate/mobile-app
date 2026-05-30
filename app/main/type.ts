@@ -28,6 +28,7 @@ export type MainStackParamList = {
   invitation_sent: undefined;
   team_member_detail: undefined;
   roles_and_permission: undefined;
+  bank_account: undefined
 
 };
 

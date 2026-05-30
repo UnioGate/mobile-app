@@ -12,6 +12,7 @@ import Withdraw_Details from "./screens/(withdraw_screens)/Withdraw_Details";
 import Withdrawal_Initiated from "./screens/(withdraw_screens)/Withdrawal_Initiated";
 import AddTeamMember from "./screens/AddTeamMember";
 import Balance from "./screens/Balance";
+import BankAccount from "./screens/BankAccount";
 import DisplayCurrencyScreen from "./screens/DisplayCurrencyScreen";
 import InvitationSection from "./screens/InvitationSent";
 import Overview from './screens/Overview';
@@ -66,6 +67,7 @@ export default function Index() {
                 <Stack.Screen name="invitation_sent" component={InvitationSection} />
                 <Stack.Screen name="team_member_detail" component={TeamMemberDetails} />
                 <Stack.Screen name="roles_and_permission" component={Roles_And_Permissions} />
+                <Stack.Screen name="bank_account" component={BankAccount} />
 
             </Stack.Navigator>
 
