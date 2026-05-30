@@ -166,7 +166,9 @@ export default function TeamMembers() {
 
 
                                             {/* Team card  */}
-                                            <View style={styles.team_card} >
+                                            <Pressable
+                                                onPress={() => navigation.navigate("team_member_detail")}
+                                                style={styles.team_card} >
 
                                                 <View style={{
                                                     width: "auto",
@@ -282,7 +284,7 @@ export default function TeamMembers() {
                                                     </Menu>
                                                 </View>
 
-                                            </View>
+                                            </Pressable>
 
                                         </View>
 

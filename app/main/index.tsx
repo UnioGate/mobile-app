@@ -20,6 +20,7 @@ import ProfileDetails from "./screens/Profile/ProfileDetails";
 import Sales from './screens/Sales';
 import SettlementSettings from "./screens/Settlements_settings";
 import TapToPay from "./screens/TapToPay";
+import TeamMemberDetails from "./screens/TeamMemberDetails";
 import TeamMembers from "./screens/TeamMembers";
 import Transactions from "./screens/Transactions";
 import TransactionDetails from "./screens/transactions/[id]";
@@ -62,6 +63,7 @@ export default function Index() {
                 <Stack.Screen name="team_members" component={TeamMembers} />
                 <Stack.Screen name="add_team_members" component={AddTeamMember} />
                 <Stack.Screen name="invitation_sent" component={InvitationSection} />
+                <Stack.Screen name="team_member_detail" component={TeamMemberDetails} />
 
             </Stack.Navigator>
 
