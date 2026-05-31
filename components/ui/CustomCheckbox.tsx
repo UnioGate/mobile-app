@@ -1,15 +1,17 @@
+import { scaleFont } from '@/utils/utils';
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 
-interface CustomCheckboxProps{
-    label: string,
+interface CustomCheckboxProps {
+    label: ReactNode,
     linkText: string,
-    path: string
+    path: string,
+    subtext?: string
 }
 
-export default function CustomCheckbox({label, linkText, path}: CustomCheckboxProps) {
+export default function CustomCheckbox({ label, linkText, path, subtext }: CustomCheckboxProps) {
     const [checked, setChecked] = useState(false);
 
     return (
@@ -21,9 +23,17 @@ export default function CustomCheckbox({label, linkText, path}: CustomCheckboxPr
                     color="#1D1B20"
                 />
             </TouchableOpacity>
-            <Text style={styles.checkboxLabel}>
-                {label} <Text style={styles.checkboxLink}>{linkText}</Text>
-            </Text>
+
+
+            <View style={{
+                gap: 4
+            }} >
+                <Text style={styles.checkboxLabel}>
+                    {label} <Text style={styles.checkboxLink}>{linkText}</Text>
+                </Text>
+
+                <Text style={styles.subtext} >{subtext}</Text>
+            </View>
         </View>
     );
 }
@@ -32,7 +42,7 @@ const styles = StyleSheet.create({
 
     checkboxContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: "flex-start",
         width: "100%",
         display: "flex",
@@ -48,4 +58,10 @@ const styles = StyleSheet.create({
     checkboxLink: {
         textDecorationLine: 'underline'
     },
+
+    subtext: {
+        color: "#10182AB2",
+        fontSize: scaleFont(12),
+        fontFamily: "Sora_400Regular"
+    }
 });

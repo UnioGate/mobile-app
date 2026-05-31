@@ -6,8 +6,8 @@ import { Dropdown } from "react-native-element-dropdown";
 
 
 
-interface DropdownOptionProps{
-label: string
+interface DropdownOptionProps {
+    label?: string
 }
 
 
@@ -15,7 +15,7 @@ label: string
 const STATE_OPTIONS_SOURCE = statesData as unknown as StateOptionSource[];
 
 
-export default function CustomDropdown({label}: DropdownOptionProps) {
+export default function CustomDropdown({ label }: DropdownOptionProps) {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
     const currentCountry = "NG";
@@ -36,7 +36,7 @@ export default function CustomDropdown({label}: DropdownOptionProps) {
 
     return (
         <View style={styles.dropdownContainer}  >
-            <Text style={styles.labelText}  >{label}</Text>
+            {label && (<Text style={styles.labelText}  >{label}</Text>)}
             <Dropdown
                 style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
                 placeholderStyle={styles.placeholderStyle}

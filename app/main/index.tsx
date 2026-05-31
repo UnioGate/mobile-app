@@ -10,11 +10,13 @@ import TransferStepOne from "./screens/(transfer_payment_steps)/Transfer_step_on
 import UssdPayment from "./screens/(transfer_payment_steps)/UssdPayment";
 import Withdraw_Details from "./screens/(withdraw_screens)/Withdraw_Details";
 import Withdrawal_Initiated from "./screens/(withdraw_screens)/Withdrawal_Initiated";
+import AddBankAccount from "./screens/Add_Bank_Account";
 import AddTeamMember from "./screens/AddTeamMember";
 import Balance from "./screens/Balance";
 import BankAccount from "./screens/BankAccount";
 import DisplayCurrencyScreen from "./screens/DisplayCurrencyScreen";
 import InvitationSection from "./screens/InvitationSent";
+import NotificationSettings from "./screens/NotificationSettings";
 import Overview from './screens/Overview';
 import PaymentMethods from "./screens/PaymentMethods";
 import ProfileDetails from "./screens/Profile/ProfileDetails";
@@ -24,6 +26,7 @@ import SettlementSettings from "./screens/Settlements_settings";
 import TapToPay from "./screens/TapToPay";
 import TeamMemberDetails from "./screens/TeamMemberDetails";
 import TeamMembers from "./screens/TeamMembers";
+import TransactionLimitScreen from "./screens/TransactionLimitsScreen";
 import Transactions from "./screens/Transactions";
 import TransactionDetails from "./screens/transactions/[id]";
 import Withdraw from "./screens/withdraw";
@@ -68,6 +71,9 @@ export default function Index() {
                 <Stack.Screen name="team_member_detail" component={TeamMemberDetails} />
                 <Stack.Screen name="roles_and_permission" component={Roles_And_Permissions} />
                 <Stack.Screen name="bank_account" component={BankAccount} />
+                <Stack.Screen name="add_bank_account" component={AddBankAccount} />
+                <Stack.Screen name="notification_settings" component={NotificationSettings} />
+                <Stack.Screen name="tx_limits" component={TransactionLimitScreen} />
 
             </Stack.Navigator>
 

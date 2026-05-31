@@ -188,7 +188,9 @@ export default function Overview() {
                     </View>
 
 
-                    <Pressable>
+                    <Pressable
+                        onPress={() => navigation.navigate("tx_limits")}
+                    >
                         <Text style={styles.upgrade_limit_text} >Upgrade to increase limit</Text>
                     </Pressable>
 

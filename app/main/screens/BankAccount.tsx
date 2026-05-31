@@ -39,7 +39,9 @@ export default function BankAccount() {
                 </Text>
 
 
-                <Pressable>
+                <Pressable
+                    onPress={() => navigation.navigate("add_bank_account")}
+                >
                     <Text
                         style={{
                             color: "#253E86",
@@ -224,6 +226,7 @@ export default function BankAccount() {
                                 style={[styles.button, {
                                     borderColor: "#FF070B"
                                 }]} >
+
                                 <Text style={[styles.button_text, {
                                     color: "#FF070B"
                                 }]} >Remove  Account</Text>
@@ -258,7 +261,7 @@ export default function BankAccount() {
 
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("invitation_sent")}
+                        onPress={() => navigation.navigate("add_bank_account")}
                         style={[styles.button, {
                             backgroundColor: "#253E86"
                         }]} >
