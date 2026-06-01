@@ -32,5 +32,6 @@ export type MainStackParamList = {
   add_bank_account: undefined;
   notification_settings: undefined
   tx_limits: undefined
+  contact_support: undefined;
 };
 

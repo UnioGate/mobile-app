@@ -63,7 +63,10 @@ export default function Overview() {
 
 
                 <View style={styles.support} >
-                    <TouchableOpacity >
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => navigation.navigate("contact_support")}
+                    >
                         <Ionicons name="headset-outline" size={22} color="#10182A" />
                     </TouchableOpacity>
 

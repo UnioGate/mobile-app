@@ -358,7 +358,8 @@ export default function TransactionLimitScreen() {
                         <View style={[styles.row]}>
                             <Text style={[styles.headerText, {
                                 textAlign: "left",
-                                fontSize: scaleFont(13)
+                                fontSize: scaleFont(12),
+                                flex: 1,
                             }]}>Tier</Text>
                             <Text style={[styles.headerText]}>Daily transaction limit</Text>
                             <Text style={styles.headerText}>Daily withdrawal limit</Text>
@@ -369,8 +370,8 @@ export default function TransactionLimitScreen() {
                         {tierData.map((item, index) => (
                             <View key={index} style={styles.row}>
                                 <Text style={[styles.cell, {
-                                    fontSize: scaleFont(13),
-                                    flex: 0.4,
+                                    fontSize: scaleFont(11),
+                                    flex: 1,
                                     textAlign: "left",
                                 }]}>{item.tier}</Text>
                                 <Text style={styles.cell}>{item.transaction}</Text>
@@ -525,10 +526,10 @@ const styles = StyleSheet.create({
         fontFamily: "Sora_400Regular"
     },
     cell: {
-        flex: 1.2,
-        fontSize: scaleFont(10),
+        flex: 1,
+        fontSize: scaleFont(9),
         color: "#000000",
-        textAlign: "center",
+        textAlign: "right",
         fontFamily: "Sora_400Regular"
     },
 
