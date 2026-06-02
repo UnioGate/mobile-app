@@ -82,7 +82,7 @@ export default function HomeScreen() {
 
         <Button
           title="Last page"
-          onPress={() => router.push('/main/screens/TransactionLimitsScreen')}
+          onPress={() => router.push('/main/screens/ContactSupport')}
         />
 
 

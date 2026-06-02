@@ -76,7 +76,7 @@ export default function TransactionLimitScreen() {
 
                         <View style={{
                             backgroundColor: "#253E8633",
-                            width: "auto",
+                            width: "100%",
                             borderRadius: 5,
                             padding: 10
                         }} >
@@ -388,13 +388,15 @@ export default function TransactionLimitScreen() {
 
                 {/* CTA  */}
                 <View style={{
-                    gap: 6,
+                    gap: 10,
                     backgroundColor: "#ffffff",
                     borderRadius: 10,
                     paddingVertical: scaleVerticalPadding(6),
                     paddingHorizontal: scaleHorizontalPadding(16)
                 }} >
                     <Text style={styles.p_element} >Increase your limits by upgrading</Text>
+
+
                     <TouchableOpacity style={{
                         backgroundColor: "#253E86",
                         borderRadius: 10,
