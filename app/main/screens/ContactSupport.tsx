@@ -4,7 +4,6 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Divider } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { MainStackParamList } from "../type";
 
 
@@ -17,9 +16,8 @@ export default function ContactSupport() {
 
 
     return (
-        <SafeAreaView
+        <View
             style={styles.container}
-            edges={['bottom']}
         >
 
 
@@ -400,7 +398,7 @@ export default function ContactSupport() {
 
 
             </ScrollView>
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -483,7 +481,7 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#ffffff",
         borderRadius: 10,
-        paddingVertical: scaleVerticalPadding(10),
+        paddingVertical: scaleVerticalPadding(6),
         paddingHorizontal: scaleHorizontalPadding(16),
         flexDirection: "row",
         alignItems: "center",

@@ -2,7 +2,7 @@ import CustomInput from "@/components/ui/ReusableInput";
 import { payment_method } from "@/data/payment_methods";
 import { methodKey } from "@/types/types";
 import { showErrorToast } from "@/utils/toastConfig";
-import { scaleFont } from "@/utils/utils";
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -109,7 +109,7 @@ export default function Sales() {
         }
 
         if (selectedMethod === "Tap to Pay") {
-             navigation.navigate("tap_to_pay")
+            navigation.navigate("tap_to_pay")
             return;
         }
     }
@@ -357,9 +357,8 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         gap: 17,
-        paddingHorizontal: 19,
-        paddingBottom:40,
-        paddingTop: 30,
+        paddingHorizontal: scaleHorizontalPadding(19),
+        paddingVertical: scaleVerticalPadding(10),
     },
 
     scrollView_container: {

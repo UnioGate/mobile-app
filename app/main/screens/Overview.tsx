@@ -71,7 +71,9 @@ export default function Overview() {
                     </TouchableOpacity>
 
 
-                    <TouchableOpacity style={styles.bellButton} >
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("help_center")}
+                        style={styles.bellButton} >
                         <Ionicons name="notifications-sharp" size={19} color="#10182A" />
 
                         {/* The red dot on the bell */}

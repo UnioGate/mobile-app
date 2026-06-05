@@ -16,6 +16,7 @@ import Balance from "./screens/Balance";
 import BankAccount from "./screens/BankAccount";
 import ContactSupport from "./screens/ContactSupport";
 import DisplayCurrencyScreen from "./screens/DisplayCurrencyScreen";
+import HelpCenter from "./screens/HelpCenter";
 import InvitationSection from "./screens/InvitationSent";
 import NotificationSettings from "./screens/NotificationSettings";
 import Overview from './screens/Overview';
@@ -76,6 +77,7 @@ export default function Index() {
                 <Stack.Screen name="notification_settings" component={NotificationSettings} />
                 <Stack.Screen name="tx_limits" component={TransactionLimitScreen} />
                 <Stack.Screen name="contact_support" component={ContactSupport} />
+                <Stack.Screen name="help_center" component={HelpCenter} />
 
             </Stack.Navigator>
 

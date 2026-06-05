@@ -33,5 +33,6 @@ export type MainStackParamList = {
   notification_settings: undefined
   tx_limits: undefined
   contact_support: undefined;
+  help_center: undefined
 };
 
