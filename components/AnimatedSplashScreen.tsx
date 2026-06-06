@@ -1,3 +1,4 @@
+import { scaleFont } from '@/utils/utils';
 import { Image } from 'expo-image';
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -14,6 +15,7 @@ import Animated, {
 
 type AnimatedSplashScreenProps = {
   onFinish: () => void;
+  staticMode?: boolean;
 };
 
 const SPLASH_DURATION = 2200;
@@ -144,11 +146,9 @@ const styles = StyleSheet.create({
     width: 72,
   },
   title: {
-    color: '#FFFFFF',
-    fontSize: 34,
-    fontWeight: '800',
-    letterSpacing: 0.4,
-    marginTop: 28,
+    color: '#233F88',
+    fontSize: scaleFont(57),
+    fontFamily: "PlusJakartaSans_700Bold_Italic"
   },
   subtitle: {
     color: '#D9E2FF',

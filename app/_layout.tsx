@@ -18,6 +18,8 @@ export default function RootLayout() {
   const [isNativeSplashHidden, setIsNativeSplashHidden] = useState(false);
   const [isAnimatedSplashVisible, setIsAnimatedSplashVisible] = useState(true);
 
+  const SHOW_STATIC_SPLASH = true;
+
   const handleRootLayout = useCallback(() => {
     if (!isNativeSplashHidden) {
       void SplashScreen.hideAsync();
@@ -41,7 +43,9 @@ export default function RootLayout() {
         <Toast config={toastConfig} />
         <StatusBar style="auto" />
         {isAnimatedSplashVisible ? (
-          <AnimatedSplashScreen onFinish={() => setIsAnimatedSplashVisible(false)} />
+          <AnimatedSplashScreen
+            staticMode={SHOW_STATIC_SPLASH}
+            onFinish={() => setIsAnimatedSplashVisible(false)} />
         ) : null}
       </ThemeProvider>
     </View>
