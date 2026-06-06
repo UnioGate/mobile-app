@@ -21,7 +21,7 @@ type AnimatedSplashScreenProps = {
 const SPLASH_DURATION = 2200;
 const PROGRESS_WIDTH = 190;
 
-export function AnimatedSplashScreen({ onFinish }: AnimatedSplashScreenProps) {
+export function AnimatedSplashScreen({ onFinish, staticMode = false }: AnimatedSplashScreenProps) {
   const contentOpacity = useSharedValue(0);
   const logoScale = useSharedValue(0.86);
   const logoRotation = useSharedValue(-5);
@@ -29,6 +29,15 @@ export function AnimatedSplashScreen({ onFinish }: AnimatedSplashScreenProps) {
   const exitOpacity = useSharedValue(1);
 
   useEffect(() => {
+    if (staticMode) {
+      contentOpacity.value = 1;
+      logoScale.value = 1;
+      logoRotation.value = 0;
+      progress.value = 1;
+      exitOpacity.value = 1;
+      return;
+    }
+
     contentOpacity.value = withTiming(1, {
       duration: 450,
       easing: Easing.out(Easing.cubic),
@@ -72,7 +81,7 @@ export function AnimatedSplashScreen({ onFinish }: AnimatedSplashScreenProps) {
         }
       )
     );
-  }, [contentOpacity, exitOpacity, logoRotation, logoScale, onFinish, progress]);
+  }, [contentOpacity, exitOpacity, logoRotation, logoScale, onFinish, progress, staticMode]);
 
   const containerStyle = useAnimatedStyle(() => ({
     opacity: exitOpacity.value,
