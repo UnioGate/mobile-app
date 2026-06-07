@@ -3,6 +3,7 @@ import { Image } from 'expo-image';
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import Animated, {
+  cancelAnimation,
   Easing,
   runOnJS,
   useAnimatedStyle,
@@ -15,6 +16,7 @@ import Animated, {
 type AnimatedSplashScreenProps = {
   onFinish: () => void;
   staticMode?: boolean;
+  replayKey?: string | number;
 };
 
 const LOGO_ANIMATION_DURATION = 650;
@@ -28,6 +30,13 @@ export function AnimatedSplashScreen({ onFinish, staticMode = false }: AnimatedS
   const titleWidth = useSharedValue(0);
   const [measuredWidth, setMeasuredWidth] = useState(0);
   const hasStartedAnimation = useRef(false);
+
+  const logoStyle = useAnimatedStyle(() => ({
+    transform: [
+      { scale: logoScale.value },
+      { rotate: `${logoRotation.value}deg` },
+    ],
+  }));
 
   const logoStyle = useAnimatedStyle(() => ({
     transform: [
