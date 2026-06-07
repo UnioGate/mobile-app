@@ -1,6 +1,6 @@
 import { scaleFont } from '@/utils/utils';
 import { Image } from 'expo-image';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import Animated, {
   cancelAnimation,
@@ -23,16 +23,20 @@ const LOGO_ANIMATION_DURATION = 650;
 const TITLE_ANIMATION_DURATION = 700;
 const EXIT_DELAY = LOGO_ANIMATION_DURATION * 2 + TITLE_ANIMATION_DURATION + 350;
 
-export function AnimatedSplashScreen({
-  onFinish,
-  replayKey = 0,
-  staticMode = false,
-}: AnimatedSplashScreenProps) {
+export function AnimatedSplashScreen({ onFinish, staticMode = false }: AnimatedSplashScreenProps) {
   const logoScale = useSharedValue(1);
   const logoRotation = useSharedValue(0);
   const exitOpacity = useSharedValue(1);
   const titleWidth = useSharedValue(0);
   const [measuredWidth, setMeasuredWidth] = useState(0);
+  const hasStartedAnimation = useRef(false);
+
+  const logoStyle = useAnimatedStyle(() => ({
+    transform: [
+      { scale: logoScale.value },
+      { rotate: `${logoRotation.value}deg` },
+    ],
+  }));
 
   const logoStyle = useAnimatedStyle(() => ({
     transform: [
@@ -50,19 +54,19 @@ export function AnimatedSplashScreen({
       return;
     }
 
-    cancelAnimation(logoScale);
-    cancelAnimation(logoRotation);
-    cancelAnimation(titleWidth);
-    cancelAnimation(exitOpacity);
-
-    logoScale.value = 1;
-    logoRotation.value = 0;
-    titleWidth.value = staticMode ? measuredWidth : 0;
-    exitOpacity.value = 1;
-
     if (staticMode) {
+      logoScale.value = 1;
+      logoRotation.value = 0;
+      titleWidth.value = measuredWidth;
+      exitOpacity.value = 1;
       return;
     }
+
+    if (hasStartedAnimation.current) {
+      return;
+    }
+
+    hasStartedAnimation.current = true;
 
     logoScale.value = withSequence(
       withTiming(1.28, {
@@ -112,7 +116,7 @@ export function AnimatedSplashScreen({
         }
       )
     );
-  }, [exitOpacity, logoRotation, logoScale, measuredWidth, onFinish, replayKey, staticMode, titleWidth]);
+  }, [exitOpacity, logoRotation, logoScale, measuredWidth, onFinish, staticMode, titleWidth]);
 
   const containerStyle = useAnimatedStyle(() => ({
     opacity: exitOpacity.value,
@@ -133,7 +137,6 @@ export function AnimatedSplashScreen({
         </Animated.View>
 
         <Text
-          numberOfLines={1}
           style={[styles.title, styles.measurementTitle]}
           onLayout={(event) => {
             setMeasuredWidth(event.nativeEvent.layout.width);
@@ -149,11 +152,7 @@ export function AnimatedSplashScreen({
             titleStyle,
           ]}
         >
-          <Text
-            ellipsizeMode="clip"
-            numberOfLines={1}
-            style={[styles.title, measuredWidth > 0 ? { width: measuredWidth } : null]}
-          >
+          <Text style={styles.title}>
             UnioGate
           </Text>
         </Animated.View>
