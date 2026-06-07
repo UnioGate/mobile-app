@@ -3,12 +3,12 @@ import { Image } from 'expo-image';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import Animated, {
+  cancelAnimation,
   Easing,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
-  withRepeat,
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
@@ -16,63 +16,89 @@ import Animated, {
 type AnimatedSplashScreenProps = {
   onFinish: () => void;
   staticMode?: boolean;
+  replayKey?: string | number;
 };
 
-const SPLASH_DURATION = 2200;
-const PROGRESS_WIDTH = 190;
+const LOGO_ANIMATION_DURATION = 650;
+const TITLE_ANIMATION_DURATION = 700;
+const EXIT_DELAY = LOGO_ANIMATION_DURATION * 2 + TITLE_ANIMATION_DURATION + 350;
 
-
-
-
-export function AnimatedSplashScreen({ onFinish, staticMode = false }: AnimatedSplashScreenProps) {
-
-  const logoScale = useSharedValue(1.5);
-  const logoRotation = useSharedValue(360);
-  const progress = useSharedValue(0);
+export function AnimatedSplashScreen({
+  onFinish,
+  replayKey = 0,
+  staticMode = false,
+}: AnimatedSplashScreenProps) {
+  const logoScale = useSharedValue(1);
+  const logoRotation = useSharedValue(0);
   const exitOpacity = useSharedValue(1);
-
   const titleWidth = useSharedValue(0);
   const [measuredWidth, setMeasuredWidth] = useState(0);
+
+  const logoStyle = useAnimatedStyle(() => ({
+    transform: [
+      { scale: logoScale.value },
+      { rotate: `${logoRotation.value}deg` },
+    ],
+  }));
 
   const titleStyle = useAnimatedStyle(() => ({
     width: titleWidth.value,
   }));
 
   useEffect(() => {
-    if (staticMode) {
-      logoScale.value = 1;
-      logoRotation.value = 0;
-      progress.value = 1;
-      exitOpacity.value = 1;
+    if (measuredWidth === 0) {
       return;
     }
 
+    cancelAnimation(logoScale);
+    cancelAnimation(logoRotation);
+    cancelAnimation(titleWidth);
+    cancelAnimation(exitOpacity);
 
-    logoScale.value = withRepeat(
-      withSequence(
-        withTiming(1.08, { duration: 700, easing: Easing.inOut(Easing.cubic) }),
-        withTiming(1, { duration: 700, easing: Easing.inOut(Easing.cubic) })
-      ),
-      -1,
-      true
+    logoScale.value = 1;
+    logoRotation.value = 0;
+    titleWidth.value = staticMode ? measuredWidth : 0;
+    exitOpacity.value = 1;
+
+    if (staticMode) {
+      return;
+    }
+
+    logoScale.value = withSequence(
+      withTiming(1.28, {
+        duration: LOGO_ANIMATION_DURATION,
+        easing: Easing.inOut(Easing.cubic),
+      }),
+      withTiming(1, {
+        duration: LOGO_ANIMATION_DURATION,
+        easing: Easing.inOut(Easing.cubic),
+      })
     );
 
-    logoRotation.value = withRepeat(
-      withSequence(
-        withTiming(5, { duration: 900, easing: Easing.inOut(Easing.cubic) }),
-        withTiming(-5, { duration: 900, easing: Easing.inOut(Easing.cubic) })
-      ),
-      -1,
-      true
+    logoRotation.value = withSequence(
+      withTiming(360, {
+        duration: LOGO_ANIMATION_DURATION,
+        easing: Easing.inOut(Easing.cubic),
+      }),
+      withTiming(
+        0,
+        {
+          duration: LOGO_ANIMATION_DURATION,
+          easing: Easing.inOut(Easing.cubic),
+        },
+        (finished) => {
+          if (finished) {
+            titleWidth.value = withTiming(measuredWidth, {
+              duration: TITLE_ANIMATION_DURATION,
+              easing: Easing.out(Easing.cubic),
+            });
+          }
+        }
+      )
     );
-
-    progress.value = withTiming(1, {
-      duration: SPLASH_DURATION,
-      easing: Easing.out(Easing.cubic),
-    });
 
     exitOpacity.value = withDelay(
-      SPLASH_DURATION,
+      EXIT_DELAY,
       withTiming(
         0,
         {
@@ -86,7 +112,7 @@ export function AnimatedSplashScreen({ onFinish, staticMode = false }: AnimatedS
         }
       )
     );
-  }, [exitOpacity, logoRotation, logoScale, onFinish, progress, staticMode]);
+  }, [exitOpacity, logoRotation, logoScale, measuredWidth, onFinish, replayKey, staticMode, titleWidth]);
 
   const containerStyle = useAnimatedStyle(() => ({
     opacity: exitOpacity.value,
@@ -98,13 +124,23 @@ export function AnimatedSplashScreen({ onFinish, staticMode = false }: AnimatedS
   return (
     <Animated.View pointerEvents="none" style={[styles.container, containerStyle]}>
       <Animated.View style={[styles.content]}>
-        <Animated.View style={[styles.logoShell]}>
+        <Animated.View style={[styles.logoShell, logoStyle]}>
           <Image
             source={require('../assets/onboarding/logo-blue.png')}
             style={styles.logo}
             contentFit="contain"
           />
         </Animated.View>
+
+        <Text
+          numberOfLines={1}
+          style={[styles.title, styles.measurementTitle]}
+          onLayout={(event) => {
+            setMeasuredWidth(event.nativeEvent.layout.width);
+          }}
+        >
+          UnioGate
+        </Text>
 
         {/* Text wrapper  */}
         <Animated.View
@@ -114,15 +150,9 @@ export function AnimatedSplashScreen({ onFinish, staticMode = false }: AnimatedS
           ]}
         >
           <Text
-            style={styles.title}
-            onLayout={(e) => {
-              const width = e.nativeEvent.layout.width;
-              setMeasuredWidth(width);
-
-              titleWidth.value = withTiming(width, {
-                duration: 1000,
-              });
-            }}
+            ellipsizeMode="clip"
+            numberOfLines={1}
+            style={[styles.title, measuredWidth > 0 ? { width: measuredWidth } : null]}
           >
             UnioGate
           </Text>
@@ -160,14 +190,13 @@ const styles = StyleSheet.create({
   logoShell: {
     width: 77,
     height: 77,
-    backgroundColor: "red"
   },
 
 
   title_wrapper: {
     width: 0,
     flexWrap: "nowrap",
-    overflow: "hidden"
+    overflow: "hidden",
   },
 
   title: {
@@ -175,6 +204,11 @@ const styles = StyleSheet.create({
     fontSize: scaleFont(47),
     fontFamily: "PlusJakartaSans_700Bold",
     flexWrap: "nowrap",
-  }
+  },
+
+  measurementTitle: {
+    opacity: 0,
+    position: "absolute",
+  },
 
 });

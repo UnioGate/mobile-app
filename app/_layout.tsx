@@ -11,9 +11,7 @@ import { AnimatedSplashScreen } from '@/components/AnimatedSplashScreen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { toastConfig } from '@/utils/toastConfig';
 
-// Temporarily keep the custom splash screen visible and static so it can be edited.
-// Set this to false to restore the timed animated splash flow.
-const SHOW_STATIC_SPLASH = true;
+const SHOW_STATIC_SPLASH = false;
 
 void SplashScreen.preventAutoHideAsync();
 
@@ -22,7 +20,9 @@ export default function RootLayout() {
   const [isNativeSplashHidden, setIsNativeSplashHidden] = useState(false);
   const [isAnimatedSplashVisible, setIsAnimatedSplashVisible] = useState(true);
 
-  const SHOW_STATIC_SPLASH = true;
+  const handleAnimatedSplashFinish = useCallback(() => {
+    setIsAnimatedSplashVisible(false);
+  }, []);
 
   const handleRootLayout = useCallback(() => {
     if (!isNativeSplashHidden) {
@@ -49,7 +49,7 @@ export default function RootLayout() {
         {isAnimatedSplashVisible ? (
           <AnimatedSplashScreen
             staticMode={SHOW_STATIC_SPLASH}
-            onFinish={() => setIsAnimatedSplashVisible(false)}
+            onFinish={handleAnimatedSplashFinish}
           />
         ) : null}
       </ThemeProvider>
