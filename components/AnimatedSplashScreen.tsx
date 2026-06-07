@@ -1,7 +1,7 @@
 import { scaleFont } from '@/utils/utils';
 import { Image } from 'expo-image';
-import React, { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text } from 'react-native';
 import Animated, {
   Easing,
   runOnJS,
@@ -21,16 +21,25 @@ type AnimatedSplashScreenProps = {
 const SPLASH_DURATION = 2200;
 const PROGRESS_WIDTH = 190;
 
+
+
+
 export function AnimatedSplashScreen({ onFinish, staticMode = false }: AnimatedSplashScreenProps) {
-  const contentOpacity = useSharedValue(0);
-  const logoScale = useSharedValue(0.86);
-  const logoRotation = useSharedValue(-5);
+
+  const logoScale = useSharedValue(1.5);
+  const logoRotation = useSharedValue(360);
   const progress = useSharedValue(0);
   const exitOpacity = useSharedValue(1);
 
+  const titleWidth = useSharedValue(0);
+  const [measuredWidth, setMeasuredWidth] = useState(0);
+
+  const titleStyle = useAnimatedStyle(() => ({
+    width: titleWidth.value,
+  }));
+
   useEffect(() => {
     if (staticMode) {
-      contentOpacity.value = 1;
       logoScale.value = 1;
       logoRotation.value = 0;
       progress.value = 1;
@@ -38,10 +47,6 @@ export function AnimatedSplashScreen({ onFinish, staticMode = false }: AnimatedS
       return;
     }
 
-    contentOpacity.value = withTiming(1, {
-      duration: 450,
-      easing: Easing.out(Easing.cubic),
-    });
 
     logoScale.value = withRepeat(
       withSequence(
@@ -81,44 +86,49 @@ export function AnimatedSplashScreen({ onFinish, staticMode = false }: AnimatedS
         }
       )
     );
-  }, [contentOpacity, exitOpacity, logoRotation, logoScale, onFinish, progress, staticMode]);
+  }, [exitOpacity, logoRotation, logoScale, onFinish, progress, staticMode]);
 
   const containerStyle = useAnimatedStyle(() => ({
     opacity: exitOpacity.value,
   }));
 
-  const contentStyle = useAnimatedStyle(() => ({
-    opacity: contentOpacity.value,
-  }));
 
-  const logoStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: logoScale.value },
-      { rotate: `${logoRotation.value}deg` },
-    ],
-  }));
 
-  const progressStyle = useAnimatedStyle(() => ({
-    width: progress.value * PROGRESS_WIDTH,
-  }));
 
   return (
     <Animated.View pointerEvents="none" style={[styles.container, containerStyle]}>
-      <Animated.View style={[styles.content, contentStyle]}>
-        <Animated.View style={[styles.logoShell, logoStyle]}>
+      <Animated.View style={[styles.content]}>
+        <Animated.View style={[styles.logoShell]}>
           <Image
-            source={require('@/assets/onboarding/onboarding-screen-logo.png')}
+            source={require('../assets/onboarding/logo-blue.png')}
             style={styles.logo}
             contentFit="contain"
           />
         </Animated.View>
 
-        <Text style={styles.title}>Uniogate</Text>
-        <Text style={styles.subtitle}>Payments without borders</Text>
+        {/* Text wrapper  */}
+        <Animated.View
+          style={[
+            styles.title_wrapper,
+            titleStyle,
+          ]}
+        >
+          <Text
+            style={styles.title}
+            onLayout={(e) => {
+              const width = e.nativeEvent.layout.width;
+              setMeasuredWidth(width);
 
-        <View style={styles.progressTrack}>
-          <Animated.View style={[styles.progressFill, progressStyle]} />
-        </View>
+              titleWidth.value = withTiming(width, {
+                duration: 1000,
+              });
+            }}
+          >
+            UnioGate
+          </Text>
+        </Animated.View>
+
+
       </Animated.View>
     </Animated.View>
   );
@@ -136,47 +146,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 32,
     width: '100%',
+    flexDirection: "row",
+    gap: 13,
+    justifyContent: "center"
   },
-  logoShell: {
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 34,
-    elevation: 8,
-    height: 118,
-    justifyContent: 'center',
-    shadowColor: '#000000',
-    shadowOffset: { height: 10, width: 0 },
-    shadowOpacity: 0.18,
-    shadowRadius: 22,
-    width: 118,
-  },
+
   logo: {
-    height: 72,
-    width: 72,
+    width: "100%",
+    height: "100%"
   },
-  title: {
-    color: '#233F88',
-    fontSize: scaleFont(57),
-    fontFamily: "PlusJakartaSans_700Bold_Italic"
+
+
+  logoShell: {
+    width: 77,
+    height: 77,
+    backgroundColor: "red"
   },
-  subtitle: {
-    color: '#D9E2FF',
-    fontSize: 15,
-    fontWeight: '500',
-    marginTop: 8,
-  },
-  progressTrack: {
-    backgroundColor: 'rgba(255, 255, 255, 0.18)',
-    borderRadius: 999,
-    height: 5,
-    marginTop: 42,
-    overflow: 'hidden',
-    width: PROGRESS_WIDTH,
-  },
-  progressFill: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 999,
-    height: '100%',
+
+
+  title_wrapper: {
     width: 0,
+    flexWrap: "nowrap",
+    overflow: "hidden"
   },
+
+  title: {
+    color: "#233F88",
+    fontSize: scaleFont(47),
+    fontFamily: "PlusJakartaSans_700Bold",
+    flexWrap: "nowrap",
+  }
+
 });

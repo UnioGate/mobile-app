@@ -4,7 +4,7 @@ import {
     PlusJakartaSans_400Regular,
     PlusJakartaSans_500Medium,
     PlusJakartaSans_600SemiBold,
-    PlusJakartaSans_700Bold_Italic,
+    PlusJakartaSans_700Bold
 } from '@expo-google-fonts/plus-jakarta-sans';
 
 import {
@@ -20,7 +20,7 @@ export const fonts = {
     PlusJakartaSans_500Medium,
     PlusJakartaSans_600SemiBold,
     PlusJakartaSans_400Regular,
-    PlusJakartaSans_700Bold_Italic,
+    PlusJakartaSans_700Bold,
     Sora_400Regular,
     Sora_300Light,
     Sora_600SemiBold,
