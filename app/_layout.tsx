@@ -13,7 +13,7 @@ import { toastConfig } from '@/utils/toastConfig';
 
 // Temporarily keep the custom splash screen visible and static so it can be edited.
 // Set this to false to restore the timed animated splash flow.
-const SHOW_STATIC_SPLASH = true;
+const SHOW_STATIC_SPLASH = false;
 
 void SplashScreen.preventAutoHideAsync();
 
