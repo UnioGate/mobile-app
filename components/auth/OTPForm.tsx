@@ -1,3 +1,4 @@
+import { scaleFont, scaleVerticalPadding } from "@/utils/utils";
 import { useEffect, useRef, useState } from "react";
 import {
     StyleSheet,
@@ -118,7 +119,9 @@ export default function OTPForm() {
                         <Text style={styles.outlineButtonText}>Back</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        activeOpacity={0.7}>
                         <Text style={styles.buttonText}>Confirm</Text>
                     </TouchableOpacity>
                 </View>
@@ -138,12 +141,12 @@ const styles = StyleSheet.create({
     },
     pageTitle: {
         color: "#10182A",
-        fontSize: 32,
+        fontSize: scaleFont(32),
         fontFamily: "PlusJakartaSans_600SemiBold",
     },
     paragraph: {
         color: "#10182A",
-        fontSize: 18,
+        fontSize: scaleFont(18),
         textAlign: "center",
         fontFamily: "Sora_300Light",
     },
@@ -162,14 +165,14 @@ const styles = StyleSheet.create({
         borderColor: "#B3B3B3",
         backgroundColor: "#CCCCCC1A",
         textAlign: "center",
-        fontSize: 20,
+        fontSize: scaleFont(20),
     },
     bottom: {
         marginTop: 8,
     },
     timerText: {
         color: "#10182A",
-        fontSize: 16,
+        fontSize: scaleFont(16),
         fontFamily: "Sora_300Light",
     },
     resendText: {
@@ -184,7 +187,7 @@ const styles = StyleSheet.create({
     },
     bottomSectionText: {
         color: "#10182A",
-        fontSize: 16,
+        fontSize: scaleFont(16),
         fontFamily: "Sora_400Regular",
     },
     buttonWrapper: {
@@ -199,7 +202,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#253E86",
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 15,
+        paddingVertical: scaleVerticalPadding(15),
         borderRadius: 10,
         marginBottom: 11,
         borderWidth: 1,
@@ -210,7 +213,7 @@ const styles = StyleSheet.create({
         backgroundColor: "transparent",
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 15,
+        paddingVertical: scaleVerticalPadding(15),
         borderRadius: 10,
         marginBottom: 11,
         borderWidth: 1,
@@ -218,12 +221,12 @@ const styles = StyleSheet.create({
     },
     outlineButtonText: {
         color: "#10182A",
-        fontSize: 20,
+        fontSize: scaleFont(20),
         fontFamily: "Sora_400Regular",
     },
     buttonText: {
         color: "#ffffff",
-        fontSize: 20,
+        fontSize: scaleFont(20),
         fontFamily: "Sora_400Regular",
     },
 });

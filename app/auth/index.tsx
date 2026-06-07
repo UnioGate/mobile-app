@@ -1,6 +1,9 @@
+import SupportIcon from '@/components/icons/SupportIcon';
+import { scaleHorizontalPadding, scaleVerticalPadding } from '@/utils/utils';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -25,12 +28,14 @@ export default function Index() {
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
                 >
-                    <Ionicons name="chevron-back" size={22} color="#10182A" />
+                    <Ionicons name="chevron-back" size={25} color="#10182A" />
                 </TouchableOpacity>
 
 
-                <TouchableOpacity >
-                    <Ionicons name="headset-outline" size={22} color="#10182A" />
+                <TouchableOpacity
+                    onPress={() => router.push("/main/screens/ContactSupport")}
+                >
+                    <SupportIcon height={22} width={22} color="#10182A" />
                 </TouchableOpacity>
             </View>
 
@@ -61,8 +66,8 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        paddingVertical: 5,
-        paddingHorizontal: 14,
+        paddingVertical: scaleVerticalPadding(5),
+        paddingHorizontal: scaleHorizontalPadding(14),
         flexDirection: "row"
     },
 

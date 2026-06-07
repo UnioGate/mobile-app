@@ -1,3 +1,4 @@
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from '@/utils/utils';
 import { useFonts } from '@expo-google-fonts/plus-jakarta-sans';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -34,12 +35,15 @@ export default function OnboardingStep1({ navigation }: any) {
 
         <View style={styles.wrapper} >
           <Image source={require('../../../assets/onboarding/onboarding-screen-logo.png')} style={styles.image} />
-          <Text style={styles.heading}>
+          <Text
+            adjustsFontSizeToFit={true}
+            style={styles.heading}>
             Welcome to <Text style={styles.name}>UnioGate</Text>
           </Text>
         </View>
 
-        <Text style={styles.subtext}>They have Crypto, You need Naira.</Text>
+        <Text
+          style={styles.subtext}>They have Crypto, You need Naira.</Text>
 
 
         {/* The current step Image  */}
@@ -68,14 +72,17 @@ export default function OnboardingStep1({ navigation }: any) {
             Just pay from your wallet like you always do. UnioGate automatically handles the conversion in seconds.
           </Text>
 
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Step2')}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.button}
+            onPress={() => navigation.navigate('Step2')}>
             <Ionicons name="arrow-forward" size={24} color="#000000" />
           </TouchableOpacity>
         </LinearGradient>
       </Animated.View>
 
 
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
 
@@ -90,8 +97,8 @@ const styles = StyleSheet.create({
 
   top: {
     flex: 1,
-    paddingTop: 30,
-    paddingHorizontal: 24,
+    paddingTop: scaleVerticalPadding(30),
+    paddingHorizontal: scaleHorizontalPadding(24),
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",
@@ -115,7 +122,7 @@ const styles = StyleSheet.create({
   heading: {
     fontFamily: 'PlusJakartaSans_300Light',
     color: '#ffffff',
-    fontSize: 24,
+    fontSize: scaleFont(24)
   },
 
   name: {
@@ -124,14 +131,14 @@ const styles = StyleSheet.create({
 
   subtext: {
     color: '#ffffff',
-    fontSize: 40,
+    fontSize: scaleFont(35),
     textAlign: "center",
     fontFamily: "PlusJakartaSans_600SemiBold"
   },
 
   imageWrapper: {
     width: width * 0.85,
-    height: height * 0.2,
+    height: height * 0.18,
     position: "relative",
     alignItems: "center",
     justifyContent: "center",
@@ -147,14 +154,14 @@ const styles = StyleSheet.create({
   moneyImage: {
     width: width * 0.25,
     position: "absolute",
-    top: -height * 0.08,
+    top: -height * 0.07,
     left: 0
   },
 
   cardImage: {
     width: width * 0.22,
     position: "absolute",
-    bottom: -height * 0.05,
+    bottom: -height * 0.03,
     right: -width * 0.02
   },
 
@@ -166,7 +173,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingVertical: "8%",
-    paddingHorizontal: 20,
+    paddingHorizontal: scaleHorizontalPadding(20),
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -176,12 +183,12 @@ const styles = StyleSheet.create({
 
   step_info_heading: {
     fontFamily: "PlusJakartaSans_600SemiBold",
-    fontSize: 28,
+    fontSize: scaleFont(25),
     textAlign: "center"
   },
 
   step_info_paragraph: {
-    fontSize: 16,
+    fontSize: scaleFont(16),
     textAlign: "center",
     lineHeight: 30,
     fontFamily: 'Sora_400Regular',

@@ -1,5 +1,6 @@
 import { AuthStackParamList } from '@/app/auth/types';
 import { fonts } from '@/fonts/fonts';
+import { scaleFont, scaleVerticalPadding } from '@/utils/utils';
 import { useFonts } from '@expo-google-fonts/plus-jakarta-sans';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -21,7 +22,7 @@ export default function CreateAccountForm() {
 
     const [fontsLoaded] = useFonts(fonts);
 
-        const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
+    const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
     // Validation function
     const validateEmail = (value: string) => {
@@ -67,16 +68,39 @@ export default function CreateAccountForm() {
                             if (phoneError) setPhoneError("")
                         }}
                         leftElement={
-                            <CountryPicker
+                            <View style={{
+                                width: "auto",
+                                alignItems: "center",
+                                gap: 6,
+                                flexDirection: "row",
+                                justifyContent: "center"
+                            }}>
 
-                                countryCode={countryCode}
-                                withCallingCode
-                                withFlag
-                                withFilter
-                                onSelect={(country) => {
-                                    setCountryCode(country.cca2)
-                                }}
-                            />
+
+                                <View style={{
+                                    backgroundColor: "red",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    borderRadius: 999
+                                }} >
+                                    <CountryPicker
+
+                                        countryCode={countryCode}
+                                        withCallingCode
+                                        withFlag
+                                        withFilter
+                                        onSelect={(country) => {
+                                            setCountryCode(country.cca2)
+                                        }}
+                                    />
+                                </View>
+
+                                <Text style={{
+                                    fontSize: scaleFont(14),
+                                    fontFamily: 'Sora_400Regular',
+                                    color: "#10182A"
+                                }} >+234</Text>
+                            </View>
                         }
                     />
                 </>
@@ -88,6 +112,7 @@ export default function CreateAccountForm() {
                             label='Email address'
                             placeholder="Enter Email address"
                             keyboardType="email-address"
+                            placeholderTextColor="#CCCCCC"
                             value={email}
                             onChangeText={(text) => {
                                 setEmail(text)
@@ -148,7 +173,7 @@ const styles = StyleSheet.create({
 
     pageTitle: {
         color: "#10182A",
-        fontSize: 28,
+        fontSize: scaleFont(28),
         fontFamily: "PlusJakartaSans_500Medium"
     },
 
@@ -156,7 +181,7 @@ const styles = StyleSheet.create({
         width: "100%",
         display: "flex",
         flexDirection: "column",
-        gap: 21,
+        gap: 9,
         alignItems: "center",
         justifyContent: "center",
         marginTop: 10
@@ -168,20 +193,20 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 16,
+        paddingVertical: scaleVerticalPadding(16),
         borderRadius: 10,
         marginBottom: 11
     },
 
     buttonText: {
         color: "#ffffff",
-        fontSize: 18,
+        fontSize: scaleFont(18),
         fontFamily: 'Sora_400Regular',
     },
 
     otherOptionText: {
         color: "#10182A",
-        fontSize: 15,
+        fontSize: scaleFont(15),
         fontFamily: 'Sora_400Regular',
     },
 

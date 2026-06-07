@@ -11,7 +11,7 @@ import { AnimatedSplashScreen } from '@/components/AnimatedSplashScreen';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { toastConfig } from '@/utils/toastConfig';
 
-const SHOW_STATIC_SPLASH = false;
+// const SHOW_STATIC_SPLASH = false;
 
 void SplashScreen.preventAutoHideAsync();
 
@@ -48,7 +48,6 @@ export default function RootLayout() {
         <StatusBar style="auto" />
         {isAnimatedSplashVisible ? (
           <AnimatedSplashScreen
-            staticMode={SHOW_STATIC_SPLASH}
             onFinish={handleAnimatedSplashFinish}
           />
         ) : null}

@@ -3,15 +3,14 @@ import SignInForm from '@/components/auth/SignInForm';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import type { AuthStackParamList } from '../types';
 
 export default function SignIn() {
-       const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
+    const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
 
     return (
-        <SafeAreaView style={styles.container} >
+        <View style={styles.container} >
             <KeyboardAvoidingView
                 style={styles.keyboardContainer}
                 behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -34,7 +33,7 @@ export default function SignIn() {
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
-        </SafeAreaView>
+        </View>
     )
 }
 

@@ -1,3 +1,4 @@
+import { scaleFont, scaleHorizontalPadding } from '@/utils/utils';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, Text, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
@@ -46,11 +47,11 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "flex-start",
         flexDirection: "column",
-        gap: 4
+        gap: 6
     },
 
     label: {
-        fontSize: 14,
+        fontSize: scaleFont(14),
         color: "#10182A",
         fontFamily: 'Sora_400Regular',
     },
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#10182A',
         borderRadius: 5,
-        paddingHorizontal: 12,
+        paddingHorizontal: scaleHorizontalPadding(12),
         height: 50,
         width: '100%',
         backgroundColor: "#CCCCCC1A"
@@ -71,11 +72,13 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        fontSize: 18,
+        fontSize: scaleFont(18),
+        fontFamily: 'Sora_400Regular',
     },
+
     errorText: {
         color: 'red',
-        fontSize: 12,
+        fontSize: scaleFont(12),
         marginTop: 4,
         fontFamily: 'Sora_400Regular',
     },

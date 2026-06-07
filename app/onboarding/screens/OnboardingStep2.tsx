@@ -1,3 +1,4 @@
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from '@/utils/utils';
 import { useFonts } from '@expo-google-fonts/plus-jakarta-sans';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -60,7 +61,9 @@ export default function OnboardingStep1() {
             Every transaction is automatically converted on the vendor’s end—fast, precise, and reliable.
           </Text>
 
-          <TouchableOpacity style={styles.button}
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.button}
             onPress={() => router.push('/auth')}>
             <Text style={styles.buttonText} >Get Started</Text>
           </TouchableOpacity>
@@ -83,8 +86,8 @@ const styles = StyleSheet.create({
 
   top: {
     flex: 1,
-    paddingTop: 30,
-    paddingHorizontal: 24,
+    paddingTop: scaleVerticalPadding(30),
+    paddingHorizontal: scaleHorizontalPadding(24),
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",
@@ -108,7 +111,7 @@ const styles = StyleSheet.create({
   heading: {
     fontFamily: 'PlusJakartaSans_300Light',
     color: '#ffffff',
-    fontSize: 24,
+    fontSize: scaleFont(24),
   },
 
   name: {
@@ -117,7 +120,7 @@ const styles = StyleSheet.create({
 
   subtext: {
     color: '#ffffff',
-    fontSize: 40,
+    fontSize: scaleFont(35),
     textAlign: "center",
     fontFamily: "PlusJakartaSans_600SemiBold"
   },
@@ -145,7 +148,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingVertical: "15%",
-    paddingHorizontal: 20,
+    paddingHorizontal: scaleHorizontalPadding(20),
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -154,7 +157,7 @@ const styles = StyleSheet.create({
   },
 
   step_info_paragraph: {
-    fontSize: 16,
+    fontSize: scaleFont(16),
     textAlign: "center",
     lineHeight: 30,
     fontFamily: 'Sora_400Regular',
@@ -176,7 +179,7 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    fontSize: 16,
+    fontSize: scaleFont(16),
     fontFamily: 'Sora_400Regular',
   }
 

@@ -3,14 +3,13 @@ import { Image } from 'expo-image';
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import Animated, {
-  cancelAnimation,
   Easing,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
   withSequence,
-  withTiming,
+  withTiming
 } from 'react-native-reanimated';
 
 type AnimatedSplashScreenProps = {
@@ -38,12 +37,6 @@ export function AnimatedSplashScreen({ onFinish, staticMode = false }: AnimatedS
     ],
   }));
 
-  const logoStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: logoScale.value },
-      { rotate: `${logoRotation.value}deg` },
-    ],
-  }));
 
   const titleStyle = useAnimatedStyle(() => ({
     width: titleWidth.value,
@@ -137,6 +130,8 @@ export function AnimatedSplashScreen({ onFinish, staticMode = false }: AnimatedS
         </Animated.View>
 
         <Text
+          numberOfLines={1}
+          ellipsizeMode="clip"
           style={[styles.title, styles.measurementTitle]}
           onLayout={(event) => {
             setMeasuredWidth(event.nativeEvent.layout.width);
@@ -152,7 +147,10 @@ export function AnimatedSplashScreen({ onFinish, staticMode = false }: AnimatedS
             titleStyle,
           ]}
         >
-          <Text style={styles.title}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="clip"
+            style={styles.title}>
             UnioGate
           </Text>
         </Animated.View>
