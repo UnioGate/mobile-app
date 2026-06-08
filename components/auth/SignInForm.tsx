@@ -1,8 +1,10 @@
-import { fonts } from '@/fonts/fonts';
-import { useFonts } from '@expo-google-fonts/plus-jakarta-sans';
+import { scaleFont, scaleVerticalPadding } from '@/utils/utils';
+import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import CountryPicker, { CountryCode } from 'react-native-country-picker-modal';
 import CustomInput from '../ui/ReusableInput';
+
 
 
 export default function SignInForm() {
@@ -13,8 +15,11 @@ export default function SignInForm() {
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
     const [phoneError, setPhoneError] = useState('');
+    const [countryCode, setCountryCode] = useState<CountryCode>('NG');
+    const [showCountryPicker, setShowCountryPicker] = useState(false);
+    const [callingCode, setCallingCode] = useState('234');
 
-    const [fontsLoaded] = useFonts(fonts);
+
 
     // Validation function
     const validateEmail = (value: string) => {
@@ -34,8 +39,6 @@ export default function SignInForm() {
     const toggleSignupMode = () => {
         setSignInMode(signInMode === "emailAddress" ? "phoneNumber" : "emailAddress");
     }
-
-    if (!fontsLoaded) return null;
 
 
     return (
@@ -60,10 +63,48 @@ export default function SignInForm() {
                             if (phoneError) setPhoneError("")
                         }}
                         leftElement={
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Image source={require('../../assets/onboarding/NG-flag.png')} style={{ width: 24, height: 16 }} />
-                                <Text style={{ marginLeft: 4, fontSize: 18, }}>+234</Text>
-                            </View>
+                            <Pressable
+                                onPress={() => setShowCountryPicker(true)}
+                                style={{
+                                    width: "auto",
+                                    alignItems: "center",
+                                    flexDirection: "row",
+                                    justifyContent: "center",
+                                }}
+                            >
+                                <CountryPicker
+                                    countryCode={countryCode}
+                                    visible={showCountryPicker}
+                                    withCallingCode
+                                    withFlag
+                                    withFilter
+                                    onClose={() => setShowCountryPicker(false)}
+                                    onSelect={(country) => {
+                                        setCountryCode(country.cca2);
+                                        setCallingCode(country.callingCode[0]);
+                                        setShowCountryPicker(false);
+                                    }}
+                                />
+
+                                <Text
+                                    style={{
+                                        fontSize: scaleFont(14),
+                                        fontFamily: "Sora_400Regular",
+                                        color: "#10182A",
+                                    }}
+                                >
+                                    +{callingCode}
+                                </Text>
+
+                                <Ionicons
+                                    name="chevron-down"
+                                    style={{
+                                        marginLeft: 6,
+                                    }}
+                                    color={"#10182A"}
+                                    size={16}
+                                />
+                            </Pressable>
                         }
                     />
                 </>
@@ -133,7 +174,7 @@ const styles = StyleSheet.create({
 
     pageTitle: {
         color: "#10182A",
-        fontSize: 28,
+        fontSize: scaleFont(28),
         fontFamily: "PlusJakartaSans_500Medium"
     },
 
@@ -150,7 +191,7 @@ const styles = StyleSheet.create({
 
     otherOptionText: {
         color: "#10182A",
-        fontSize: 15,
+        fontSize: scaleFont(15),
         fontFamily: 'Sora_400Regular',
     },
 
@@ -165,7 +206,7 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 16,
+        paddingVertical: scaleVerticalPadding(16),
         borderRadius: 10,
         marginBottom: 11,
         marginTop: "auto"
@@ -173,7 +214,7 @@ const styles = StyleSheet.create({
 
     buttonText: {
         color: "#ffffff",
-        fontSize: 18,
+        fontSize: scaleFont(18),
         fontFamily: 'Sora_400Regular',
     },
 })

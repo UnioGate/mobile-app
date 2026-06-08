@@ -1,5 +1,6 @@
 import statesData from "@/data/states.json";
 import { DropdownOption, StateOptionSource } from "@/types/types";
+import { scaleFont, scaleHorizontalPadding } from "@/utils/utils";
 import { useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
@@ -72,39 +73,29 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         alignItems: "stretch",
-        gap: 4,
+        gap: 6,
     },
 
     labelText: {
         color: "#10182A",
-        fontSize: 13,
+        fontSize: scaleFont(14),
         fontFamily: 'Sora_400Regular',
-    },
-
-    label: {
-        position: 'absolute',
-        backgroundColor: 'white',
-        left: 22,
-        top: 8,
-        zIndex: 999,
-        paddingHorizontal: 8,
-        fontSize: 14,
     },
 
     dropdown: {
         height: 50,
-        borderRadius: 8,
-        paddingHorizontal: 8,
+        borderRadius: 5,
+        paddingHorizontal: scaleHorizontalPadding(12),
         backgroundColor: "#CCCCCC1A",
         borderWidth: 1,
         borderColor: "#10182A"
     },
 
     placeholderStyle: {
-        fontSize: 16,
+        fontSize: scaleFont(16),
     },
     selectedTextStyle: {
-        fontSize: 16,
+        fontSize: scaleFont(16),
     },
     iconStyle: {
         width: 20,
@@ -112,7 +103,7 @@ const styles = StyleSheet.create({
     },
     inputSearchStyle: {
         height: 40,
-        fontSize: 16,
+        fontSize: scaleFont(16),
     },
 
     icon: {

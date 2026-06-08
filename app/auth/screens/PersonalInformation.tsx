@@ -1,46 +1,76 @@
 import { AuthStackParamList } from '@/app/auth/types';
-import BusinessInformationForm from "@/components/auth/BusinessInformationForm";
+import BusinessInformationForm from '@/components/auth/BusinessInformationForm';
+import PersonalInformationForm from '@/components/auth/PersonalInformationForm';
 import StepTracker from "@/components/ui/StepTracker";
+import { useStep } from '@/context/StepContext';
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from '@/utils/utils';
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { router } from 'expo-router';
 import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 
 
 export default function PersonalInformation() {
     const [error, setError] = useState("")
+    const { currentStep, setCurrentStep } = useStep();
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-
 
     return (
         <View style={styles.container} >
 
-            {/* The page title  */}
-            <View style={styles.heading} >
-                <Text style={styles.headingText} >Personal Information</Text>
 
-                <StepTracker currentStep={1} totalSteps={2} />
-            </View>
+            <ScrollView
+                style={{ flex: 1, width: "100%" }}
+                contentContainerStyle={styles.scrollView_style}
+                showsVerticalScrollIndicator={false}  >
 
-            {/* The current step form  */}
-            {/* <PersonalInformationForm /> */}
-            <BusinessInformationForm />
+                {/* The page title  */}
+                <View style={styles.heading} >
+                    <Text
+                        style={styles.headingText}
+                    >
+                        {currentStep === 1 ? "Personal Information" : "Business Information"}
+                    </Text>
+
+                    <StepTracker currentStep={currentStep} totalSteps={2} />
+                </View>
+
+                {/* The current step form  */}
+                {currentStep === 1 && (
+                    <PersonalInformationForm />
+                )}
 
 
-            {/* The error statement  */}
-            {error ? <Text style={styles.errorText}>
-                <Ionicons name="alert-circle" size={14} color="red" /> {error}</Text> : null}
+                {currentStep === 2 && (
+                    <BusinessInformationForm />
+                )}
 
 
-            <TouchableOpacity
-                style={styles.button}
-                activeOpacity={0.7}
-                onPress={() => navigation.navigate('Congratulations')}
-            >
-                <Text style={styles.buttonText} > Continue</Text>
-            </TouchableOpacity>
+                {/* The error statement  */}
+                {error ? <Text style={styles.errorText}>
+                    <Ionicons name="alert-circle" size={14} color="red" /> {error}</Text> : null}
+
+
+                <TouchableOpacity
+                    style={styles.button}
+                    activeOpacity={0.7}
+                    onPress={() => {
+                        if (currentStep === 1) {
+                            setCurrentStep(2)
+                        }
+                        else {
+                            router.replace("/CongratulationsScreen")
+                        }
+                    }}
+                >
+                    <Text style={styles.buttonText} > Continue</Text>
+                </TouchableOpacity>
+
+
+            </ScrollView>
         </View>
     )
 }
@@ -51,9 +81,13 @@ export default function PersonalInformation() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+
+    scrollView_style: {
+        flexGrow: 1,
         backgroundColor: "#ffffff",
-        paddingHorizontal: 20,
-        paddingVertical: 28,
+        paddingHorizontal: scaleHorizontalPadding(20),
+        paddingVertical: scaleVerticalPadding(10),
         display: "flex",
         alignItems: "center",
         flexDirection: "column",
@@ -66,13 +100,14 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        paddingHorizontal: 5
+        paddingHorizontal: scaleHorizontalPadding(5),
+        gap: 20
     },
 
     headingText: {
         fontFamily: "PlusJakartaSans_500Medium",
         color: "#10182A",
-        fontSize: 27
+        fontSize: scaleFont(27)
     },
 
     button: {
@@ -81,7 +116,7 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 16,
+        paddingVertical: scaleVerticalPadding(16),
         borderRadius: 10,
         marginBottom: 11,
         marginTop: "auto"
@@ -89,13 +124,13 @@ const styles = StyleSheet.create({
 
     buttonText: {
         color: "#ffffff",
-        fontSize: 18,
+        fontSize: scaleFont(18),
         fontFamily: 'Sora_400Regular',
     },
 
     errorText: {
         color: 'red',
-        fontSize: 12,
+        fontSize: scaleFont(12),
         marginTop: 4,
         fontFamily: 'Sora_400Regular',
     },

@@ -22,7 +22,6 @@ export default function CreateAccount() {
     return (
         <View style={styles.container} >
 
-
             {
                 currentForm === "createAccountForm" ? (
                     <CreateAccountForm />
@@ -31,10 +30,6 @@ export default function CreateAccount() {
                         <OTPForm />
                     )
             }
-
-
-
-
 
             {/* This is the bottom text on the page  */}
             <Text style={styles.bottomText}  >Have an account? {" "}

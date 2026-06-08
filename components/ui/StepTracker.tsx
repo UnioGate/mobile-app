@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View } from "react-native";
-import Svg, { Circle } from 'react-native-svg';
+import React, { useEffect, useRef } from "react";
+import { Animated, Easing, StyleSheet, Text, View } from "react-native";
+import Svg, { Circle } from "react-native-svg";
 
 
 interface StepTrackerProps {
@@ -30,7 +31,34 @@ export default function StepTracker({
 
     const radius = (size - strokeWidth) / 2;
     const circumference = 2 * Math.PI * radius;
-    const strokeDashoffset = circumference * (1 - progress);
+
+
+    const animatedProgress = useRef(new Animated.Value(0)).current;
+    const [offset, setOffset] = React.useState(circumference);
+
+
+    const animatedValue = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        animatedValue.addListener(({ value }) => {
+            setOffset(circumference * (1 - value));
+        });
+
+        Animated.timing(animatedValue, {
+            toValue: progress,
+            duration: 600,
+            easing: Easing.out(Easing.ease),
+            useNativeDriver: false,
+        }).start();
+
+        return () => animatedValue.removeAllListeners();
+    }, [progress]);
+
+
+    const strokeDashoffset = animatedProgress.interpolate({
+        inputRange: [0, 1],
+        outputRange: [circumference, 0],
+    });
 
     return (
         <View style={[styles.container, { width: size, height: size }]}>
@@ -55,8 +83,7 @@ export default function StepTracker({
                     fill="none"
                     strokeLinecap="round"
                     strokeDasharray={circumference}
-                    strokeDashoffset={strokeDashoffset}
-                    transform={`rotate(-90 ${size / 2} ${size / 2})`}
+                    strokeDashoffset={offset}
                 />
             </Svg>
 

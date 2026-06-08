@@ -1,7 +1,9 @@
+import { scaleFont } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { useRef, useState } from "react";
-import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import * as ImagePicker from 'expo-image-picker';
+import { useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import CustomDropdown from "../ui/CustomDropdown";
 import CustomInput from "../ui/ReusableInput";
 
@@ -12,8 +14,7 @@ type UploadedLogo = {
 
 export default function BusinessInformationForm() {
     const [error, setError] = useState("");
-    const [logo, setLogo] = useState<UploadedLogo | null>(null);
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const [logoImage, setLogoImage] = useState<string | null>(null)
     const [formValues, setFormValues] = useState({
         firstname: "",
         lastname: "",
@@ -25,49 +26,30 @@ export default function BusinessInformationForm() {
         address: "",
     });
 
-    const handleLogoUpload = () => {
-        setError("");
 
-        if (Platform.OS !== "web") {
-            setError("Image upload is currently supported on web only.");
+
+    // This handles business logo selection
+    const pickImage = async () => {
+        const permissionResult =
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (!permissionResult.granted) {
+            alert('Permission to access gallery is required.')
             return;
         }
 
-        if (typeof document === "undefined") {
-            setError("Unable to access file picker in this environment.");
-            return;
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ["images"],
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1
+        })
+
+        if (!result.canceled) {
+            setLogoImage(result.assets[0].uri)
         }
+    }
 
-        if (!fileInputRef.current) {
-            const input = document.createElement("input");
-            input.type = "file";
-            input.accept = "image/*";
-            input.onchange = () => {
-                const selectedFile = input.files?.[0];
-
-                if (!selectedFile) {
-                    return;
-                }
-
-                const maxFileSizeInBytes = 500 * 1024 * 1024;
-
-                if (selectedFile.size > maxFileSizeInBytes) {
-                    setError("Selected image is larger than 500MB.");
-                    return;
-                }
-
-                const objectUrl = URL.createObjectURL(selectedFile);
-                setLogo({
-                    name: selectedFile.name,
-                    uri: objectUrl,
-                });
-            };
-
-            fileInputRef.current = input;
-        }
-
-        fileInputRef.current.click();
-    };
 
     return (
         <View style={styles.container}>
@@ -121,18 +103,28 @@ export default function BusinessInformationForm() {
             {/* Business logo uploader */}
             <View style={styles.logoWrapper}>
                 <Text style={styles.logoLabel}>Business Logo (Optional)</Text>
-                <Pressable style={styles.uploadBox} onPress={handleLogoUpload}>
+
+                <Pressable
+                    onPress={pickImage}
+                    style={styles.uploadBox}
+                >
+
                     <View style={styles.uploadIconWrapper}>
                         <Ionicons name="image" size={18} color="#10182A" />
                     </View>
                     <Text style={styles.uploadTitle}>
-                        {logo ? "Image selected" : "Upload your image here"}
+                        {logoImage ? "Image selected" : "Upload your image here"}
                     </Text>
                     <Text style={styles.uploadSubTitle}>
-                        {logo?.name ?? "Max file size up to 500mb"}
+                        {logoImage ?? "Max file size up to 500mb"}
                     </Text>
-                    {logo ? <Image source={{ uri: logo.uri }} style={styles.logoPreview} contentFit="cover" /> : null}
+                    {logoImage ?
+                        <Image
+                            source={{ uri: logoImage }}
+                            style={styles.logoPreview}
+                            contentFit="contain" /> : null}
                 </Pressable>
+
             </View>
 
             {/* The error statement  */}
@@ -148,7 +140,8 @@ export default function BusinessInformationForm() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center",
+        width: "100%",
+        alignItems: "stretch",
         flexDirection: "column",
         gap: 16,
     },
@@ -167,10 +160,11 @@ const styles = StyleSheet.create({
     logoWrapper: {
         width: "100%",
         gap: 6,
+        alignSelf: "stretch",
     },
 
     logoLabel: {
-        fontSize: 14,
+        fontSize: scaleFont(13),
         color: "#10182A",
         fontFamily: "Sora_400Regular",
     },
@@ -180,9 +174,9 @@ const styles = StyleSheet.create({
         minHeight: 140,
         borderWidth: 1,
         borderStyle: "dashed",
-        borderColor: "#9CA3AF",
+        borderColor: "#000000CC",
         borderRadius: 12,
-        backgroundColor: "#CCCCCC1A",
+        backgroundColor: "#F8F7F7",
         alignItems: "center",
         justifyContent: "center",
         paddingHorizontal: 16,
@@ -193,7 +187,7 @@ const styles = StyleSheet.create({
         width: 30,
         height: 30,
         borderRadius: 6,
-        backgroundColor: "#E5E7EB",
+        backgroundColor: "#FFFFFF",
         alignItems: "center",
         justifyContent: "center",
         marginBottom: 10,
@@ -201,13 +195,13 @@ const styles = StyleSheet.create({
 
     uploadTitle: {
         color: "#10182A",
-        fontSize: 16,
+        fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular",
     },
 
     uploadSubTitle: {
         color: "#6B7280",
-        fontSize: 12,
+        fontSize: scaleFont(11),
         fontFamily: "Sora_400Regular",
     },
 
@@ -220,7 +214,7 @@ const styles = StyleSheet.create({
 
     errorText: {
         color: "red",
-        fontSize: 12,
+        fontSize: scaleFont(12),
         marginTop: 4,
         fontFamily: "Sora_400Regular",
     },

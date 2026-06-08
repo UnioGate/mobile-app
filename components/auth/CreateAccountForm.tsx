@@ -2,10 +2,11 @@ import { AuthStackParamList } from '@/app/auth/types';
 import { fonts } from '@/fonts/fonts';
 import { scaleFont, scaleVerticalPadding } from '@/utils/utils';
 import { useFonts } from '@expo-google-fonts/plus-jakarta-sans';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import CountryPicker, { CountryCode } from 'react-native-country-picker-modal';
 import CustomCheckbox from '../ui/CustomCheckbox';
 import CustomInput from '../ui/ReusableInput';
@@ -19,6 +20,8 @@ export default function CreateAccountForm() {
     const [emailError, setEmailError] = useState('');
     const [phoneError, setPhoneError] = useState('');
     const [countryCode, setCountryCode] = useState<CountryCode>('NG');
+    const [showCountryPicker, setShowCountryPicker] = useState(false);
+    const [callingCode, setCallingCode] = useState('234');
 
     const [fontsLoaded] = useFonts(fonts);
 
@@ -68,39 +71,48 @@ export default function CreateAccountForm() {
                             if (phoneError) setPhoneError("")
                         }}
                         leftElement={
-                            <View style={{
-                                width: "auto",
-                                alignItems: "center",
-                                gap: 6,
-                                flexDirection: "row",
-                                justifyContent: "center"
-                            }}>
-
-
-                                <View style={{
-                                    backgroundColor: "red",
+                            <Pressable
+                                onPress={() => setShowCountryPicker(true)}
+                                style={{
+                                    width: "auto",
                                     alignItems: "center",
+                                    flexDirection: "row",
                                     justifyContent: "center",
-                                    borderRadius: 999
-                                }} >
-                                    <CountryPicker
+                                }}
+                            >
+                                <CountryPicker
+                                    countryCode={countryCode}
+                                    visible={showCountryPicker}
+                                    withCallingCode
+                                    withFlag
+                                    withFilter
+                                    onClose={() => setShowCountryPicker(false)}
+                                    onSelect={(country) => {
+                                        setCountryCode(country.cca2);
+                                        setCallingCode(country.callingCode[0]);
+                                        setShowCountryPicker(false);
+                                    }}
+                                />
 
-                                        countryCode={countryCode}
-                                        withCallingCode
-                                        withFlag
-                                        withFilter
-                                        onSelect={(country) => {
-                                            setCountryCode(country.cca2)
-                                        }}
-                                    />
-                                </View>
+                                <Text
+                                    style={{
+                                        fontSize: scaleFont(14),
+                                        fontFamily: "Sora_400Regular",
+                                        color: "#10182A",
+                                    }}
+                                >
+                                    +{callingCode}
+                                </Text>
 
-                                <Text style={{
-                                    fontSize: scaleFont(14),
-                                    fontFamily: 'Sora_400Regular',
-                                    color: "#10182A"
-                                }} >+234</Text>
-                            </View>
+                                <Ionicons
+                                    name="chevron-down"
+                                    style={{
+                                        marginLeft: 6,
+                                    }}
+                                    color={"#10182A"}
+                                    size={16}
+                                />
+                            </Pressable>
                         }
                     />
                 </>
@@ -146,10 +158,10 @@ export default function CreateAccountForm() {
 
                 <Text style={styles.otherOptionText}
                     onPress={toggleSignupMode}
-                >or sign up with
+                >or sign up with {" "}
                     <Text
                         style={styles.option}
-                    >  {signUpMode === "emailAddress" ? "phone number" : "email address"} </Text></Text>
+                    >{signUpMode === "emailAddress" ? "Phone number" : "email address"} </Text></Text>
             </View>
 
         </View>
@@ -211,6 +223,7 @@ const styles = StyleSheet.create({
     },
 
     option: {
-        color: "#2DBAA4"
+        color: "#2DBAA4",
+        textDecorationLine: "underline"
     }
 })

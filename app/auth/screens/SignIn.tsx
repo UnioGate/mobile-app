@@ -1,8 +1,9 @@
 
 import SignInForm from '@/components/auth/SignInForm';
+import { scaleFont } from '@/utils/utils';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { AuthStackParamList } from '../types';
 
 export default function SignIn() {
@@ -11,28 +12,23 @@ export default function SignIn() {
 
     return (
         <View style={styles.container} >
-            <KeyboardAvoidingView
-                style={styles.keyboardContainer}
-                behavior={Platform.OS === "ios" ? "padding" : undefined}
+            <ScrollView
+                contentContainerStyle={styles.content}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
             >
-                <ScrollView
-                    contentContainerStyle={styles.content}
-                    showsVerticalScrollIndicator={false}
-                    keyboardShouldPersistTaps="handled"
-                >
-                    <SignInForm />
+                <SignInForm />
 
-                    {/* This is the bottom text on the page  */}
-                    <View style={styles.bottomTextWrapper}>
-                        <Text style={styles.bottomText}  >Don’t have an account? {" "}
-                            <Text
-                                onPress={() => navigation.navigate('CreateAccount')}
-                                style={styles.bottomTextLink}
-                            >Register</Text>
-                        </Text>
-                    </View>
-                </ScrollView>
-            </KeyboardAvoidingView>
+                {/* This is the bottom text on the page  */}
+                <View style={styles.bottomTextWrapper}>
+                    <Text style={styles.bottomText}  >Don’t have an account? {" "}
+                        <Text
+                            onPress={() => navigation.navigate('CreateAccount')}
+                            style={styles.bottomTextLink}
+                        >Register</Text>
+                    </Text>
+                </View>
+            </ScrollView>
         </View>
     )
 }
@@ -44,10 +40,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#ffffff",
-    },
-
-    keyboardContainer: {
-        flex: 1,
     },
 
     content: {
@@ -64,12 +56,12 @@ const styles = StyleSheet.create({
 
     bottomText: {
         color: "#CCCCCCCC",
-        fontSize: 15,
+        fontSize: scaleFont(15),
         fontFamily: 'Sora_400Regular',
     },
 
     bottomTextLink: {
-        color: "#10182A",
+        color: "#2DBAA4",
         textDecorationLine: "underline"
     }
 })

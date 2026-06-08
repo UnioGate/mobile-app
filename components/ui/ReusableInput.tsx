@@ -33,7 +33,17 @@ const CustomInput: React.FC<CustomInputProps> = ({
                     {...textInputProps}
                 />
             </View>
-            {error ? <Text style={styles.errorText}>      <Ionicons name="alert-circle" size={14} color="red" /> {error}</Text> : null}
+            {error ?
+                <View style={{
+                    alignItems: "center",
+                    gap: 2,
+                    width: "auto",
+                    flexDirection: "row"
+                }} >
+                    <Ionicons name="alert-circle-outline" size={14} color="red" />
+                    <Text style={styles.errorText}>  {error}</Text>
+                </View>
+                : null}
         </View>
     );
 };
@@ -72,14 +82,13 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        fontSize: scaleFont(18),
+        fontSize: scaleFont(14),
         fontFamily: 'Sora_400Regular',
     },
 
     errorText: {
         color: 'red',
         fontSize: scaleFont(12),
-        marginTop: 4,
         fontFamily: 'Sora_400Regular',
     },
     errorBorder: {

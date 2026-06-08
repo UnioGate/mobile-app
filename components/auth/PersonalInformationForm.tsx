@@ -1,13 +1,18 @@
+import { scaleVerticalPadding } from "@/utils/utils";
+import * as ImagePicker from 'expo-image-picker';
 import { useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, Pressable, StyleSheet, View } from "react-native";
 import CountryPicker, { CountryCode } from "react-native-country-picker-modal";
 import DateOfBirthInput from "../ui/DOBInput";
 import CustomInput from "../ui/ReusableInput";
 
 
-
 export default function PersonalInformationForm() {
     const [countryCode, setCountryCode] = useState<CountryCode>('NG');
+    const [selectedImage, setSelectedImage] = useState<null | string>(null)
+    const [countryName, setCountryName] = useState('Nigeria');
+    const [showCountryPicker, setShowCountryPicker] = useState(false);
+
     const [formValues, setFormValues] = useState({
         firstname: "",
         lastname: "",
@@ -17,15 +22,50 @@ export default function PersonalInformationForm() {
         country: ""
     })
 
+
+
+
+    // This handles profile picture selection
+    const pickImage = async () => {
+        const permissionResult =
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (!permissionResult.granted) {
+            alert('Permission to access gallery is required.');
+            return;
+        }
+
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setSelectedImage(result.assets[0].uri);
+        }
+    };
     return (
         <View style={styles.container}  >
 
 
-            {/* profile picture */}
-            <View style={styles.profilePicWrapper} >
-                <Image source={require('../../assets/auth/profile.png')} />
+            {/* profile picture input */}
+            <Pressable
+                onPress={pickImage}
+                style={styles.profilePicWrapper} >
+
+                <Image source={
+                    selectedImage
+                        ? { uri: selectedImage }
+                        : require('../../assets/auth/profile.png')
+                }
+
+                    style={styles.profileImage}
+                />
+
                 <Image source={require('../../assets/auth/camera.png')} style={styles.camera} />
-            </View>
+            </Pressable>
 
 
             {/* the form inputs  */}
@@ -69,23 +109,32 @@ export default function PersonalInformationForm() {
                     </View>
 
                     {/* Second Input */}
-                    <View style={{ flexBasis: "50%" }}  >
+                    <Pressable
+                        onPress={() => setShowCountryPicker(true)}
+                        style={{
+                            flexBasis: "50%"
+                        }} >
                         <CustomInput
                             label='Country'
                             keyboardType="default"
-                            value={countryCode}
+                            editable={false}
+                            value={countryName || countryCode}
                             leftElement={
                                 <CountryPicker
                                     countryCode={countryCode}
+                                    visible={showCountryPicker}
                                     withCallingCode
                                     withFlag
                                     withFilter
+                                    onClose={() => setShowCountryPicker(false)}
                                     onSelect={(country) => {
-                                        setCountryCode(country.cca2)
+                                        setCountryCode(country.cca2);
+                                        setCountryName(country.name as string);
+                                        setShowCountryPicker(false);
                                     }}
                                 />
                             } />
-                    </View>
+                    </Pressable>
                 </View>
 
 
@@ -99,7 +148,7 @@ export default function PersonalInformationForm() {
 
 
 
-        </View>
+        </View >
     )
 }
 
@@ -129,9 +178,9 @@ const styles = StyleSheet.create({
 
     formContent: {
         height: "auto",
-        marginVertical: 30,
+        marginVertical: scaleVerticalPadding(30),
         width: "100%",
-        gap: 10,
+        gap: 24,
     },
 
     inputsWrapper: {
@@ -140,6 +189,13 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         gap: 8,
         alignItems: "center",
+    },
+
+    profileImage: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 84.5,
+        backgroundColor: "#FFFFFF"
     },
 
 })

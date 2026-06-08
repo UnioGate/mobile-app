@@ -86,7 +86,9 @@ export default function OTPForm() {
                 {otp.map((digit, index) => (
                     <TextInput
                         key={index}
-                        style={styles.box}
+                        style={[styles.box, {
+                            marginLeft: index + 1 === 4 ? 30 : 0
+                        }]}
                         keyboardType="number-pad"
                         maxLength={1}
                         value={digit}
