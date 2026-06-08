@@ -18,3 +18,12 @@ export const scaleVerticalPadding = (size: number) => {
 export const scaleHorizontalPadding = (size: number) => {
     return (screenWidth / baseWidth) * size;
 };
+
+
+
+export const formatBalance = (value: number) => {
+    return value.toLocaleString("en-NG", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
+}

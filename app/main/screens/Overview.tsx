@@ -1,11 +1,15 @@
+import EyeClosed from "@/components/icons/EyeClosed";
+import NFCIcon from "@/components/icons/NFCPayments";
+import SupportIcon from "@/components/icons/SupportIcon";
+import WithdrawIcon from "@/components/icons/WithdrawIcon";
 import { transactions } from "@/data/mock_tx";
-import { fonts } from "@/fonts/fonts";
 import { LogoKey } from "@/types/types";
-import { useFonts } from "@expo-google-fonts/sora";
+import { formatBalance, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { BanknoteArrowDown, SmartphoneNfc } from "lucide-react-native";
+import { EyeIcon } from "lucide-react-native";
+import { useState } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as Progress from 'react-native-progress';
 import { MainStackParamList } from "../type";
@@ -13,9 +17,16 @@ import { MainStackParamList } from "../type";
 type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList, "overview">;
 
 export default function Overview() {
-
-    const [fontsLoaded] = useFonts(fonts);
     const navigation = useNavigation<OverviewNavigationProp>()
+    const balance = 24740.5;
+    const [showBalance, setShowBalance] = useState(false)
+
+
+
+    // Masking logic for balance
+    const displayBalance = showBalance
+        ? `₦${formatBalance(balance)}`
+        : "₦ *******";
 
 
 
@@ -41,8 +52,6 @@ export default function Overview() {
     };
 
 
-    if (!fontsLoaded) return null;
-
 
     return (
         <View style={styles.container} >
@@ -67,14 +76,18 @@ export default function Overview() {
                         activeOpacity={0.7}
                         onPress={() => navigation.navigate("contact_support")}
                     >
-                        <Ionicons name="headset-outline" size={22} color="#10182A" />
+
+                        <SupportIcon height={22} width={22} color={"#10182A"} />
                     </TouchableOpacity>
 
 
                     <TouchableOpacity
                         onPress={() => navigation.navigate("help_center")}
                         style={styles.bellButton} >
-                        <Ionicons name="notifications-sharp" size={19} color="#10182A" />
+                        <Ionicons
+                            name="notifications-sharp"
+                            size={22}
+                            color="#10182A" />
 
                         {/* The red dot on the bell */}
                         <View style={styles.redDot} ></View>
@@ -97,9 +110,27 @@ export default function Overview() {
                         <Text style={styles.availableBalance} >Available Balance</Text>
 
                         <View style={styles.amount_wrapper} >
-                            <Text style={styles.amount} >₦247,850.50</Text>
-                            <TouchableOpacity >
-                                <Ionicons name="eye-off" size={19} color="#FFFFFF" /></TouchableOpacity>
+                            <Text
+                                numberOfLines={1}
+                                adjustsFontSizeToFit
+                                style={styles.amount}
+                            >{displayBalance} </Text>
+
+                            <Pressable
+                                onPress={() => setShowBalance((prev) => !prev)}
+                            >
+                                {showBalance ? (
+                                    <EyeIcon
+                                        height={22}
+                                        width={22}
+                                        color={"#ffffff"}
+                                    />
+                                ) :
+                                    (<EyeClosed
+                                        height={22}
+                                        width={22}
+                                        color={"#ffffff"} />)}
+                            </Pressable>
                         </View>
 
                         <Text style={styles.tierStatus} >Tier 2: Personal verified</Text>
@@ -126,7 +157,11 @@ export default function Overview() {
                             onPress={() => navigation.navigate('withdraw')}
                             style={styles.CTA_button} >
                             <View style={styles.circle} >
-                                <BanknoteArrowDown size={24} color="#253E86" />
+                                <WithdrawIcon
+                                    height={24}
+                                    width={24}
+                                    color={"#253E86"}
+                                />
                             </View>
                             <Text style={styles.CTA_button_text} >
                                 Withdraw
@@ -137,7 +172,11 @@ export default function Overview() {
                         {/* Tap to pay  */}
                         <Pressable style={styles.CTA_button} >
                             <View style={styles.circle} >
-                                <SmartphoneNfc size={24} color="#253E86" />
+                                <NFCIcon
+                                    height={24}
+                                    width={24}
+                                    color="#253E86"
+                                />
                             </View>
                             <Text style={styles.CTA_button_text} >
                                 Tap to Pay
@@ -163,8 +202,16 @@ export default function Overview() {
 
                     <View style={styles.rightSide} >
                         <View style={styles.text_wrapper} >
-                            <Text style={styles.boldText} >128400</Text>
-                            <Text style={styles.label} >Today&apos;s Revenue</Text>
+                            <Text
+                                adjustsFontSizeToFit
+                                numberOfLines={1}
+                                style={styles.boldText} >₦128,400</Text>
+
+
+                            <Text
+                                adjustsFontSizeToFit
+                                numberOfLines={1}
+                                style={styles.label} >Today&apos;s Revenue</Text>
                         </View>
                     </View>
 
@@ -179,7 +226,13 @@ export default function Overview() {
                         <Text style={styles.tx_limit_tracker_head_text} >Tier 2</Text>
                     </View>
 
-                    <View style={{ width: "100%", paddingHorizontal: 1, display: "flex", flexDirection: "column", gap: 5 }}>
+                    <View style={{
+                        width: "100%",
+                        paddingHorizontal: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 5
+                    }}>
                         <Progress.Bar
                             progress={0.5}
                             color="#253E86"
@@ -257,7 +310,10 @@ export default function Overview() {
 
 
                                     <View style={styles.history_card_right_side} >
-                                        <Text style={styles.history_amount} >
+                                        <Text
+                                            adjustsFontSizeToFit
+                                            numberOfLines={1}
+                                            style={styles.history_amount} >
                                             ₦{tx.amount.toLocaleString(
                                                 undefined, {
                                                 minimumFractionDigits: 2,
@@ -296,8 +352,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection: "column",
         gap: 12,
-        paddingHorizontal: 19,
-        paddingVertical: 20
+        paddingHorizontal: scaleHorizontalPadding(19),
+        paddingTop: scaleVerticalPadding(20)
     },
 
     header: {
@@ -326,12 +382,12 @@ const styles = StyleSheet.create({
 
     hellotext: {
         fontFamily: 'Sora_400Regular',
-        fontSize: 14
+        fontSize: scaleFont(14)
     },
 
     userName: {
         fontFamily: "Sora_300Light",
-        fontSize: 14
+        fontSize: scaleFont(14)
     },
 
     support: {
@@ -368,6 +424,7 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         gap: 12,
+        paddingVertical: scaleVerticalPadding(12)
     },
 
     CTABannner: {
@@ -376,7 +433,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#253E86",
         borderRadius: 40,
         paddingHorizontal: 19,
-        paddingVertical: 35,
+        paddingTop: 35,
+        paddingBottom: 18,
         display: "flex",
         alignItems: "flex-start",
         gap: 15,
@@ -392,19 +450,20 @@ const styles = StyleSheet.create({
 
     availableBalance: {
         color: "#FFFFFF",
-        fontSize: 14,
-        fontFamily: "sora300Light"
+        fontSize: scaleFont(14),
+        fontFamily: "Sora_300Light"
     },
 
     amount_wrapper: {
         display: "flex",
         alignItems: "center",
         gap: 11,
-        flexDirection: "row"
+        flexDirection: "row",
+        justifyContent: "center"
     },
 
     amount: {
-        fontSize: 40,
+        fontSize: scaleFont(40),
         color: "#FFFFFF",
         fontFamily: "Sora_400Regular"
     },
@@ -415,8 +474,8 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         borderRadius: 9,
         color: "#FFFFFF",
-        fontSize: 10,
-        fontFamily: "sora300Light"
+        fontSize: scaleFont(10),
+        fontFamily: "Sora_300Light"
     },
 
 
@@ -442,9 +501,9 @@ const styles = StyleSheet.create({
 
 
     CTA_button_text: {
-        fontSize: 12,
+        fontSize: scaleFont(12),
         color: "#FFFFFF",
-        fontFamily: "sora300Light",
+        fontFamily: "Sora_300Light",
         textAlign: "center"
     },
 
@@ -473,13 +532,13 @@ const styles = StyleSheet.create({
         flex: 1,
         borderRightWidth: 0.5,
         borderColor: "#D3D8E7",
-        paddingVertical: 18,
+        paddingVertical: scaleVerticalPadding(13),
         paddingHorizontal: 20,
     },
 
     rightSide: {
         flex: 1,
-        paddingVertical: 18,
+        paddingVertical: scaleVerticalPadding(13),
         paddingHorizontal: 20,
         borderLeftWidth: 0.5,
         borderColor: "#D3D8E7",
@@ -495,13 +554,13 @@ const styles = StyleSheet.create({
 
     boldText: {
         color: "#10182A",
-        fontSize: 24,
+        fontSize: scaleFont(24),
         fontFamily: "Sora_400Regular"
     },
 
     label: {
         color: "#797676",
-        fontSize: 11,
+        fontSize: scaleFont(11),
         fontFamily: "Sora_400Regular"
     },
 
@@ -529,7 +588,7 @@ const styles = StyleSheet.create({
 
     tx_limit_tracker_head_text: {
         color: "#10182A",
-        fontSize: 14,
+        fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular"
     },
 
@@ -537,11 +596,11 @@ const styles = StyleSheet.create({
         color: "#253E86",
         textDecorationLine: "underline",
         fontFamily: "Sora_600SemiBold",
-        fontSize: 13
+        fontSize: scaleFont(13)
     },
 
     transacted_amount: {
-        fontSize: 10,
+        fontSize: scaleFont(10),
         color: "#10182A",
         fontFamily: "Sora_400Regular",
         marginLeft: "auto"
@@ -565,7 +624,7 @@ const styles = StyleSheet.create({
     },
 
     tx_heading_text: {
-        fontSize: 16,
+        fontSize: scaleFont(16),
         color: "#10182A",
         fontFamily: "Sora_600SemiBold",
     },
@@ -583,13 +642,13 @@ const styles = StyleSheet.create({
     },
 
     view_all_btn_text: {
-        fontSize: 12,
+        fontSize: scaleFont(12),
         color: "#10182A",
         fontFamily: "Sora_400Regular",
     },
 
     today_text: {
-        fontSize: 10,
+        fontSize: scaleFont(10),
         color: "#253E86",
         fontFamily: "Sora_300Light",
         marginVertical: 12
@@ -620,13 +679,13 @@ const styles = StyleSheet.create({
     },
 
     curreny: {
-        fontSize: 14,
+        fontSize: scaleFont(14),
         color: "#10182A",
         fontFamily: "Sora_400Regular"
     },
 
     time: {
-        fontSize: 10,
+        fontSize: scaleFont(10),
         color: "#B3B3B3",
         fontFamily: "Sora_300Light"
     },
@@ -642,13 +701,13 @@ const styles = StyleSheet.create({
 
     history_amount: {
         color: "#10182A",
-        fontSize: 13,
+        fontSize: scaleFont(13),
         fontFamily: "Sora_400Regular"
     },
 
     history_status: {
-        fontSize: 10,
-        fontFamily: "sora300Light"
+        fontSize: scaleFont(10),
+        fontFamily: "Sora_300Light"
     },
 
     successful: {
