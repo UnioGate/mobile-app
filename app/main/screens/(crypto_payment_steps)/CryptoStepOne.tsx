@@ -1,6 +1,7 @@
 import { networkOptions } from "@/data/network_data";
 import { stableCoinData } from "@/data/stableCoinData";
 import { networkKey, networkOptionData, stableCoinKey, stableCoinOptionData } from "@/types/types";
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -190,7 +191,7 @@ export default function CryptoStepOne() {
                         <TouchableOpacity
                             style={styles.button}
                             activeOpacity={0.7}
-                        onPress={() => navigation.navigate("cryptoStepTwo")}
+                            onPress={() => navigation.navigate("cryptoStepTwo")}
                         >
                             <Text style={styles.buttonText} > Continue</Text>
                         </TouchableOpacity>
@@ -245,12 +246,20 @@ export default function CryptoStepOne() {
                                     <View
                                         style={{
                                             gap: 5,
+                                            width: "100%",
                                             alignItems: "center",
                                             justifyContent: "center"
                                         }}
                                     >
-                                        <Text style={styles.drawer_option_heading} > {option.title} </Text>
-                                        <Text style={styles.drawer_option_subtitle} > {option.rate} </Text>
+                                        <Text
+                                            style={styles.drawer_option_heading} >
+                                            {option.title} </Text>
+
+
+                                        <Text
+                                            numberOfLines={1}
+                                            adjustsFontSizeToFit
+                                            style={styles.drawer_option_subtitle} > {option.rate} </Text>
                                     </View>
 
                                 </Pressable>
@@ -339,8 +348,8 @@ const styles = StyleSheet.create({
 
     content: {
         flex: 1,
-        paddingHorizontal: 19,
-        paddingTop: 30,
+        paddingHorizontal: scaleHorizontalPadding(19),
+        paddingTop: scaleVerticalPadding(10),
         flexDirection: "column",
         gap: 17
     },
@@ -356,19 +365,19 @@ const styles = StyleSheet.create({
     heading: {
         color: "#10182A",
         fontFamily: "PlusJakartaSans_500Medium",
-        fontSize: 22
+        fontSize: scaleFont(22)
     },
 
     mainContent: {
         gap: 20,
-        marginTop: 50
+        marginTop: 30
     },
 
     customSelect: {
         width: "100%",
         backgroundColor: "#ffffff",
-        paddingVertical: 30,
-        paddingHorizontal: 18,
+        paddingVertical: scaleVerticalPadding(30),
+        paddingHorizontal: scaleHorizontalPadding(18),
         borderRadius: 20,
         justifyContent: "space-between",
         flexDirection: "row",
@@ -376,7 +385,7 @@ const styles = StyleSheet.create({
     },
 
     customSelectText: {
-        fontSize: 15,
+        fontSize: scaleFont(15),
         color: "#000000",
         fontFamily: "Sora_400Regular"
     },
@@ -388,8 +397,8 @@ const styles = StyleSheet.create({
         position: "absolute",
         bottom: 0,
         left: 0,
-        paddingHorizontal: 10,
-        paddingVertical: 30,
+        paddingHorizontal: scaleHorizontalPadding(10),
+        paddingVertical: scaleVerticalPadding(30),
         borderTopRightRadius: 50,
         borderTopLeftRadius: 50,
         alignItems: "center",
@@ -398,7 +407,7 @@ const styles = StyleSheet.create({
     },
 
     drawerText: {
-        fontSize: 18,
+        fontSize: scaleFont(18),
         color: "#000000",
         fontFamily: "Sora_600SemiBold"
     },
@@ -419,19 +428,20 @@ const styles = StyleSheet.create({
         borderColor: "#10182A66",
         alignItems: "center",
         justifyContent: "center",
-        paddingHorizontal: 10,
-        paddingVertical: 4,
+        paddingHorizontal: scaleHorizontalPadding(10),
+        paddingVertical: scaleVerticalPadding(4),
         gap: 7,
         position: "relative"
     },
 
     drawer_option_heading: {
-        fontSize: 16,
-        fontFamily: "Sora_400Regular"
+        fontSize: scaleFont(16),
+        fontFamily: "Sora_400Regular",
+        textAlign: "center"
     },
 
     drawer_option_subtitle: {
-        fontSize: 12,
+        fontSize: scaleFont(12),
         color: "#10182A80",
         fontFamily: "Sora_300Light",
         marginBottom: 5
@@ -444,7 +454,7 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 16,
+        paddingVertical: scaleVerticalPadding(16),
         borderRadius: 10,
         marginBottom: 11,
         marginTop: "auto"
@@ -452,7 +462,7 @@ const styles = StyleSheet.create({
 
     buttonText: {
         color: "#ffffff",
-        fontSize: 18,
+        fontSize: scaleFont(18),
         fontFamily: 'Sora_400Regular',
     },
 })

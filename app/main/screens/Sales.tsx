@@ -1,7 +1,7 @@
 import CustomInput from "@/components/ui/ReusableInput";
 import { payment_method } from "@/data/payment_methods";
 import { methodKey } from "@/types/types";
-import { showErrorToast } from "@/utils/toastConfig";
+import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
@@ -22,11 +22,10 @@ type NavigationProp = NativeStackNavigationProp<
 
 export default function Sales() {
     const navigation = useNavigation<NavigationProp>();
-    const [selectedMethod, setSelectedMethod] = useState('Crypto')
+    const [selectedMethod, setSelectedMethod] = useState('')
     const [amount, setAmount] = useState("0");
     const [addCustomer, setAddCustomer] = useState(false);
     const [showRecipientModal, setShowRecipientModal] = useState(false);
-
 
     const [recipient, setRecipient] = useState({
         customer_Name: "",
@@ -78,7 +77,7 @@ export default function Sales() {
 
     const handleClear = () => {
         setAmount("0");
-        showErrorToast("Cleared", "Amount has been reset");
+        showSuccessToast("Cleared", "Amount has been reset");
     };
 
 
@@ -151,7 +150,12 @@ export default function Sales() {
             <View style={styles.amount_display} >
 
                 <View style={styles.amount_wrapper} >
-                    <Text style={styles.amount} >₦ {formattedAmount}</Text>
+                    <Text
+                        style={styles.amount}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                    >
+                        ₦ {formattedAmount}</Text>
                 </View>
 
                 {/* description section  */}
@@ -159,13 +163,13 @@ export default function Sales() {
                     <TextInput
                         placeholder="Add description..."
                         style={styles.description_input}
+                        keyboardType="default"
                     />
                 </View>
             </View>
 
 
             <ScrollView
-                style={{ flex: 1 }}
                 contentContainerStyle={styles.scrollView_container}
                 showsVerticalScrollIndicator={false}
             >
@@ -184,7 +188,7 @@ export default function Sales() {
                                     style={styles.method_item} >
                                     <Image
                                         source={icon[option.image]}
-                                        style={{ width: 20, height: 20, }}
+                                        style={{ width: 20, height: 20, objectFit: "contain" }}
                                     />
 
                                     <View style={{
@@ -192,10 +196,14 @@ export default function Sales() {
                                     }} >
 
                                         <Text
+                                            numberOfLines={1}
+                                            adjustsFontSizeToFit
                                             style={styles.method_title}
                                         > {option.title} </Text>
 
                                         <Text
+                                            numberOfLines={1}
+                                            adjustsFontSizeToFit
                                             style={styles.method_subtitle}
                                         > {option.subtitle} </Text>
                                     </View>
@@ -234,7 +242,10 @@ export default function Sales() {
                     <Switch
                         value={addCustomer}
                         onValueChange={setAddCustomer}
-                        trackColor={{ false: "#3C3C434D", true: "#34C759" }}
+                        trackColor={{
+                            false: "#3C3C434D",
+                            true: "#34C759"
+                        }}
                         thumbColor={"#ffffff"}
                         ios_backgroundColor={'#d1d5db'}
                     />
@@ -249,7 +260,7 @@ export default function Sales() {
                             key={i}
                             style={styles.key}
                             onPress={() => handleKeyPress(char)}
-                            activeOpacity={0.7}
+                            activeOpacity={0.5}
                         >
 
                             <Text
@@ -358,15 +369,17 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         gap: 17,
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(10),
+        paddingTop: scaleVerticalPadding(10),
     },
 
     scrollView_container: {
         display: "flex",
+        flexGrow: 1,
         alignItems: "stretch",
         flexDirection: "column",
         gap: 17,
-        width: "100%"
+        width: "100%",
+        paddingBottom: scaleVerticalPadding(35),
     },
 
     header: {
@@ -398,14 +411,14 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        paddingHorizontal: 10
     },
 
     amount_wrapper: {
         width: "100%",
         flex: 1,
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        paddingHorizontal: scaleHorizontalPadding(10)
     },
 
     amount: {
@@ -418,8 +431,8 @@ const styles = StyleSheet.create({
         width: "100%",
         borderTopWidth: 0.5,
         borderColor: "#B3B3B3",
-        paddingVertical: 5,
-        paddingHorizontal: 25
+        paddingVertical: scaleVerticalPadding(5),
+        paddingHorizontal: scaleHorizontalPadding(10)
     },
 
     description_input: {
@@ -454,10 +467,10 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         flexDirection: "row",
         borderRadius: 10,
-        alignItems: "center",
+        alignItems: "flex-start",
         justifyContent: "flex-start",
-        paddingHorizontal: 10,
-        paddingVertical: 20,
+        paddingHorizontal: scaleHorizontalPadding(10),
+        paddingVertical: scaleVerticalPadding(20),
         gap: 7,
         position: "relative"
     },
@@ -518,7 +531,7 @@ const styles = StyleSheet.create({
 
     key_text: {
         fontSize: scaleFont(24),
-        fontFamily: "PlusJakartaSans_600SemiBold"
+        fontFamily: "Sora_600SemiBold"
     },
 
 
@@ -528,7 +541,7 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 16,
+        paddingVertical: scaleVerticalPadding(16),
         borderRadius: 10,
         marginBottom: 11,
         marginTop: "auto"

@@ -1,11 +1,13 @@
 
+import { showSuccessToast } from "@/utils/toastConfig";
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import * as Clipboard from "expo-clipboard";
 import { useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { MainStackParamList } from "../../type";
-
 
 
 
@@ -20,6 +22,13 @@ type NavigationProp = NativeStackNavigationProp<
 export default function CryptoStepTwo() {
     const navigation = useNavigation<NavigationProp>();
     const [timeOut, setTimeout] = useState(false)
+    const [selectedCoin, setSelectedCoin] = useState("CNGN")
+    const walletAddress = "TRX1234567890ABCDEFGHIJKLMN90";
+
+    const copyAddress = async () => {
+        await Clipboard.setStringAsync(walletAddress);
+        showSuccessToast("Copied!")
+    };
 
 
     return (
@@ -91,24 +100,51 @@ export default function CryptoStepTwo() {
                                 <View style={styles.cryptoDisplayWrapper} >
 
                                     {/* USDT display */}
-                                    <View style={[styles.item, { borderTopLeftRadius: 9999, borderBottomLeftRadius: 9999, borderRightWidth: 1, borderRightColor: "#B3B3B3" }]}  >
-                                        <Text style={[styles.item_text,]} >
+                                    <View
+                                        style={[styles.item,
+                                        {
+                                            borderTopLeftRadius: 9999,
+                                            borderBottomLeftRadius: 9999,
+                                            borderRightWidth: 1,
+                                            borderRightColor: "#B3B3B3",
+                                            backgroundColor: selectedCoin === "USDT" ? "#253E86" : "#ffffff",
+                                        }]}  >
+
+
+                                        <Text style={[styles.item_text, {
+                                            color: selectedCoin === "USDT" ? "#ffffff" : ""
+                                        }]} >
                                             USDT
                                         </Text>
+
+
                                     </View>
 
                                     {/* USDC display  */}
-                                    <View style={[styles.item]}  >
-                                        <Text style={[styles.item_text,]} >
+                                    <View style={[styles.item, {
+                                        backgroundColor: selectedCoin === "USDC" ? "#253E86" : "#ffffff",
+                                    }]}  >
+                                        <Text style={[styles.item_text, {
+                                            color: selectedCoin === "USDC" ? "#ffffff" : ""
+                                        }]} >
                                             USDC
                                         </Text>
                                     </View>
 
 
                                     {/* CNGN Display */}
-                                    <View style={[styles.item, { borderTopRightRadius: 9999, borderBottomRightRadius: 9999, borderLeftWidth: 1, borderLeftColor: "#B3B3B3" }]}  >
-                                        <Text style={[styles.item_text,]} >
-                                            USDT
+                                    <View style={[styles.item,
+                                    {
+                                        borderTopRightRadius: 9999,
+                                        borderBottomRightRadius: 9999,
+                                        borderLeftWidth: 1,
+                                        borderLeftColor: "#B3B3B3",
+                                        backgroundColor: selectedCoin === "CNGN" ? "#253E86" : "",
+                                    }]}  >
+                                        <Text style={[styles.item_text, {
+                                            color: selectedCoin === "CNGN" ? "#ffffff" : ""
+                                        }]} >
+                                            CNGN
                                         </Text>
                                     </View>
 
@@ -134,9 +170,14 @@ export default function CryptoStepTwo() {
                                 <View style={styles.qr_wrapper} >
 
 
-                                    <View style={styles.qr_box} >
+                                    <Image
+                                        source={{
+                                            uri: "https://res.cloudinary.com/dwedz2laa/image/upload/v1781208493/zhosd1cger6rbp8pz7rp.png",
+                                        }}
+                                        style={styles.qr_box}
+                                    />
 
-                                    </View>
+
 
                                     <Text style={styles.qr_text} >Scan to Pay</Text>
                                 </View>
@@ -150,7 +191,9 @@ export default function CryptoStepTwo() {
                                         <Text style={styles.wallet_address} >
                                             TRX1234****************90</Text>
 
-                                        <Pressable>
+                                        <Pressable
+                                            onPress={copyAddress}
+                                        >
                                             <Ionicons
                                                 name={'copy-outline'}
                                                 size={20}
@@ -169,7 +212,11 @@ export default function CryptoStepTwo() {
                                         color={"#253E86"}
                                     />
 
-                                    <Text style={styles.status_text} >Waiting for payment... then animation</Text>
+                                    <Text style={styles.status_text} >Waiting for payment...
+
+
+
+                                    </Text>
                                 </View>
 
 
@@ -206,8 +253,8 @@ const styles = StyleSheet.create({
 
     content: {
         flex: 1,
-        paddingHorizontal: 19,
-        paddingTop: 19,
+        paddingHorizontal: scaleHorizontalPadding(19),
+        paddingTop: scaleVerticalPadding(10),
         flexDirection: "column",
         gap: 20
     },
@@ -224,13 +271,13 @@ const styles = StyleSheet.create({
     heading: {
         color: "#10182A",
         fontFamily: "PlusJakartaSans_500Medium",
-        fontSize: 22
+        fontSize: scaleFont(22)
     },
 
     mainContent: {
         gap: 17,
         alignItems: "center",
-        paddingBottom: 10
+        paddingBottom: scaleHorizontalPadding(10)
     },
 
     cryptoDisplayWrapper: {
@@ -242,34 +289,37 @@ const styles = StyleSheet.create({
 
     item: {
         backgroundColor: "#ffffff",
-        paddingVertical: 10,
+        paddingVertical: 6,
         paddingHorizontal: 23,
-        width: "33%"
+        width: "33%",
+        alignItems: "center",
+        justifyContent: "center"
     },
 
     item_text: {
         color: "#10182AB2",
-        fontSize: 15,
+        fontSize: scaleFont(15),
         fontFamily: "Sora_300Light"
     },
 
     network_text: {
-        fontSize: 14,
+        fontSize: scaleFont(14),
         color: "#10182ACC",
         fontFamily: "Sora_400Regular"
     },
 
     amount_display: {
         width: "100%",
-        paddingVertical: 17,
+        paddingVertical: scaleVerticalPadding(10),
         borderRadius: 10,
         backgroundColor: "#ffffff",
         alignItems: "center",
+        justifyContent: "space-between"
     },
 
     amount_text: {
         color: "#10182A",
-        fontSize: 40,
+        fontSize: scaleFont(40),
         fontFamily: "Sora_400Regular",
         marginBottom: 10
     },
@@ -280,25 +330,25 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         borderTopWidth: 0.5,
         borderTopColor: "#E9ECF3",
-        paddingVertical: 10,
+        paddingVertical: scaleVerticalPadding(10),
         gap: 6
     },
 
     equivalent: {
         color: "#10182ACC",
-        fontSize: 20,
+        fontSize: scaleFont(20),
         fontFamily: "Sora_400Regular",
     },
 
     rate: {
         color: "#10182A80",
-        fontSize: 15,
+        fontSize: scaleFont(15),
         fontFamily: "Sora_400Regular",
     },
 
     qr_wrapper: {
         width: "100%",
-        paddingVertical: 17,
+        paddingVertical: scaleVerticalPadding(17),
         borderRadius: 20,
         backgroundColor: "#ffffff",
         alignItems: "center",
@@ -309,13 +359,14 @@ const styles = StyleSheet.create({
     qr_box: {
         width: 240,
         height: 240,
-        backgroundColor: "#E9ECF3"
+        backgroundColor: "#E9ECF3",
+        objectFit: "cover"
     },
 
     qr_text: {
         color: "#000000",
         fontFamily: "Sora_400Regular",
-        fontSize: 18
+        fontSize: scaleFont(18)
     },
 
     wallet_address_wrapper: {
@@ -326,7 +377,7 @@ const styles = StyleSheet.create({
 
     Wallet_address_wrapper_text: {
         color: "#10182ACC",
-        fontSize: 14,
+        fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular",
     },
 
@@ -336,7 +387,7 @@ const styles = StyleSheet.create({
         borderColor: "#10182ACC",
         backgroundColor: "#CCCCCC1A",
         borderRadius: 5,
-        padding: 15,
+        padding: scaleHorizontalPadding(15),
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center"
@@ -344,7 +395,7 @@ const styles = StyleSheet.create({
 
     wallet_address: {
         color: "#000000",
-        fontSize: 16,
+        fontSize: scaleFont(16),
         fontFamily: "Sora_400Regular",
     },
 
@@ -353,8 +404,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         boxShadow: "0px 4px 4px 0px #00000040",
         width: "97%",
-        paddingVertical: 16,
-        paddingHorizontal: 16,
+        paddingVertical: scaleVerticalPadding(16),
+        paddingHorizontal: scaleHorizontalPadding(16),
         borderRadius: 15,
         flexDirection: "row",
         alignItems: "center",
@@ -363,7 +414,7 @@ const styles = StyleSheet.create({
 
     status_text: {
         color: "#000000",
-        fontSize: 14,
+        fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular",
     },
 
@@ -375,7 +426,7 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 16,
+        paddingVertical: scaleVerticalPadding(16),
         borderRadius: 10,
         marginBottom: 11,
         marginTop: "auto"
@@ -383,7 +434,7 @@ const styles = StyleSheet.create({
 
     buttonText: {
         color: "#253E86",
-        fontSize: 18,
+        fontSize: scaleFont(18),
         fontFamily: 'Sora_400Regular',
     },
 
@@ -399,7 +450,7 @@ const styles = StyleSheet.create({
 
     timeout_heading: {
         color: "#FF0707",
-        fontSize: 48,
+        fontSize: scaleFont(48),
         fontFamily: "Sora_400Regular",
         marginVertical: 7
     }

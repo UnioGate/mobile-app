@@ -23,7 +23,7 @@ export const transactions: transaction_detail_type[] = [
         id: "94b3d6c8-7a25-45a0-9f3d-2b6f4e1c1003",
         method: "Card",
         amount: 3000,
-        image: "btc",
+        image: "card",
         status: "Completed",
         tx_time: new Date("2026-04-19T13:21:00"),
         recipient: "James A."
@@ -32,7 +32,7 @@ export const transactions: transaction_detail_type[] = [
         id: "d1e7f2a4-3b89-4e7c-8d22-6c9a5f0b1004",
         method: "Card",
         amount: 12000,
-        image: "btc",
+        image: "eth",
         status: "Pending",
         tx_time: new Date("2026-04-19T14:47:00"),
         recipient: "James A."
@@ -41,7 +41,7 @@ export const transactions: transaction_detail_type[] = [
         id: "a8c5e1d9-6f34-4b1e-91c7-3d2f8a7b1005",
         method: "USDT (Tron)",
         amount: 300000,
-        image: "btc",
+        image: "card",
         status: "Failed",
         tx_time: new Date("2026-05-29T13:21:00"),
         recipient: "Victoria O."

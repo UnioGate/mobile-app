@@ -15,7 +15,7 @@ export type StateOptionSource = {
   country_code: string;
 };
 
-export type LogoKey = "eth" | "btc";
+export type LogoKey = "eth" | "btc" | "card";
 
 export type TransactionStatus = "Completed" | "Pending" | "Failed" | "Successful";
 

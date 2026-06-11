@@ -19,7 +19,7 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList, "ove
 export default function Overview() {
     const navigation = useNavigation<OverviewNavigationProp>()
     const balance = 24740.5;
-    const [showBalance, setShowBalance] = useState(false)
+    const [showBalance, setShowBalance] = useState(true)
 
 
 
@@ -49,6 +49,7 @@ export default function Overview() {
     const logos: Record<LogoKey, any> = {
         eth: require("../../../assets/logos/eth_icon.png"),
         btc: require("../../../assets/logos/logos_bitcoin.png"),
+        card: require("../../../assets/logos/card.png")
     };
 
 
@@ -291,7 +292,7 @@ export default function Overview() {
 
                                         <Image
                                             source={logos[tx.image]}
-                                            style={{ width: 30, height: 30, marginTop: 7 }}
+                                            style={{ width: 30, height: 30, marginTop: 7, objectFit: "contain" }}
                                         />
 
                                         <View
