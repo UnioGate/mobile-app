@@ -1,4 +1,5 @@
 
+import LogoReveal from "@/components/LogoReveal";
 import { showSuccessToast } from "@/utils/toastConfig";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
@@ -212,11 +213,14 @@ export default function CryptoStepTwo() {
                                         color={"#253E86"}
                                     />
 
-                                    <Text style={styles.status_text} >Waiting for payment...
-
-
-
-                                    </Text>
+                                    <View style={{
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        gap: 10
+                                    }} >
+                                        <Text style={styles.status_text} >Waiting for payment...</Text>
+                                        <LogoReveal />
+                                    </View>
                                 </View>
 
 
