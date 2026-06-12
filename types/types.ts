@@ -68,7 +68,7 @@ export type networkOptionData = {
   img: networkKey;
 }
 
-
+type RouteName = keyof MainStackParamList & string;
 
 export type transfer_method_option_type = {
   title: string;
@@ -76,7 +76,7 @@ export type transfer_method_option_type = {
   icon: keyof typeof Ionicons.glyphMap;
   textColor: string;
   background_color: string;
-  route: keyof MainStackParamList
+  route: RouteName
 }
 
 

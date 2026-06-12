@@ -1,5 +1,6 @@
 
 import SuccessSVG from "@/components/ui/success";
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -17,7 +18,11 @@ export default function CryptoSuccess() {
         <View style={styles.container} >
 
 
-            <View style={styles.content}>
+            <ScrollView
+                style={{ maxHeight: "100%" }}
+                contentContainerStyle={styles.scrollView}
+                showsVerticalScrollIndicator={false}
+            >
 
                 <View style={styles.heading} >
                     <SuccessSVG width={110} height={110} />
@@ -27,10 +32,8 @@ export default function CryptoSuccess() {
 
 
 
-                <ScrollView
-                    style={{ maxHeight: "100%" }}
-                    contentContainerStyle={styles.scrollView}
-                    showsVerticalScrollIndicator={false}
+                <View
+                    style={styles.content}
                 >
                     {/* Payment summary  */}
                     <View style={styles.payment_summary_wrapper} >
@@ -58,7 +61,7 @@ export default function CryptoSuccess() {
                                     gap: 8
                                 }}
                             >
-                                <Ionicons name="checkmark-circle" color={"#009A49"} size={18} />
+                                <Ionicons name="checkmark-circle" color={"#009A49"} size={20} />
                                 <Text style={styles.payment_summary_center_subtext} >Received 5.15 USDT</Text>
                             </View>
                         </View>
@@ -106,7 +109,8 @@ export default function CryptoSuccess() {
 
 
                     {/* Payment status */}
-                    <View style={styles.status} >
+                    <View
+                        style={styles.status} >
 
                         <Ionicons
                             name="time-outline"
@@ -114,9 +118,12 @@ export default function CryptoSuccess() {
                             color={"#10182AB2"}
                         />
 
-                        <Text style={styles.status_text} >Settling to your account:
-                            <Text style={styles.status_text_bold} > Today at 5 PM</Text>
-                        </Text>
+                        <View style={styles.status_text_wrapper}>
+                            <Text style={styles.status_text}>
+                                Settling to your account:
+                                <Text style={styles.status_text_bold}> Today at 5 PM</Text>
+                            </Text>
+                        </View>
                     </View>
 
                     {/* New sale button */}
@@ -138,7 +145,16 @@ export default function CryptoSuccess() {
 
                     {/* Utility buttons  */}
                     <View style={styles.utility_button_wrapper} >
-                        <Pressable style={styles.utility_button} >
+                        <Pressable style={[styles.utility_button, {
+                            // iOS shadow
+                            shadowColor: "#000",
+                            shadowOffset: { width: 0, height: 4 },
+                            shadowOpacity: 0.25,
+                            shadowRadius: 4,
+
+                            // Android shadow
+                            elevation: 5,
+                        }]} >
                             <Ionicons name="share-social-outline" size={20} color={"#1E1E1E"} />
                             <Text style={styles.utility_button_text} >Share Receipt</Text>
                         </Pressable>
@@ -162,12 +178,12 @@ export default function CryptoSuccess() {
                         <Text style={styles.buttonText} > Done</Text>
                     </TouchableOpacity>
 
-                </ScrollView>
+                </View>
 
-            </View>
+            </ScrollView >
 
 
-        </View>
+        </View >
     )
 }
 
@@ -181,16 +197,17 @@ const styles = StyleSheet.create({
 
     content: {
         flex: 1,
-        paddingHorizontal: 19,
-        paddingTop: 19,
         flexDirection: "column",
         gap: 10
     },
 
     scrollView: {
         display: "flex",
-        alignItems: "center",
+        alignItems: "stretch",
         gap: 10,
+        paddingTop: scaleVerticalPadding(19),
+        paddingHorizontal: scaleHorizontalPadding(19),
+        flexGrow: 1
     },
 
     heading: {
@@ -201,7 +218,7 @@ const styles = StyleSheet.create({
 
     heading_text: {
         color: "#10182A",
-        fontSize: 20,
+        fontSize: scaleFont(20),
         fontFamily: "Sora_600SemiBold",
     },
 
@@ -213,9 +230,9 @@ const styles = StyleSheet.create({
     },
 
     payment_summary_top: {
-        paddingVertical: 10,
+        paddingVertical: scaleVerticalPadding(10),
         width: "100%",
-        paddingHorizontal: 20,
+        paddingHorizontal: scaleHorizontalPadding(20),
         alignItems: "center",
         gap: 8,
         flexDirection: "row"
@@ -223,27 +240,27 @@ const styles = StyleSheet.create({
 
     payment_summary_top_text: {
         color: "#000000",
-        fontSize: 14,
+        fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular"
     },
 
     payment_summary_bottom: {
-        paddingVertical: 10,
+        paddingVertical: scaleVerticalPadding(10),
         width: "100%",
-        paddingHorizontal: 20,
+        paddingHorizontal: scaleHorizontalPadding(20),
         alignItems: "flex-start",
         gap: 6
     },
 
     payment_summary_bottom_text: {
         color: "#000000",
-        fontSize: 14,
+        fontSize: scaleFont(14),
         fontFamily: "Sora_300Light"
     },
 
 
     payment_summary_center: {
-        paddingVertical: 15,
+        paddingVertical: scaleVerticalPadding(15),
         borderTopWidth: 0.5,
         borderBottomWidth: 0.5,
         borderTopColor: "#B3B3B3",
@@ -255,14 +272,14 @@ const styles = StyleSheet.create({
     },
 
     payment_summary_center_amount: {
-        fontSize: 32,
+        fontSize: scaleFont(32),
         fontFamily: "Sora_400Regular",
         color: "#10182A"
     },
 
     payment_summary_center_subtext: {
         color: "#009A49",
-        fontSize: 15,
+        fontSize: scaleFont(15),
         fontFamily: "Sora_400Regular",
     },
 
@@ -271,8 +288,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         borderRadius: 20,
         alignItems: "flex-start",
-        paddingVertical: 18,
-        paddingHorizontal: 25,
+        paddingVertical: scaleVerticalPadding(18),
+        paddingHorizontal: scaleHorizontalPadding(25),
         gap: 13,
     },
 
@@ -283,20 +300,20 @@ const styles = StyleSheet.create({
     },
 
     transaction_details_bold: {
-        fontSize: 14,
+        fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular",
         color: "#000000"
     },
 
     transaction_details_text: {
         color: "#10182AB2",
-        fontSize: 14,
+        fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular",
     },
 
     transaction_details_phoneNumber: {
         color: "#000000",
-        fontSize: 14,
+        fontSize: scaleFont(14),
         fontFamily: "Sora_300Light"
     },
 
@@ -307,14 +324,14 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 16,
+        paddingVertical: scaleVerticalPadding(16),
         borderRadius: 10,
         marginBottom: 11,
     },
 
     buttonText: {
         color: "#253E86",
-        fontSize: 18,
+        fontSize: scaleFont(18),
         fontFamily: 'Sora_400Regular',
     },
 
@@ -330,8 +347,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         gap: 5,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingVertical: scaleVerticalPadding(10),
+        paddingHorizontal: scaleHorizontalPadding(20),
         borderRadius: 5,
         borderWidth: 0.5,
         borderColor: "#B3B3B3"
@@ -339,27 +356,33 @@ const styles = StyleSheet.create({
 
     utility_button_text: {
         color: "#000000",
-        fontSize: 14,
+        fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular"
     },
 
     status: {
         backgroundColor: "#FFFFFF",
-        width: "97%",
-        paddingVertical: 16,
-        paddingHorizontal: 16,
+        width: "100%",
+        paddingVertical: scaleVerticalPadding(16),
+        paddingHorizontal: scaleHorizontalPadding(16),
         borderRadius: 15,
         flexDirection: "row",
         alignItems: "center",
-        gap: 10
+        gap: 8,
+    },
+
+    status_text_wrapper: {
+        flex: 1,
+        flexShrink: 1,
     },
 
     status_text: {
         color: "#000000",
-        fontSize: 14,
+        fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular",
+        flexShrink: 1,
+        flexWrap: "wrap",
     },
-
     status_text_bold: {
         color: "#000000",
         fontFamily: "Sora_600SemiBold"

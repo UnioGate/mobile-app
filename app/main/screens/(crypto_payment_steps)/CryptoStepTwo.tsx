@@ -22,7 +22,7 @@ type NavigationProp = NativeStackNavigationProp<
 
 export default function CryptoStepTwo() {
     const navigation = useNavigation<NavigationProp>();
-    const [timeOut, setTimeout] = useState(false)
+    const [timeOut, setTimeout] = useState(true)
     const [selectedCoin, setSelectedCoin] = useState("CNGN")
     const walletAddress = "TRX1234567890ABCDEFGHIJKLMN90";
 
@@ -73,8 +73,8 @@ export default function CryptoStepTwo() {
                             onPress={() => navigation.replace("sales")}
                             style={[styles.button, {
                                 width: "auto",
-                                padding: 10,
-                                paddingVertical: 10,
+                                padding: scaleHorizontalPadding(10),
+                                paddingVertical: scaleVerticalPadding(10),
                                 marginTop: 7,
                                 borderColor: "#253E86"
                             }]}
@@ -82,7 +82,7 @@ export default function CryptoStepTwo() {
                         >
                             <Text style={[styles.buttonText, {
                                 color: "#000000",
-                                fontSize: 20
+                                fontSize: scaleFont(20)
                             }]} > Restart Payment</Text>
                         </TouchableOpacity>
                     </View>

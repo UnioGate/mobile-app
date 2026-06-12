@@ -1,4 +1,5 @@
 import { transfer_payment_method } from "@/data/transfer_payment_methods";
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -9,9 +10,7 @@ import { MainStackParamList } from "../../type";
 
 
 type NavigationProp = NativeStackNavigationProp<
-    MainStackParamList,
-    'sales',
-    'stepOne'
+    MainStackParamList
 >;
 
 
@@ -29,7 +28,10 @@ export default function TransferStepOne() {
                     aria-label="back-button"
                     onPress={() => navigation.goBack()}
                 >
-                    <Ionicons name="chevron-back" size={18} color="#10182A" />
+                    <Ionicons
+                        name="chevron-back"
+                        size={22}
+                        color="#10182A" />
                 </Pressable>
 
 
@@ -109,8 +111,8 @@ const styles = StyleSheet.create({
 
     content: {
         flex: 1,
-        paddingHorizontal: 19,
-        paddingTop: 30,
+        paddingHorizontal: scaleHorizontalPadding(19),
+        paddingTop: scaleVerticalPadding(10),
         flexDirection: "column",
         gap: 17,
         backgroundColor: "#E9ECF3",
@@ -127,7 +129,7 @@ const styles = StyleSheet.create({
     heading: {
         color: "#10182A",
         fontFamily: "Sora_600SemiBold",
-        fontSize: 16
+        fontSize: scaleFont(16)
     },
 
     methods_flexbox: {
@@ -146,7 +148,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.7,
         borderColor: "#B3B3B3",
         borderRadius: 20,
-        padding: 20,
+        padding: scaleHorizontalPadding(20),
         boxShadow: "0px 4px 6px 0px #00000040"
     },
 
@@ -163,7 +165,7 @@ const styles = StyleSheet.create({
     },
 
     title: {
-        fontSize: 16,
+        fontSize: scaleFont(16),
         color: "#10182A",
         fontFamily: "Sora_400Regular"
     },
@@ -171,7 +173,7 @@ const styles = StyleSheet.create({
 
     subTitle: {
         color: "#10182A80",
-        fontSize: 11,
+        fontSize: scaleFont(11),
         fontFamily: "Sora_400Regular"
     },
 
@@ -200,7 +202,7 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 16,
+        paddingVertical: scaleVerticalPadding(16),
         borderRadius: 10,
         marginBottom: 11,
         marginTop: "auto",
@@ -210,7 +212,7 @@ const styles = StyleSheet.create({
 
     buttonText: {
         color: "#253E86",
-        fontSize: 18,
+        fontSize: scaleFont(18),
         fontFamily: 'Sora_400Regular',
     },
 
