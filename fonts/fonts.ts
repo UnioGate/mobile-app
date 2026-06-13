@@ -11,6 +11,7 @@ import {
     Sora_200ExtraLight,
     Sora_300Light,
     Sora_400Regular,
+    Sora_500Medium,
     Sora_600SemiBold
 } from '@expo-google-fonts/sora';
 
@@ -25,4 +26,5 @@ export const fonts = {
     Sora_300Light,
     Sora_600SemiBold,
     Sora_200ExtraLight,
+    Sora_500Medium
 };

@@ -1,4 +1,4 @@
-import { scaleFont } from "@/utils/utils";
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -33,7 +33,7 @@ export default function TapToPay() {
                 >
                     <Ionicons
                         name="chevron-back"
-                        size={20}
+                        size={22}
                         color="#10182A"
                     />
                 </Pressable>
@@ -133,8 +133,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#E9ECF3",
-        paddingHorizontal: 19,
-        paddingTop: 20,
+        paddingHorizontal: scaleHorizontalPadding(19),
+        paddingTop: scaleVerticalPadding(20),
     },
 
     header: {
@@ -148,12 +148,12 @@ const styles = StyleSheet.create({
     heading: {
         color: "#10182A",
         fontFamily: "Sora_600SemiBold",
-        fontSize: scaleFont(16),
+        fontSize: scaleFont(22),
     },
 
     scrollContent: {
         flexGrow: 1,
-        paddingBottom: 40,
+        paddingBottom: scaleVerticalPadding(40),
         gap: 18,
     },
 
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         borderRadius: 12,
         alignItems: "center",
-        paddingVertical: 22,
+        paddingVertical: scaleVerticalPadding(22),
     },
 
     amountText: {
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
         borderColor: "#D5D5D5",
         alignItems: "center",
         justifyContent: "center",
-        paddingTop: 16,
+        paddingTop: scaleVerticalPadding(16),
     },
 
     feeBreakdownText: {
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         borderRadius: 12,
         alignItems: "center",
-        paddingTop: 22,
+        paddingTop: scaleVerticalPadding(22),
         overflow: "hidden",
         marginVertical: 15
     },
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
         fontSize: scaleFont(16),
         fontFamily: "Sora_400Regular",
         textAlign: "center",
-        paddingHorizontal: 13
+        paddingHorizontal: scaleHorizontalPadding(13)
     },
 
     instruction_img: {
@@ -215,8 +215,8 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#FFFFFF",
         borderRadius: 15,
-        paddingVertical: 16,
-        paddingHorizontal: 16,
+        paddingVertical: scaleVerticalPadding(16),
+        paddingHorizontal: scaleHorizontalPadding(16),
         flexDirection: "row",
         alignItems: "center",
         gap: 10,
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
 
 
     card_types_wrapper: {
-        width: "85%",
+        width: "100%",
         marginHorizontal: "auto",
         alignItems: "center",
         justifyContent: "center",
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: "#253E86",
         borderRadius: 10,
-        paddingVertical: 16,
+        paddingVertical: scaleVerticalPadding(16),
         alignItems: "center",
         justifyContent: "center",
         marginTop: "auto",

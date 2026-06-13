@@ -42,7 +42,7 @@ export const transactions: transaction_detail_type[] = [
         method: "USDT (Tron)",
         amount: 300000,
         image: "card",
-        status: "Failed",
+        status: "Unsuccessful",
         tx_time: new Date("2026-05-29T13:21:00"),
         recipient: "Victoria O."
     }

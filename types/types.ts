@@ -1,5 +1,4 @@
 import { MainStackParamList } from "@/app/main/type";
-import { Ionicons } from "@expo/vector-icons";
 import { ReactNode } from "react";
 
 export type DropdownOption = {
@@ -17,7 +16,7 @@ export type StateOptionSource = {
 
 export type LogoKey = "eth" | "btc" | "card";
 
-export type TransactionStatus = "Completed" | "Pending" | "Failed" | "Successful";
+export type TransactionStatus = "Completed" | "Pending" | "Failed" | "Successful" | "Unsuccessful";
 
 export type PaymentMethod = "USDT (Tron)" | "Card";
 
@@ -73,7 +72,7 @@ type RouteName = keyof MainStackParamList & string;
 export type transfer_method_option_type = {
   title: string;
   subtitle: string;
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: ReactNode;
   textColor: string;
   background_color: string;
   route: RouteName

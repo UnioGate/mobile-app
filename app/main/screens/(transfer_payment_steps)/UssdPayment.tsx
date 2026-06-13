@@ -1,4 +1,4 @@
-import { scaleFont } from "@/utils/utils";
+import { copyItem, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -11,6 +11,7 @@ import {
     View
 } from "react-native";
 
+import LogoReveal from "@/components/LogoReveal";
 import { ussd_steps } from "@/data/ussd_steps";
 import { MainStackParamList } from "../../type";
 
@@ -23,8 +24,8 @@ type ItemProps = {
 
 const Item = ({ title, index }: ItemProps) => (
     <View style={[styles.item, {
-        borderBottomWidth: index + 1 <3 ? 0.5 : 0,
-        borderBottomColor: index + 1 <3 ? "#B3B3B3" : "transparent"
+        borderBottomWidth: index + 1 < 3 ? 0.5 : 0,
+        borderBottomColor: index + 1 < 3 ? "#B3B3B3" : "transparent"
     }]}>
         <Text style={styles.step_number} > {index + 1} </Text>
         <Text style={styles.title}>{title}</Text>
@@ -34,6 +35,9 @@ const Item = ({ title, index }: ItemProps) => (
 
 export default function UssdPayment() {
     const navigation = useNavigation<NavigationProp>();
+    const ussd_code = "*7375*123456#"
+
+
 
 
     return (
@@ -48,7 +52,7 @@ export default function UssdPayment() {
                 >
                     <Ionicons
                         name="chevron-back"
-                        size={20}
+                        size={22}
                         color="#10182A"
                     />
                 </Pressable>
@@ -96,11 +100,14 @@ export default function UssdPayment() {
 
                         <View style={styles.text_holder} >
                             <Text style={styles.ussd_text} >
-                                *7375*123456#
+                                {ussd_code}
                             </Text>
 
 
-                            <TouchableOpacity style={styles.copy_btn} >
+                            <TouchableOpacity
+                                onPress={() => copyItem(ussd_code)}
+                                activeOpacity={0.7}
+                                style={styles.copy_btn} >
                                 <Ionicons name="copy" size={26} color={"#FFFFFF"} />
                             </TouchableOpacity>
                         </View>
@@ -136,9 +143,18 @@ export default function UssdPayment() {
                         color="#253E86"
                     />
 
-                    <Text style={styles.statusText}>
-                        Waiting for USSD confirmation... then animation
-                    </Text>
+                    <View style={{
+                        width: "auto",
+                        alignItems: "center",
+                        flexDirection: "row",
+                        gap: 10
+                    }} >
+                        <Text style={styles.statusText}>
+                            Waiting for USSD confirmation...
+                        </Text>
+
+                        <LogoReveal />
+                    </View>
 
                 </View>
 
@@ -164,8 +180,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#E9ECF3",
-        paddingHorizontal: 19,
-        paddingTop: 20,
+        paddingHorizontal: scaleHorizontalPadding(19),
+        paddingTop: scaleVerticalPadding(20),
     },
 
     header: {
@@ -178,13 +194,13 @@ const styles = StyleSheet.create({
 
     heading: {
         color: "#10182A",
-        fontFamily: "Sora_600SemiBold",
-        fontSize: scaleFont(16),
+        fontFamily: "Sora_500Medium",
+        fontSize: scaleFont(22),
     },
 
     scrollContent: {
         flexGrow: 1,
-        paddingBottom: 40,
+        paddingBottom: scaleVerticalPadding(40),
         gap: 18,
     },
 
@@ -199,7 +215,7 @@ const styles = StyleSheet.create({
         width: "100%",
         borderBottomWidth: 0.5,
         borderBottomColor: "#B3B3B3",
-        paddingHorizontal: 13,
+        paddingHorizontal: scaleHorizontalPadding(13),
         paddingVertical: 10
     },
 
@@ -231,8 +247,8 @@ const styles = StyleSheet.create({
 
 
     ussd_text_wrapper: {
-        paddingTop: 16,
-        paddingBottom: 33,
+        paddingTop: scaleVerticalPadding(16),
+        paddingBottom: scaleVerticalPadding(33),
         alignItems: "center",
         justifyContent: "center",
     },
@@ -249,7 +265,7 @@ const styles = StyleSheet.create({
     },
 
     ussd_text: {
-        paddingHorizontal: 13,
+        paddingHorizontal: scaleHorizontalPadding(13),
         width: "85%",
         alignItems: "center",
         justifyContent: "center",
@@ -262,7 +278,7 @@ const styles = StyleSheet.create({
         height: "100%",
         borderTopLeftRadius: 5,
         borderBottomLeftRadius: 5,
-         fontFamily: "Sora_400Regular",
+        fontFamily: "Sora_400Regular",
     },
 
     copy_btn: {
@@ -289,8 +305,8 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#FFFFFF",
         borderRadius: 15,
-        paddingVertical: 16,
-        paddingHorizontal: 16,
+        paddingVertical: scaleVerticalPadding(13),
+        paddingHorizontal: scaleHorizontalPadding(13),
         flexDirection: "row",
         alignItems: "center",
         gap: 10,
@@ -306,7 +322,6 @@ const styles = StyleSheet.create({
     },
 
     statusText: {
-        flex: 1,
         color: "#000000",
         fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular",
@@ -317,7 +332,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: "#253E86",
         borderRadius: 10,
-        paddingVertical: 16,
+        paddingVertical: scaleVerticalPadding(16),
         alignItems: "center",
         justifyContent: "center",
         marginTop: "auto",
@@ -331,9 +346,9 @@ const styles = StyleSheet.create({
 
 
     item: {
-        paddingVertical: 23,
-        paddingHorizontal: 13,
-        paddingBottom: 26,
+        paddingVertical: scaleVerticalPadding(23),
+        paddingHorizontal: scaleHorizontalPadding(13),
+        paddingBottom: scaleVerticalPadding(26),
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-start",

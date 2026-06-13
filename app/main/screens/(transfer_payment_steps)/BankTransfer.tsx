@@ -1,8 +1,9 @@
-import { scaleFont } from "@/utils/utils";
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
+    Image,
     Pressable,
     ScrollView,
     StyleSheet,
@@ -11,6 +12,8 @@ import {
     View
 } from "react-native";
 
+import Timer from "@/components/icons/Timer";
+import LogoReveal from "@/components/LogoReveal";
 import { MainStackParamList } from "../../type";
 
 type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
@@ -30,7 +33,7 @@ export default function BankTransfer() {
                 >
                     <Ionicons
                         name="chevron-back"
-                        size={20}
+                        size={22}
                         color="#10182A"
                     />
                 </Pressable>
@@ -39,7 +42,10 @@ export default function BankTransfer() {
                     Bank Transfer
                 </Text>
 
-                <View style={{ width: 20 }} />
+                <Text
+                >
+                    10:00
+                </Text>
             </View>
 
 
@@ -70,11 +76,26 @@ export default function BankTransfer() {
 
                     <View style={styles.detail_category}  >
                         <Text style={styles.detail_category_title} >Bank Name</Text>
-                        <View>
+
+                        <View style={{
+                            width: "auto",
+                            alignItems: "center",
+                            gap: 10,
+                            flexDirection: "row"
+                        }} >
+                            <Image
+                                source={require("../../../../assets/logos/zenith_bank_logo.png")}
+                                style={{
+                                    width: 32,
+                                    height: 36
+                                }}
+                            />
+
                             <Text style={[styles.detail_category_value, {
                                 fontSize: scaleFont(16)
                             }]} >Zenith Bank</Text>
                         </View>
+
                     </View>
 
 
@@ -99,12 +120,12 @@ export default function BankTransfer() {
                         alignItems: "center",
                         justifyContent: "center",
                         borderBottomWidth: 0,
-                        paddingVertical: 5
+                        paddingVertical: scaleVerticalPadding(5)
                     }]} >
                         <Text style={[styles.detail_category_value, {
                             fontSize: scaleFont(12)
                         }]} >Valid for 30 minutes</Text>
-                        <Ionicons name="timer" size={18} color={"#F24822"} />
+                        <Timer />
                     </View>
 
                 </View>
@@ -118,18 +139,22 @@ export default function BankTransfer() {
 
 
                 {/* Status */}
-                <View style={styles.status}>
+                <View style={styles.status} >
 
                     <Ionicons
                         name="alert-circle"
                         size={23}
-                        color="#253E86"
+                        color={"#253E86"}
                     />
 
-                    <Text style={styles.statusText}>
-                        Waiting for transfer... then animation
-                    </Text>
-
+                    <View style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 10
+                    }} >
+                        <Text style={styles.statusText} >Waiting for transfer...</Text>
+                        <LogoReveal />
+                    </View>
                 </View>
 
 
@@ -154,8 +179,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#E9ECF3",
-        paddingHorizontal: 19,
-        paddingTop: 20,
+        paddingHorizontal: scaleHorizontalPadding(19),
+        paddingTop: scaleVerticalPadding(10),
     },
 
     header: {
@@ -168,13 +193,13 @@ const styles = StyleSheet.create({
 
     heading: {
         color: "#10182A",
-        fontFamily: "Sora_600SemiBold",
-        fontSize: scaleFont(16),
+        fontFamily: "Sora_500Medium",
+        fontSize: scaleFont(22),
     },
 
     scrollContent: {
         flexGrow: 1,
-        paddingBottom: 40,
+        paddingBottom: scaleVerticalPadding(40),
         gap: 18,
     },
 
@@ -183,7 +208,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         borderRadius: 12,
         alignItems: "center",
-        paddingVertical: 22,
+        paddingVertical: scaleVerticalPadding(22),
     },
 
     amountText: {
@@ -199,7 +224,7 @@ const styles = StyleSheet.create({
         borderColor: "#D5D5D5",
         alignItems: "center",
         justifyContent: "center",
-        paddingTop: 16,
+        paddingTop: scaleVerticalPadding(16),
     },
 
     feeBreakdownText: {
@@ -214,7 +239,7 @@ const styles = StyleSheet.create({
     bank_details_wrapper: {
         backgroundColor: "#FFFFFF",
         borderRadius: 20,
-        paddingVertical: 6,
+        paddingVertical: scaleVerticalPadding(6),
         flexDirection: "column",
         alignItems: "flex-start",
         gap: 3
@@ -222,9 +247,9 @@ const styles = StyleSheet.create({
 
     detail_category: {
         width: "100%",
-        paddingHorizontal: 16,
+        paddingHorizontal: scaleHorizontalPadding(16),
         gap: 10,
-        paddingVertical: 13,
+        paddingVertical: scaleVerticalPadding(13),
         borderBottomWidth: 0.5,
         borderBottomColor: "#B3B3B3"
     },
@@ -256,8 +281,8 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#FFFFFF",
         borderRadius: 15,
-        paddingVertical: 16,
-        paddingHorizontal: 16,
+        paddingVertical: scaleVerticalPadding(16),
+        paddingHorizontal: scaleHorizontalPadding(16),
         flexDirection: "row",
         alignItems: "center",
         gap: 10,
@@ -273,7 +298,6 @@ const styles = StyleSheet.create({
     },
 
     statusText: {
-        flex: 1,
         color: "#000000",
         fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular",
@@ -284,7 +308,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: "#253E86",
         borderRadius: 10,
-        paddingVertical: 16,
+        paddingVertical: scaleVerticalPadding(16),
         alignItems: "center",
         justifyContent: "center",
         marginTop: "auto",

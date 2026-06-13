@@ -39,6 +39,8 @@ export default function Overview() {
                 return styles.pending;
             case "failed":
                 return styles.unsuccessful;
+            case "unsuccessful":
+                return styles.unsuccessful;
             default:
                 return {};
         }

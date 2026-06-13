@@ -1,17 +1,19 @@
-import { scaleFont } from "@/utils/utils";
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
-    useWindowDimensions,
+    Image,
     Pressable,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
+    useWindowDimensions,
     View
 } from "react-native";
 
+import LogoReveal from "@/components/LogoReveal";
 import { MainStackParamList } from "../../type";
 
 type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
@@ -32,7 +34,7 @@ export default function PayWithCard() {
                 >
                     <Ionicons
                         name="chevron-back"
-                        size={20}
+                        size={22}
                         color="#10182A"
                     />
                 </Pressable>
@@ -41,7 +43,10 @@ export default function PayWithCard() {
                     Card Payment
                 </Text>
 
-                <View style={{ width: 20 }} />
+                <Text
+                >
+                    10:00
+                </Text>
             </View>
 
 
@@ -59,7 +64,10 @@ export default function PayWithCard() {
                     </Text>
 
                     <View style={styles.feeBreakdownWrapper}>
-                        <Text style={styles.feeBreakdownText}>
+                        <Text
+                            adjustsFontSizeToFit
+                            numberOfLines={1}
+                            style={styles.feeBreakdownText}>
                             ₦ 8500 + ₦ 152 fee = ₦ 8652 total
                         </Text>
                     </View>
@@ -69,8 +77,12 @@ export default function PayWithCard() {
 
                 {/* QR Section */}
                 <View style={styles.qrWrapper}>
-
-                    <View style={[styles.qrBox, { width: Math.min(width * 0.65, 320) }]} />
+                    <Image
+                        source={{
+                            uri: "https://res.cloudinary.com/dwedz2laa/image/upload/v1781208493/zhosd1cger6rbp8pz7rp.png",
+                        }}
+                        style={[styles.qrBox, { width: Math.min(width * 0.65, 320) }]}
+                    />
 
                     <Text style={styles.qrText}>
                         Scan to Pay
@@ -86,9 +98,24 @@ export default function PayWithCard() {
 
                         <View style={styles.halfHr} />
 
-                        <Text style={styles.orText}>
-                            OR
-                        </Text>
+                        <View style={{
+                            width: "100%",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexDirection: "row"
+                        }} >
+                            <View style={[styles.hr, {
+                                width: "47%"
+                            }]} />
+
+                            <Text style={styles.orText}>
+                                OR
+                            </Text>
+
+                            <View style={[styles.hr, {
+                                width: "47%"
+                            }]} />
+                        </View>
 
                         <View style={styles.halfHr} />
 
@@ -118,18 +145,22 @@ export default function PayWithCard() {
 
 
                 {/* Status */}
-                <View style={styles.status}>
+                <View style={styles.status} >
 
                     <Ionicons
                         name="alert-circle"
                         size={23}
-                        color="#253E86"
+                        color={"#253E86"}
                     />
 
-                    <Text style={styles.statusText}>
-                        Waiting for payment... then animation
-                    </Text>
-
+                    <View style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 10
+                    }} >
+                        <Text style={styles.statusText} >Waiting for payment...</Text>
+                        <LogoReveal />
+                    </View>
                 </View>
 
 
@@ -154,8 +185,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#E9ECF3",
-        paddingHorizontal: 19,
-        paddingTop: 20,
+        paddingHorizontal: scaleHorizontalPadding(19),
+        paddingTop: scaleVerticalPadding(10),
     },
 
     header: {
@@ -163,17 +194,17 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        marginBottom: 20,
+        marginBottom: 25,
     },
 
     heading: {
         color: "#10182A",
         fontFamily: "Sora_600SemiBold",
-        fontSize: scaleFont(16),
+        fontSize: scaleFont(22),
     },
 
     scrollContent: {
-        paddingBottom: 40,
+        paddingBottom: scaleVerticalPadding(40),
         gap: 18,
     },
 
@@ -182,7 +213,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         borderRadius: 12,
         alignItems: "center",
-        paddingVertical: 22,
+        paddingVertical: scaleVerticalPadding(22),
     },
 
     amountText: {
@@ -198,7 +229,7 @@ const styles = StyleSheet.create({
         borderColor: "#D5D5D5",
         alignItems: "center",
         justifyContent: "center",
-        paddingTop: 16,
+        paddingTop: scaleVerticalPadding(16),
     },
 
     feeBreakdownText: {
@@ -212,7 +243,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         borderRadius: 20,
         alignItems: "center",
-        paddingVertical: 20,
+        paddingVertical: scaleVerticalPadding(20),
         gap: 16,
     },
 
@@ -231,7 +262,7 @@ const styles = StyleSheet.create({
     paymentLinkWrapper: {
         width: "100%",
         alignItems: "center",
-        paddingVertical: 5,
+        paddingVertical: scaleVerticalPadding(5),
     },
 
     lineBreakFlexbox: {
@@ -265,7 +296,7 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#253E86",
         borderRadius: 10,
-        paddingVertical: 16,
+        paddingVertical: scaleVerticalPadding(16),
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "row",
@@ -282,8 +313,8 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#FFFFFF",
         borderRadius: 15,
-        paddingVertical: 16,
-        paddingHorizontal: 16,
+        paddingVertical: scaleVerticalPadding(16),
+        paddingHorizontal: scaleHorizontalPadding(16),
         flexDirection: "row",
         alignItems: "center",
         gap: 10,
@@ -300,7 +331,6 @@ const styles = StyleSheet.create({
     },
 
     statusText: {
-        flex: 1,
         color: "#000000",
         fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular",
@@ -311,7 +341,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: "#253E86",
         borderRadius: 10,
-        paddingVertical: 16,
+        paddingVertical: scaleVerticalPadding(16),
         alignItems: "center",
         justifyContent: "center",
         marginTop: 10,

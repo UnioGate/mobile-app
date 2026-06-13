@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import * as Clipboard from "expo-clipboard";
 import { useState } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { MainStackParamList } from "../../type";
 
 
@@ -25,6 +25,7 @@ export default function CryptoStepTwo() {
     const [timeOut, setTimeout] = useState(true)
     const [selectedCoin, setSelectedCoin] = useState("CNGN")
     const walletAddress = "TRX1234567890ABCDEFGHIJKLMN90";
+    const { width } = useWindowDimensions();
 
     const copyAddress = async () => {
         await Clipboard.setStringAsync(walletAddress);
@@ -175,7 +176,9 @@ export default function CryptoStepTwo() {
                                         source={{
                                             uri: "https://res.cloudinary.com/dwedz2laa/image/upload/v1781208493/zhosd1cger6rbp8pz7rp.png",
                                         }}
-                                        style={styles.qr_box}
+                                        style={[styles.qr_box, {
+                                            width: Math.min(width * 0.65, 320)
+                                        }]}
                                     />
 
 
@@ -361,7 +364,6 @@ const styles = StyleSheet.create({
     },
 
     qr_box: {
-        width: 240,
         height: 240,
         backgroundColor: "#E9ECF3",
         objectFit: "cover"

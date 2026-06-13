@@ -62,7 +62,7 @@ export default function TransferStepOne() {
                             <View style={[styles.left_side_icon_wrapper, {
                                 backgroundColor: option.background_color,
                             }]} >
-                                <Ionicons name={option.icon} size={35} color={option.textColor} />
+                                {option.icon}
                             </View>
 
 
