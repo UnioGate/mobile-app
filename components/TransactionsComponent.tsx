@@ -1,7 +1,7 @@
 import { MainStackParamList } from "@/app/main/type";
 import { transactions } from "@/data/mock_tx";
-import { GroupedTx } from "@/types/types";
-import { scaleFont } from "@/utils/utils";
+import { GroupedTx, LogoKey } from "@/types/types";
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -15,6 +15,7 @@ type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 export default function TransactionsComponent() {
     const navigation = useNavigation<NavigationProp>()
 
+    // This groups the transaction according to the transaction date
     const groupedTransactions = useMemo(() => {
 
         const groups: Record<string, GroupedTx> = {}
@@ -46,6 +47,12 @@ export default function TransactionsComponent() {
 
     }, [])
 
+    // This handles the display of the different logos
+    const logos: Record<LogoKey, any> = {
+        eth: require("../assets/logos/eth_icon.png"),
+        btc: require("../assets/logos/logos_bitcoin.png"),
+        card: require("../assets/logos/card.png")
+    };
 
     return (
         <View style={styles.container} >
@@ -61,11 +68,17 @@ export default function TransactionsComponent() {
                             <Text style={styles.date_text}>{group.date}</Text>
 
                             <View style={styles.summary}>
-                                <Text style={styles.summary_text}>
+                                <Text
+                                    adjustsFontSizeToFit
+                                    numberOfLines={1}
+                                    style={styles.summary_text}>
                                     Total Transactions {group.totalCount}
                                 </Text>
 
-                                <Text style={styles.summary_text}>
+                                <Text
+                                    adjustsFontSizeToFit
+                                    numberOfLines={1}
+                                    style={styles.summary_text}>
                                     Total Sales ₦ {group.totalAmount.toLocaleString()}
                                 </Text>
                             </View>
@@ -83,13 +96,30 @@ export default function TransactionsComponent() {
 
                                 <View style={styles.name}>
                                     <Image
-                                        source={require("../assets/logos/eth_icon.png")}
-                                        style={{ width: 20, aspectRatio: 1 }}
+                                        source={logos[tx.image]}
+                                        style={{
+                                            width: 23.75,
+                                            height: 20,
+                                            marginTop: 7,
+                                            alignSelf: "flex-start",
+                                            objectFit: "contain"
+                                        }}
                                     />
 
-                                    <View>
-                                        <Text style={styles.method_text}>{tx.method}</Text>
-                                        <Text style={styles.recipient}>{tx.recipient}</Text>
+                                    <View style={{
+                                        gap: 8,
+                                        alignItems: "flex-start"
+                                    }} >
+                                        <Text
+                                            adjustsFontSizeToFit
+                                            numberOfLines={1}
+                                            style={styles.method_text}>{tx.method}</Text>
+
+
+                                        <Text
+                                            adjustsFontSizeToFit
+                                            numberOfLines={1}
+                                            style={styles.recipient}>{tx.recipient}</Text>
                                     </View>
                                 </View>
 
@@ -122,7 +152,10 @@ export default function TransactionsComponent() {
                                 </Text>
 
                                 <Pressable style={styles.view_button}>
-                                    <Ionicons name="chevron-forward" size={13} color="#10182AB2" />
+                                    <Ionicons
+                                        name="chevron-forward"
+                                        size={23}
+                                        color="#10182AB2" />
                                 </Pressable>
                             </Pressable>
                         ))}
@@ -174,7 +207,7 @@ const styles = StyleSheet.create({
 
     summary_text: {
         color: "#000000",
-        fontSize: scaleFont(10),
+        fontSize: scaleFont(12),
         fontFamily: "Sora_300Light"
     },
 
@@ -190,22 +223,18 @@ const styles = StyleSheet.create({
     tx_row: {
         width: "100%",
         borderRadius: 5,
-        backgroundColor: "#ffffff",
-        paddingVertical: 14,
-        paddingHorizontal: 7,
+        backgroundColor: "#fff",
+        paddingVertical: scaleVerticalPadding(14),
+        paddingHorizontal: scaleHorizontalPadding(7),
         flexDirection: "row",
         alignItems: "flex-start",
-        justifyContent: "space-between",
-        gap: 10
     },
 
     name: {
-        width: "30.6%",
-        height: "auto",
+        flex: 3,
+        flexDirection: "row",
+        alignItems: "flex-start",
         gap: 8,
-        alignItems: "center",
-        justifyContent: "flex-start",
-        flexDirection: "row"
     },
 
     method_text: {
@@ -221,28 +250,32 @@ const styles = StyleSheet.create({
     },
 
     the_amount: {
-        width: "20.5%",
+        flex: 1.5,
+        textAlign: "center",
         fontFamily: "Sora_400Regular",
         fontSize: scaleFont(10),
-        color: "#000000",
-        flexShrink: 0,
-        flexWrap: "nowrap"
+        color: "#000",
     },
 
     status: {
-        width: "19.6%",
+        flex: 1,
+        textAlign: "center",
         fontFamily: "Sora_600SemiBold",
         fontSize: scaleFont(9),
     },
 
     time: {
+        flex: 1,
+        textAlign: "right",
         color: "#10182AB2",
         fontFamily: "Sora_400Regular",
         fontSize: scaleFont(10),
     },
 
     view_button: {
-        width: "2.9%",
+        width: 24,
+        alignItems: "center",
+        justifyContent: "center",
         alignSelf: "center"
     }
 

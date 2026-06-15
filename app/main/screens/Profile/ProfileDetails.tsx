@@ -5,6 +5,7 @@ import NairaSign from "@/components/icons/NairaIcon";
 import RolesIcon from "@/components/icons/RolesIcon";
 import SettlementIcon from "@/components/icons/SettlementIcon";
 import TeamIcon from "@/components/icons/Team";
+import WalletIcon from "@/components/icons/WalletIcon";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -104,7 +105,7 @@ export default function ProfileDetails() {
 
                             {/* left side */}
                             <View style={styles.left_side} >
-                                <Ionicons name="wallet" size={21} color={"#1E1E1E"} />
+                                <WalletIcon />
                                 <Text style={styles.left_side_text} >Balance & Withdrawals</Text>
                             </View>
 
@@ -175,7 +176,7 @@ export default function ProfileDetails() {
 
                             {/* left side */}
                             <View style={styles.left_side} >
-                                <Ionicons name="wallet" size={21} color={"#1E1E1E"} />
+                                <WalletIcon />
                                 <Text style={styles.left_side_text} >Accepted Payment Methods</Text>
                             </View>
 
@@ -357,9 +358,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        marginBottom: scaleVerticalPadding(12),
+        marginBottom: scaleVerticalPadding(10),
         paddingHorizontal: scaleHorizontalPadding(13),
-        paddingTop: scaleVerticalPadding(12),
+        paddingTop: scaleVerticalPadding(10),
     },
 
     heading: {
@@ -428,8 +429,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#A4FFE1",
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 4,
-        paddingHorizontal: 5,
+        paddingVertical: scaleVerticalPadding(4),
+        paddingHorizontal: scaleHorizontalPadding(5),
         borderRadius: 999
     },
 
@@ -445,8 +446,8 @@ const styles = StyleSheet.create({
         width: "auto",
         backgroundColor: "#253E86",
         borderRadius: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingVertical: scaleVerticalPadding(10),
+        paddingHorizontal: scaleHorizontalPadding(20),
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "row",
@@ -480,8 +481,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#B3B3B3",
         borderRadius: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 3,
+        paddingVertical: scaleVerticalPadding(10),
+        paddingHorizontal: scaleHorizontalPadding(3),
         flexDirection: "column",
         gap: 13,
         alignItems: "flex-start",
@@ -534,8 +535,8 @@ const styles = StyleSheet.create({
     verified_tag: {
         backgroundColor: "#1CCA65",
         borderRadius: 9,
-        paddingVertical: 2,
-        paddingHorizontal: 5,
+        paddingVertical: scaleVerticalPadding(2),
+        paddingHorizontal: scaleHorizontalPadding(5),
         color: "#ffffff",
         fontSize: scaleFont(8),
         fontFamily: "Sora_400Regular"

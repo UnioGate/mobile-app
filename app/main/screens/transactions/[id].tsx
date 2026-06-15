@@ -1,6 +1,6 @@
 import { transactions } from "@/data/mock_tx";
 import { transaction_detail_type } from "@/types/types";
-import { scaleFont } from "@/utils/utils";
+import { copyItem, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -53,7 +53,7 @@ export default function TransactionDetails() {
                 >
                     <Ionicons
                         name="chevron-back"
-                        size={20}
+                        size={22}
                         color="#10182A"
                     />
                 </Pressable>
@@ -94,17 +94,24 @@ export default function TransactionDetails() {
                             style={styles.details_heading}
                         >Transaction ID</Text>
 
-                        <View style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            gap: 10
-                        }}>
+                        <Pressable
+
+                            onPress={() => copyItem(currentTransaction?.id ?? "")}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                gap: 10
+                            }}>
                             <Text style={styles.details_value} > {currentTransaction?.id.slice(0, 10)} </Text>
 
-                            <Pressable>
-                                <Ionicons name="copy-outline" color={"#1E1E1E"} size={14.4} />
-                            </Pressable>
-                        </View>
+                            <Text
+                            >
+                                <Ionicons
+                                    name="copy-outline"
+                                    color={"#1E1E1E"}
+                                    size={14.4} />
+                            </Text>
+                        </Pressable>
                     </View>
 
                     {/* Date & Time  */}
@@ -229,7 +236,7 @@ export default function TransactionDetails() {
                                     style={{
                                         fontFamily: "Sora_600SemiBold",
                                     }}
-                                >₦ 170</Text>
+                                >₦ {currentTransaction?.amount && (0.2 * currentTransaction?.amount)}</Text>
 
                                 <Text
                                     style={{
@@ -433,8 +440,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         marginBottom: 12,
-        paddingHorizontal: 13,
-        paddingTop: 12,
+        paddingHorizontal: scaleHorizontalPadding(13),
+        paddingTop: scaleVerticalPadding(12),
     },
 
     heading: {
@@ -446,11 +453,11 @@ const styles = StyleSheet.create({
     main_content: {
         backgroundColor: "#D3D8E7",
         flexGrow: 1,
-        paddingVertical: 8,
-        paddingHorizontal: 15,
+        paddingVertical: scaleVerticalPadding(8),
+        paddingHorizontal: scaleHorizontalPadding(15),
         alignItems: "stretch",
         gap: 17,
-        paddingBottom: 20
+        paddingBottom: scaleVerticalPadding(20)
     },
 
     label: {
@@ -459,7 +466,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         gap: 10,
-        paddingVertical: 18,
+        paddingVertical: scaleVerticalPadding(18),
     },
 
     label_text: {
@@ -472,7 +479,7 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#FFFFFF",
         borderRadius: 20,
-        padding: 15,
+        padding: scaleHorizontalPadding(15),
         alignItems: "center",
         gap: 10
     },
@@ -485,7 +492,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderBottomWidth: 1,
         borderBottomColor: "#B3B3B3",
-        paddingVertical: 8
+        paddingVertical: scaleVerticalPadding(8)
     },
 
     details_heading: {
@@ -509,7 +516,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#B3B3B3",
         borderRadius: 10,
-        padding: 20,
+        padding: scaleHorizontalPadding(20),
         flexDirection: "row"
     },
 
@@ -530,7 +537,7 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#FFFFFF",
         borderRadius: 20,
-        padding: 15,
+        padding: scaleHorizontalPadding(15),
         alignItems: "center",
         gap: 10
     },
@@ -579,7 +586,7 @@ const styles = StyleSheet.create({
 
     utilities_btn: {
         backgroundColor: "#FFFFFF",
-        padding: 10,
+        padding: scaleHorizontalPadding(10),
         alignItems: "center",
         justifyContent: "center",
         gap: 6,

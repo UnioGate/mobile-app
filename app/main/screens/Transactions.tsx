@@ -1,5 +1,6 @@
+import FilterIcon from "@/components/icons/FilterIcon";
 import TransactionsComponent from "@/components/TransactionsComponent";
-import { scaleFont } from "@/utils/utils";
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -32,7 +33,7 @@ export default function Transactions() {
                 >
                     <Ionicons
                         name="chevron-back"
-                        size={20}
+                        size={22}
                         color="#10182A"
                     />
                 </Pressable>
@@ -56,10 +57,7 @@ export default function Transactions() {
 
 
                     <Pressable>
-                        <Ionicons
-                            name="filter"
-                            color={"#1E1E1E"}
-                            size={22} />
+                        <FilterIcon color={"#1E1E1E"} />
                     </Pressable>
 
                 </View>
@@ -87,8 +85,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#E9ECF3",
-        paddingHorizontal: 13,
-        paddingTop: 20,
+        paddingHorizontal: scaleHorizontalPadding(13),
+        paddingTop: scaleVerticalPadding(20),
     },
 
     header: {
