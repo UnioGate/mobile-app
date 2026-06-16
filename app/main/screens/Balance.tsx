@@ -1,9 +1,14 @@
+import CalendarIcon from "@/components/icons/CalendarIcon";
+import EyeClosed from "@/components/icons/EyeClosed";
+import ReloadIcon from "@/components/icons/Reload";
+import TransactionChart from "@/components/TransactionChart";
 import { withdrawals } from "@/data/mock_withdrawal_tx";
-import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { formatBalance, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { CalendarIcon, Download, Eye } from "lucide-react-native";
+import { ChevronDown, Download, EyeIcon } from "lucide-react-native";
+import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { MainStackParamList } from "../type";
 
@@ -12,6 +17,16 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 export default function Balance() {
     const navigation = useNavigation<OverviewNavigationProp>()
+    const balance = 24740.5;
+    const [showBalance, setShowBalance] = useState(true)
+    const [isBreakdownOpen, setIsBreakdownOpen] = useState(true);
+
+
+
+    // Masking logic for balance
+    const displayBalance = showBalance
+        ? `₦${formatBalance(balance)}`
+        : "₦ *******";
 
 
     return (
@@ -27,7 +42,7 @@ export default function Balance() {
                 >
                     <Ionicons
                         name="chevron-back"
-                        size={20}
+                        size={22}
                         color="#10182A"
                     />
                 </Pressable>
@@ -38,7 +53,9 @@ export default function Balance() {
                 </Text>
 
 
-                <View></View>
+                <Pressable>
+                    <ReloadIcon />
+                </Pressable>
 
             </View>
 
@@ -58,13 +75,25 @@ export default function Balance() {
 
                     {/* Balance details  */}
                     <View style={styles.balance_details} >
-                        <Text style={styles.balance_text} >AVAILABLE BALANCE</Text>
+                        <Text style={styles.balance_text} >Available Balance</Text>
 
                         <View style={styles.balance_wrapper} >
-                            <Text style={styles.balance_amount} >₦247,850.50</Text>
+                            <Text style={styles.balance_amount} >{displayBalance}</Text>
 
-                            <Pressable>
-                                <Eye color={"#FFFFFF"} height={12} width={18} />
+                            <Pressable
+                                onPress={() => setShowBalance((prev) => !prev)}
+                            >
+                                {showBalance ? (
+                                    <EyeIcon
+                                        height={22}
+                                        width={22}
+                                        color={"#ffffff"}
+                                    />
+                                ) :
+                                    (<EyeClosed
+                                        height={22}
+                                        width={22}
+                                        color={"#ffffff"} />)}
                             </Pressable>
                         </View>
 
@@ -92,64 +121,77 @@ export default function Balance() {
                     {/* Breakdown  */}
                     <View style={styles.breakdown_wrapper} >
 
-                        <View style={styles.breakdown_row} >
+                        {/* Heading  */}
+                        <Pressable
+                            onPress={() => setIsBreakdownOpen(prev => !prev)}
+                            style={{
+                                width: "100%",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                flexDirection: "row"
+                            }}
+                        >
+                            <Text style={{
+                                fontSize: scaleFont(13),
+                                fontFamily: "Sora_600SemiBold",
+                                color: "#000000"
+                            }}>
+                                Balance Breakdown
+                            </Text>
 
-                            <View style={styles.left_side} >
+                            <ChevronDown
+                                style={{
+                                    transform: [
+                                        { rotate: isBreakdownOpen ? "0deg" : "-90deg" }
+                                    ]
+                                }}
+                            />
+                        </Pressable>
 
-                                <View style={styles.dot} />
-
-                                <View style={styles.text_wrapper}>
-                                    <Text style={styles.row_title} >Cleared</Text>
-                                    <Text style={styles.row_subtitle} >Available now</Text>
+                        {isBreakdownOpen && (
+                            <>
+                                <View style={styles.breakdown_row}>
+                                    <View style={styles.left_side}>
+                                        <View style={styles.dot} />
+                                        <View style={styles.text_wrapper}>
+                                            <Text style={styles.row_title}>Cleared</Text>
+                                            <Text style={styles.row_subtitle}>Available now</Text>
+                                        </View>
+                                    </View>
+                                    <Text style={styles.right_side_text}>₦247,850</Text>
                                 </View>
-                            </View>
 
-                            <Text style={styles.right_side_text} >₦247,850</Text>
-                        </View>
-
-
-
-                        <View style={[styles.breakdown_row, {
-                            borderBottomWidth: 0.5,
-                            borderBottomColor: "#FFFFFF80",
-                            borderTopWidth: 0.5,
-                            borderTopColor: "#FFFFFF80"
-                        }]} >
-
-                            <View style={styles.left_side} >
-
-                                <View style={[styles.dot, {
-                                    backgroundColor: "#FEFB2D"
-                                }]} />
-
-                                <View style={styles.text_wrapper} >
-                                    <Text style={styles.row_title} >Pending</Text>
-                                    <Text style={styles.row_subtitle} >Pending settlement</Text>
+                                <View style={[
+                                    styles.breakdown_row,
+                                    {
+                                        borderBottomWidth: 0.5,
+                                        borderBottomColor: "#FFFFFF80",
+                                        borderTopWidth: 0.5,
+                                        borderTopColor: "#FFFFFF80"
+                                    }
+                                ]}>
+                                    <View style={styles.left_side}>
+                                        <View style={[styles.dot, { backgroundColor: "#FEFB2D" }]} />
+                                        <View style={styles.text_wrapper}>
+                                            <Text style={styles.row_title}>Pending</Text>
+                                            <Text style={styles.row_subtitle}>Pending settlement</Text>
+                                        </View>
+                                    </View>
+                                    <Text style={styles.right_side_text}>₦15,400</Text>
                                 </View>
-                            </View>
 
-                            <Text style={styles.right_side_text} >₦15,400</Text>
-                        </View>
-
-
-
-                        <View style={styles.breakdown_row} >
-
-                            <View style={styles.left_side} >
-
-                                <View style={[styles.dot, {
-                                    backgroundColor: "#FF0707",
-                                    borderRadius: 999
-                                }]} />
-
-                                <View style={styles.text_wrapper}>
-                                    <Text style={styles.row_title} >On Hold</Text>
-                                    <Text style={styles.row_subtitle} >Flagged transaction</Text>
+                                <View style={styles.breakdown_row}>
+                                    <View style={styles.left_side}>
+                                        <View style={[styles.dot, { backgroundColor: "#FF0707" }]} />
+                                        <View style={styles.text_wrapper}>
+                                            <Text style={styles.row_title}>On Hold</Text>
+                                            <Text style={styles.row_subtitle}>Flagged transaction</Text>
+                                        </View>
+                                    </View>
+                                    <Text style={styles.right_side_text}>₦0</Text>
                                 </View>
-                            </View>
-
-                            <Text style={styles.right_side_text} >₦0</Text>
-                        </View>
+                            </>
+                        )}
 
                     </View>
 
@@ -173,16 +215,19 @@ export default function Balance() {
                         <Download width={16} height={16} color={"#ffffff"} />
 
 
-                        <Text style={[styles.button_text, {
-                            color: "#ffffff"
-                        }]} >Withdraw Funds</Text>
+                        <Text
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
+                            style={[styles.button_text, {
+                                color: "#ffffff"
+                            }]} >Withdraw Funds</Text>
                     </TouchableOpacity>
 
                     <Pressable
                         onPress={() => navigation.navigate("settlement_settings")}
                         style={[styles.button]} >
 
-                        <CalendarIcon width={16} height={16} color={"#253E86"} />
+                        <CalendarIcon />
 
                         <Text style={[styles.button_text, {
                             color: "#253E86"
@@ -244,16 +289,21 @@ export default function Balance() {
                             color={"#253E86"}
                             size={10} />
 
-                        <Text style={[styles.button_text, {
-                            color: "#253E86",
-                            fontFamily: "Sora_600SemiBold",
-                            fontSize: scaleFont(7)
-                        }]} > Change Settings</Text>
+                        <Text
+                            numberOfLines={1}
+                            adjustsFontSizeToFit style={[styles.button_text, {
+                                color: "#253E86",
+                                fontFamily: "Sora_600SemiBold",
+                                fontSize: scaleFont(7)
+                            }]} > Change Settings</Text>
 
                     </TouchableOpacity>
 
                 </View>
 
+
+                {/* Transaction chart */}
+                <TransactionChart />
 
 
                 {/* Recent withdrawals section */}
@@ -400,14 +450,14 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.5,
         borderBottomColor: "#B3B3B3",
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(9)
+        paddingVertical: scaleVerticalPadding(8)
     },
 
 
     heading: {
         color: "#000000",
-        fontFamily: "Sora_400Regular",
-        fontSize: scaleFont(16),
+        fontFamily: "PlusJakartaSans_500Medium",
+        fontSize: scaleFont(22),
     },
 
     button_wrapper: {
@@ -449,7 +499,7 @@ const styles = StyleSheet.create({
         gap: 12,
         paddingBottom: scaleVerticalPadding(20),
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(15),
+        paddingVertical: scaleVerticalPadding(10),
         backgroundColor: "#D3D8E7"
     },
 
@@ -475,7 +525,7 @@ const styles = StyleSheet.create({
     balance_text: {
         color: "#FFFFFF",
         fontSize: scaleFont(14),
-        fontFamily: "Sora_300Light"
+        fontFamily: "Sora_300Light",
     },
 
 
