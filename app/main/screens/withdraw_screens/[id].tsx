@@ -1,12 +1,40 @@
+import FailedIcon from "@/components/icons/Failed";
+import PendingIcon from "@/components/icons/PendingIcon";
 import SuccessSVG from "@/components/ui/success";
-import { scaleFont } from "@/utils/utils";
+import { withdrawals } from "@/data/mock_withdrawal_tx";
+import { Withdrawal } from "@/types/types";
+import { copyItem, scaleFont } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { MainStackParamList } from "../../type";
 
 
+type TransactionRouteProp = RouteProp<
+    MainStackParamList,
+    "withdraw_details"
+>
+
+
+type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 
 export default function Withdraw_Details() {
+    const route = useRoute<TransactionRouteProp>()
+    const { id } = route.params
+    const navigation = useNavigation<NavigationProp>()
+    const [currentWithdrawal, setCurrentWithdrawal] = useState<Withdrawal>()
+
+
+
+    useEffect(() => {
+        const currentTx = withdrawals.find((tx) => tx.id === id)
+
+        setCurrentWithdrawal(currentTx)
+    }, [id])
+
     return (
         <ScrollView
             style={{ flex: 1 }}
@@ -16,12 +44,20 @@ export default function Withdraw_Details() {
 
             <View style={styles.heading} >
                 <Text style={styles.heading_text} >Withdrawal Details </Text>
-                <SuccessSVG width={110} height={110} />
+
+                {currentWithdrawal?.status === "Completed" ? (<SuccessSVG width={110} height={110} />)
+                    : currentWithdrawal?.status === "Failed" ? (<FailedIcon width={110} height={110} />)
+                        : (<PendingIcon height={110} width={110} />)
+
+                }
+
                 <Text style={{
-                    color: "#009A49",
+                    color: currentWithdrawal?.status === "Completed" ? "#009A49"
+                        : currentWithdrawal?.status === "Failed" ? "#FF0707"
+                            : "#F7AA1A",
                     fontSize: 22,
                     fontFamily: "PlusJakartaSans_500Medium"
-                }}>Completed</Text>
+                }}>{currentWithdrawal?.status} </Text>
             </View>
 
 
@@ -36,54 +72,56 @@ export default function Withdraw_Details() {
                 {/* amount */}
                 <View style={styles.withdrawal_summary_row} >
                     <Text style={styles.withdrawal_summary_row_heading} >Amount</Text>
-                    <Text style={styles.withdrawal_summary_row_value} >₦0</Text>
+                    <Text style={styles.withdrawal_summary_row_value} >₦{currentWithdrawal?.amount.toLocaleString()}</Text>
                 </View>
 
 
                 {/* fee  */}
                 <View style={styles.withdrawal_summary_row} >
                     <Text style={styles.withdrawal_summary_row_heading} >Fee</Text>
-                    <Text style={styles.withdrawal_summary_row_value} >₦0</Text>
+                    <Text style={styles.withdrawal_summary_row_value} >₦{currentWithdrawal?.fee.toLocaleString()} </Text>
                 </View>
 
 
                 {/* net amount  */}
                 <View style={styles.withdrawal_summary_row} >
                     <Text style={styles.withdrawal_summary_row_heading} >Net Amount</Text>
-                    <Text style={styles.withdrawal_summary_row_value} >₦0</Text>
+                    <Text style={styles.withdrawal_summary_row_value} >₦{currentWithdrawal?.netAmount.toLocaleString()}</Text>
                 </View>
 
                 {/* reference */}
                 <View style={styles.withdrawal_summary_row} >
                     <Text style={styles.withdrawal_summary_row_heading} >Reference:</Text>
 
-                    <View style={{ flexDirection: "row", gap: 5, alignItems: "center" }} >
-                        <Text style={styles.withdrawal_summary_row_value} >WD-2026306-0012</Text>
+                    <Pressable
+                        onPress={() => copyItem("ewewewe")}
+                        style={{ flexDirection: "row", gap: 5, alignItems: "center" }} >
+                        <Text style={styles.withdrawal_summary_row_value} >{currentWithdrawal?.reference} </Text>
 
                         <Ionicons
                             name="copy-outline"
                             size={15}
                             style={{ fontWeight: 500 }} />
-                    </View>
+                    </Pressable>
                 </View>
 
                 {/* bank */}
                 <View style={styles.withdrawal_summary_row} >
                     <Text style={styles.withdrawal_summary_row_heading} >Bank:</Text>
-                    <Text style={styles.withdrawal_summary_row_value} >GTBank</Text>
+                    <Text style={styles.withdrawal_summary_row_value} >{currentWithdrawal?.bank} </Text>
                 </View>
 
 
                 {/* account number */}
                 <View style={styles.withdrawal_summary_row} >
                     <Text style={styles.withdrawal_summary_row_heading} >Account number:</Text>
-                    <Text style={styles.withdrawal_summary_row_value} >0123456789</Text>
+                    <Text style={styles.withdrawal_summary_row_value} > {currentWithdrawal?.account_number} </Text>
                 </View>
 
                 {/* account name  */}
                 <View style={styles.withdrawal_summary_row} >
                     <Text style={styles.withdrawal_summary_row_heading} >Account Name:</Text>
-                    <Text style={styles.withdrawal_summary_row_value} >John Doe</Text>
+                    <Text style={styles.withdrawal_summary_row_value} >{currentWithdrawal?.account_name} </Text>
                 </View>
 
 
@@ -216,7 +254,7 @@ export default function Withdraw_Details() {
             </View>
 
             <TouchableOpacity
-                onPress={() => navigation.navigate("withdraw_details")}
+                activeOpacity={0.7}
                 style={[styles.button, {
                     backgroundColor: "#253E86"
                 }]} >
@@ -226,7 +264,9 @@ export default function Withdraw_Details() {
             </TouchableOpacity>
 
 
-            <Pressable style={styles.support_wrapper}  >
+            <Pressable
+                onPress={() => navigation.navigate("contact_support")}
+                style={styles.support_wrapper}  >
                 <Ionicons name="headset-sharp" color={"#10182AB2"} size={14} />
                 <Text style={{
                     color: "#10182AB2",
@@ -235,7 +275,7 @@ export default function Withdraw_Details() {
                 }} >Contact Support</Text>
             </Pressable>
 
-        </ScrollView>
+        </ScrollView >
     )
 }
 

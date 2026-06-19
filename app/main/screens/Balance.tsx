@@ -1,3 +1,4 @@
+import ATM_Icon from "@/components/icons/ATM_Icon";
 import CalendarIcon from "@/components/icons/CalendarIcon";
 import EyeClosed from "@/components/icons/EyeClosed";
 import ReloadIcon from "@/components/icons/Reload";
@@ -206,6 +207,7 @@ export default function Balance() {
                 <View style={styles.button_wrapper} >
 
                     <TouchableOpacity
+                        activeOpacity={0.7}
                         onPress={() => navigation.navigate("withdraw")}
                         style={[styles.button, {
                             backgroundColor: "#253E86"
@@ -318,10 +320,9 @@ export default function Balance() {
                             justifyContent: "space-between",
                             gap: 8
                         }} >
-                            <Ionicons
-                                name="card"
-                                size={16}
-                                color={"#1E1E1E"} />
+
+                            <ATM_Icon />
+
                             <Text style={styles.recent_withdrawal_section_title} >Recent Withdrawals</Text>
                         </View>
 
@@ -352,7 +353,11 @@ export default function Balance() {
                                 style={[styles.recent_withdrawal_section_bottom_row, {
                                     borderBottomColor: "#B3B3B3",
                                     borderBottomWidth: id + 1 === 3 ? 0 : 0.4,
-                                }]} >
+                                }]}
+                                onPress={() => navigation.navigate("withdraw_details", {
+                                    id: tx.id
+                                })}
+                            >
 
                                 <View style={{
                                     alignItems: "flex-start",
@@ -498,7 +503,7 @@ const styles = StyleSheet.create({
         alignItems: "stretch",
         gap: 12,
         paddingBottom: scaleVerticalPadding(20),
-        paddingHorizontal: scaleHorizontalPadding(19),
+        paddingHorizontal: scaleHorizontalPadding(18),
         paddingVertical: scaleVerticalPadding(10),
         backgroundColor: "#D3D8E7"
     },

@@ -8,8 +8,6 @@ import BankTransfer from "./screens/(transfer_payment_steps)/BankTransfer";
 import PayWithCard from "./screens/(transfer_payment_steps)/PayWithCard";
 import TransferStepOne from "./screens/(transfer_payment_steps)/Transfer_step_one";
 import UssdPayment from "./screens/(transfer_payment_steps)/UssdPayment";
-import Withdraw_Details from "./screens/(withdraw_screens)/Withdraw_Details";
-import Withdrawal_Initiated from "./screens/(withdraw_screens)/Withdrawal_Initiated";
 import AddBankAccount from "./screens/Add_Bank_Account";
 import AddTeamMember from "./screens/AddTeamMember";
 import Balance from "./screens/Balance";
@@ -32,6 +30,8 @@ import TransactionLimitScreen from "./screens/TransactionLimitsScreen";
 import Transactions from "./screens/Transactions";
 import TransactionDetails from "./screens/transactions/[id]";
 import Withdraw from "./screens/withdraw";
+import Withdraw_Details from "./screens/withdraw_screens/[id]";
+import Withdrawal_Initiated from "./screens/withdraw_screens/Withdrawal_Initiated";
 import { MainStackParamList } from './type';
 
 

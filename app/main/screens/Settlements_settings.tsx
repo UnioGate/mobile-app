@@ -1,3 +1,6 @@
+import SettlementIcon from "@/components/icons/SettlementIcon2";
+import ReusableDropdown from "@/components/ui/ReusableDropdown";
+import { DropdownOption } from "@/types/types";
 import {
     scaleFont,
     scaleHorizontalPadding,
@@ -8,19 +11,68 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useState } from "react";
 import {
+    Image,
     Pressable,
-    SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
+    View
 } from "react-native";
-import { Switch } from 'react-native-paper';
+import { RadioButton, Switch } from 'react-native-paper';
 import { MainStackParamList } from "../type";
 
 type OverviewNavigationProp =
     NativeStackNavigationProp<MainStackParamList>;
+
+
+export const dropdownMockData: DropdownOption[] = [
+    {
+        label: "Nigeria",
+        value: "NG",
+        searchText: "Nigeria NG country West Africa",
+        iso: "NG",
+    },
+    {
+        label: "Ghana",
+        value: "GH",
+        searchText: "Ghana GH country West Africa",
+        iso: "GH",
+    },
+    {
+        label: "United States",
+        value: "US",
+        searchText: "United States USA US country North America",
+        iso: "US",
+    },
+    {
+        label: "United Kingdom",
+        value: "GB",
+        searchText: "United Kingdom UK GB country Europe",
+        iso: "GB",
+    },
+    {
+        label: "Kenya",
+        value: "KE",
+        searchText: "Kenya KE country East Africa",
+        iso: "KE",
+    },
+    {
+        label: "True Option",
+        value: true,
+        searchText: "boolean true option enabled active",
+    },
+    {
+        label: "False Option",
+        value: false,
+        searchText: "boolean false option disabled inactive",
+    },
+    {
+        label: "Number Option",
+        value: 1,
+        searchText: "numeric option one 1",
+    },
+];
 
 export default function SettlementSettings() {
     const navigation = useNavigation<OverviewNavigationProp>();
@@ -31,7 +83,7 @@ export default function SettlementSettings() {
 
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Pressable
@@ -87,7 +139,8 @@ export default function SettlementSettings() {
                                 gap: 8
                             }} >
 
-                                <Ionicons name="card" />
+                                <SettlementIcon />
+
                                 <Text
                                     style={{
                                         color: "#000000",
@@ -135,17 +188,63 @@ export default function SettlementSettings() {
                         </Text>
 
 
+                        <View style={{
+                            width: "100%",
+                            flexDirection: "column",
+                            alignItems: "flex-start"
+                        }} >
+
+                            {/* Item rows  */}
+
+
+                            {/* Daily row  */}
+                            <View style={{
+                                width: "100%",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                flexDirection: "row",
+                                gap: 10,
+                                borderBottomWidth: 0.5,
+                                borderBottomColor: "#808080",
+                                paddingVertical: scaleVerticalPadding(9),
+                                paddingHorizontal: scaleHorizontalPadding(5)
+                            }} >
+
+                                <View style={{
+                                    width: "auto",
+                                    alignItems: "center",
+                                    flexDirection: "row",
+                                    flex: 1
+                                }} >
+                                    <RadioButton value="false" />
+                                    <Text>Daily</Text>
+                                </View>
+
+                                <View style={{
+                                    width: "100%",
+                                    flex: 0.7
+                                }} >
+                                    <ReusableDropdown
+                                        options={dropdownMockData}
+                                        label="Select time"
+                                        placeholder="Select Time"
+                                    />
+                                </View>
+
+                            </View>
+
+
+
+                        </View>
 
                         <Text
                             style={{
                                 color: "#10182AB2",
-                                fontStyle: "italic",
                                 fontSize: scaleFont(12),
-                                fontFamily: "PlusJakartaSans_400Regular"
+                                fontFamily: "PlusJakartaSans_400Regular_Italic",
                             }}
                         >
                             Settlements process within 30 minutes of scheduled time.</Text>
-
                     </View>
 
 
@@ -174,7 +273,14 @@ export default function SettlementSettings() {
                             gap: 10,
                             marginTop: 6
                         }}>
-                            <Text>Image here</Text>
+                            <Image
+                                source={require("../../../assets/logos/GTBank_logo.svg.png")}
+                                height={20}
+                                width={20}
+                                style={{
+                                    objectFit: "contain"
+                                }}
+                            />
 
                             <View style={{
                                 gap: 9
@@ -219,7 +325,7 @@ export default function SettlementSettings() {
 
 
             </ScrollView>
-        </SafeAreaView >
+        </View >
     );
 }
 
@@ -235,7 +341,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(14),
+        paddingVertical: scaleVerticalPadding(10),
     },
 
     backButton: {
@@ -252,7 +358,7 @@ const styles = StyleSheet.create({
     heading: {
         color: "#10182A",
         fontFamily: "Sora_600SemiBold",
-        fontSize: scaleFont(16),
+        fontSize: scaleFont(21),
     },
 
     scrollView: {
@@ -317,7 +423,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#ffffff",
         borderRadius: 10,
         paddingVertical: scaleVerticalPadding(12),
-        paddingHorizontal: scaleHorizontalPadding(15),
+        paddingHorizontal: scaleHorizontalPadding(12),
         gap: 4,
         alignItems: "flex-start"
     },
@@ -341,7 +447,7 @@ const styles = StyleSheet.create({
         borderColor: "#808080",
         borderRadius: 9,
         paddingHorizontal: scaleHorizontalPadding(6),
-        paddingVertical: scaleVerticalPadding(2),
+        paddingVertical: scaleVerticalPadding(4),
         color: "#000000",
         fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular",
@@ -359,7 +465,7 @@ const styles = StyleSheet.create({
     fund_settle_card_title: {
         fontSize: scaleFont(12),
         color: "#10182A80",
-        fontFamily: "Sora_300Light",
+        fontFamily: "Sora_600SemiBold",
         width: "100%",
         paddingBottom: 5,
         borderBottomWidth: 0.5,
@@ -377,9 +483,9 @@ const styles = StyleSheet.create({
     settlement_frequency_section_title: {
         fontSize: scaleFont(12),
         color: "#10182A80",
-        fontFamily: "Sora_300Light",
+        fontFamily: "Sora_600SemiBold",
         width: "100%",
-        paddingBottom: 5,
+        paddingBottom: scaleVerticalPadding(5),
         borderBottomWidth: 0.5,
         borderBottomColor: "#808080"
     }

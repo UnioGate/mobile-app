@@ -90,4 +90,9 @@ export interface Withdrawal {
   accountMasked: string;
   status: WithdrawalStatus;
   date: string;
+  fee: number;
+  netAmount: number;
+  reference: string;
+  account_number: number;
+  account_name: string;
 }
