@@ -99,9 +99,11 @@ export interface Withdrawal {
 
 
 
+export type CurrencyFlagCode = "GHC" | "GBP" | "NGN" | "USD" | "ZAR" | "ZES";
+
 export interface commonCurrenciesShape {
-  image: string;
-  abbreviation: string;
+  image: CurrencyFlagCode;
+  abbreviation: CurrencyFlagCode;
   sign: string;
   title: string
 }
