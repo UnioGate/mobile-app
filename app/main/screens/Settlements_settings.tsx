@@ -207,7 +207,6 @@ export default function SettlementSettings() {
                                 borderBottomWidth: 0.5,
                                 borderBottomColor: "#808080",
                                 paddingVertical: scaleVerticalPadding(9),
-                                paddingHorizontal: scaleHorizontalPadding(5)
                             }} >
 
                                 <View style={{
@@ -217,18 +216,248 @@ export default function SettlementSettings() {
                                     flex: 1
                                 }} >
                                     <RadioButton value="false" />
-                                    <Text>Daily</Text>
+                                    <Text style={{
+                                        fontSize: scaleFont(14),
+                                        color: "#000000",
+                                        fontFamily: "Sora_400Regular"
+                                    }} >Daily</Text>
                                 </View>
 
                                 <View style={{
                                     width: "100%",
-                                    flex: 0.7
+                                    flex: 0.5
                                 }} >
                                     <ReusableDropdown
                                         options={dropdownMockData}
-                                        label="Select time"
-                                        placeholder="Select Time"
+                                        placeholder="00:00"
                                     />
+                                </View>
+
+                            </View>
+
+
+                            {/* Weekly row */}
+                            <View style={{
+                                width: "100%",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                flexDirection: "row",
+                                gap: 10,
+                                borderBottomWidth: 0.5,
+                                borderBottomColor: "#808080",
+                                paddingVertical: scaleVerticalPadding(9),
+                            }} >
+
+                                <View style={{
+                                    width: "auto",
+                                    alignItems: "center",
+                                    flexDirection: "row",
+                                    flex: 0.4
+                                }} >
+                                    <RadioButton value="false" />
+                                    <Text style={{
+                                        fontSize: scaleFont(14),
+                                        color: "#000000",
+                                        fontFamily: "Sora_400Regular"
+                                    }} >Weekly</Text>
+                                </View>
+
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        gap: 6,
+                                    }}
+                                >
+                                    <View style={{ flex: 1 }}>
+                                        <ReusableDropdown
+                                            options={dropdownMockData}
+                                            placeholder="Monday"
+                                        />
+                                    </View>
+
+                                    <Text
+                                        style={{
+                                            color: "#10182AB2",
+                                            fontSize: scaleFont(12),
+                                            fontFamily: "Sora_400Regular",
+                                        }}
+                                    >
+                                        at
+                                    </Text>
+
+                                    <View style={{ flex: 1 }}>
+                                        <ReusableDropdown
+                                            options={dropdownMockData}
+                                            placeholder="00:00"
+                                        />
+                                    </View>
+                                </View>
+
+                            </View>
+
+
+                            {/* Bi-weekly row  */}
+                            <View style={{
+                                width: "100%",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                flexDirection: "row",
+                                gap: 10,
+                                borderBottomWidth: 0.5,
+                                borderBottomColor: "#808080",
+                                paddingVertical: scaleVerticalPadding(9),
+                            }} >
+
+                                <View style={{
+                                    width: "auto",
+                                    alignItems: "center",
+                                    flexDirection: "row",
+                                    flex: 0.4
+                                }} >
+                                    <RadioButton value="false" />
+                                    <Text style={{
+                                        fontSize: scaleFont(14),
+                                        color: "#000000",
+                                        fontFamily: "Sora_400Regular"
+                                    }} >Bi-Weekly</Text>
+                                </View>
+
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        gap: 6,
+                                    }}
+                                >
+                                    <View style={{ flex: 1 }}>
+                                        <ReusableDropdown
+                                            options={dropdownMockData}
+                                            placeholder="Monday"
+                                        />
+                                    </View>
+
+                                    <Text
+                                        style={{
+                                            color: "#10182AB2",
+                                            fontSize: scaleFont(12),
+                                            fontFamily: "Sora_400Regular",
+                                        }}
+                                    >
+                                        at
+                                    </Text>
+
+                                    <View style={{ flex: 1 }}>
+                                        <ReusableDropdown
+                                            options={dropdownMockData}
+                                            placeholder="00:00"
+                                        />
+                                    </View>
+                                </View>
+
+                            </View>
+
+
+                            {/* Monthly  */}
+                            <View style={{
+                                width: "100%",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                flexDirection: "row",
+                                gap: 10,
+                                borderBottomWidth: 0.5,
+                                borderBottomColor: "#808080",
+                                paddingVertical: scaleVerticalPadding(9),
+                            }} >
+
+                                <View style={{
+                                    width: "auto",
+                                    alignItems: "center",
+                                    flexDirection: "row",
+                                    flex: 0.4
+                                }} >
+                                    <RadioButton value="false" />
+                                    <Text style={{
+                                        fontSize: scaleFont(14),
+                                        color: "#000000",
+                                        fontFamily: "Sora_400Regular"
+                                    }} >Monthly</Text>
+                                </View>
+
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        gap: 6,
+                                    }}
+                                >
+
+                                    <Text
+                                        style={{
+                                            color: "#10182AB2",
+                                            fontSize: scaleFont(12),
+                                            fontFamily: "Sora_400Regular",
+                                        }}
+                                    >
+                                        On
+                                    </Text>
+
+                                    <View style={{ flex: 1 }}>
+                                        <ReusableDropdown
+                                            options={dropdownMockData}
+                                            placeholder="Monday"
+                                        />
+                                    </View>
+
+                                    <Text
+                                        style={{
+                                            color: "#10182AB2",
+                                            fontSize: scaleFont(12),
+                                            fontFamily: "Sora_400Regular",
+                                        }}
+                                    >
+                                        at
+                                    </Text>
+
+                                    <View style={{ flex: 1 }}>
+                                        <ReusableDropdown
+                                            options={dropdownMockData}
+                                            placeholder="00:00"
+                                        />
+                                    </View>
+                                </View>
+
+                            </View>
+
+
+
+                            {/* Custom schedule */}
+                            <View style={{
+                                width: "100%",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                flexDirection: "row",
+                                gap: 10,
+                                borderBottomWidth: 0.5,
+                                borderBottomColor: "#808080",
+                                paddingVertical: scaleVerticalPadding(9),
+                            }} >
+
+                                <View style={{
+                                    width: "auto",
+                                    alignItems: "center",
+                                    flexDirection: "row",
+                                    flex: 1
+                                }} >
+                                    <RadioButton value="false" />
+                                    <Text style={{
+                                        fontSize: scaleFont(14),
+                                        color: "#263F86",
+                                        fontFamily: "Sora_400Regular"
+                                    }} >Custom Schedule</Text>
                                 </View>
 
                             </View>
@@ -254,7 +483,10 @@ export default function SettlementSettings() {
 
                     {/* Minimum balance card  */}
                     <View style={styles.minimum_card_wrapper}  >
-                        <Text style={styles.minimum_card_title} >Minimum balance for auto-settlement</Text>
+                        <Text
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
+                            style={styles.minimum_card_title} >Minimum balance for auto-settlement</Text>
                         <Text style={styles.minimum_card_p} >Settlement only happens if balance exceeds this amount</Text>
 
                         <Text style={styles.amount_tag} >₦5,000</Text>
@@ -369,7 +601,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: scaleHorizontalPadding(19),
         paddingVertical: scaleVerticalPadding(18),
         gap: 16,
-        flex: 1,
+        flexGrow: 1,
     },
 
 

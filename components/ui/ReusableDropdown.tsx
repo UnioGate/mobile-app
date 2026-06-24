@@ -72,19 +72,19 @@ const styles = StyleSheet.create({
     },
 
     dropdown: {
-        height: 50,
+        height: 40,
         borderRadius: 5,
-        paddingHorizontal: scaleHorizontalPadding(12),
+        paddingHorizontal: scaleHorizontalPadding(5),
         backgroundColor: "#CCCCCC1A",
         borderWidth: 1,
         borderColor: "#10182A"
     },
 
     placeholderStyle: {
-        fontSize: scaleFont(16),
+        fontSize: scaleFont(14),
     },
     selectedTextStyle: {
-        fontSize: scaleFont(16),
+        fontSize: scaleFont(14),
     },
     iconStyle: {
         width: 20,
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     },
     inputSearchStyle: {
         height: 40,
-        fontSize: scaleFont(16),
+        fontSize: scaleFont(14),
     },
 
     icon: {

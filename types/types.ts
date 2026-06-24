@@ -96,3 +96,14 @@ export interface Withdrawal {
   account_number: number;
   account_name: string;
 }
+
+
+
+export interface commonCurrenciesShape {
+  image: string;
+  abbreviation: string;
+  sign: string;
+  title: string
+}
+
+

@@ -1,7 +1,7 @@
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Checkbox, Switch } from "react-native-paper";
 
 
@@ -16,7 +16,7 @@ export default function PaymentMethods() {
 
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Pressable
@@ -46,7 +46,8 @@ export default function PaymentMethods() {
                 showsVerticalScrollIndicator={false}
             >
 
-                <Text style={styles.screen_description} >Choose which payment methods your customers can use</Text>
+                <Text
+                    style={styles.screen_description} >Choose which payment methods your customers can use</Text>
 
 
 
@@ -54,7 +55,10 @@ export default function PaymentMethods() {
                 <View style={styles.crypto_payment_wrapper} >
                     {/* heading */}
                     <View style={styles.crypto_payment_head} >
-                        <Text style={styles.h2} >Accept Cryptocurrency Payment</Text>
+                        <Text
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
+                            style={styles.h2} >Accept Cryptocurrency Payment</Text>
 
                         <Switch
                             value={isSwitchOn}
@@ -249,7 +253,10 @@ export default function PaymentMethods() {
                 <View style={styles.crypto_payment_wrapper} >
                     {/* heading */}
                     <View style={styles.crypto_payment_head} >
-                        <Text style={styles.h2} >Accept Fiat Payment</Text>
+                        <Text
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
+                            style={styles.h2} >Accept Fiat Payment</Text>
 
                         <Switch
                             value={isSwitchOn}
@@ -290,20 +297,22 @@ export default function PaymentMethods() {
                                     gap: 8,
                                     paddingVertical: 3
                                 }} >
-                                    <Text style={{
-                                        color: "#000000",
-                                        fontSize: scaleFont(16),
-                                        fontFamily: "Sora_400Regular",
-                                        flex: 1,
-                                        flexShrink: 1,
-                                        flexWrap: "wrap"
-                                    }} >
+                                    <Text
+                                        style={{
+                                            color: "#000000",
+                                            fontSize: scaleFont(16),
+                                            fontFamily: "Sora_400Regular",
+                                            flex: 1,
+                                            flexShrink: 1,
+                                            flexWrap: "wrap",
+                                        }} >
                                         Card Payments
-                                        <Text style={{
-                                            fontSize: scaleFont(13),
-                                            color: "#10182AB2",
-                                            fontFamily: "Sora_300Light"
-                                        }} > (Visa, Mastercard, Verve)</Text>
+                                        <Text
+                                            style={{
+                                                fontSize: scaleFont(13),
+                                                color: "#10182AB2",
+                                                fontFamily: "Sora_300Light"
+                                            }} > (Visa, Mastercard, , Paypal)</Text>
                                     </Text>
 
                                 </View>
@@ -388,7 +397,10 @@ export default function PaymentMethods() {
                 <View style={styles.crypto_payment_wrapper} >
                     {/* heading */}
                     <View style={styles.crypto_payment_head} >
-                        <Text style={styles.h2} >Accept NFC Tap-to-Pay</Text>
+                        <Text
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
+                            style={styles.h2} >Accept NFC Tap-to-Pay</Text>
 
                         <Switch
                             value={isSwitchOn}
@@ -544,7 +556,7 @@ export default function PaymentMethods() {
 
 
             </ScrollView>
-        </SafeAreaView >
+        </View>
 
     )
 }
@@ -563,7 +575,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(14),
+        paddingVertical: scaleVerticalPadding(10),
     },
 
     backButton: {
@@ -579,8 +591,8 @@ const styles = StyleSheet.create({
 
     heading: {
         color: "#10182A",
-        fontFamily: "Sora_600SemiBold",
-        fontSize: scaleFont(16),
+        fontFamily: "PlusJakartaSans_500Medium",
+        fontSize: scaleFont(21),
     },
 
     scrollView: {
@@ -589,7 +601,7 @@ const styles = StyleSheet.create({
 
     scrollViewContent: {
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(5),
+        paddingVertical: scaleVerticalPadding(2),
         gap: 16,
         flexGrow: 1,
         paddingBottom: scaleVerticalPadding(20)
@@ -600,7 +612,7 @@ const styles = StyleSheet.create({
         color: "#10182AB2",
         fontFamily: "Sora_400Regular",
         textAlign: "center",
-        width: "95%"
+        width: "100%"
     },
 
     crypto_payment_wrapper: {

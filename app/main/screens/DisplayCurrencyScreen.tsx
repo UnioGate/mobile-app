@@ -1,6 +1,7 @@
+import { commonCurrencies } from "@/data/common_currencies";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
-import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { RadioButton } from "react-native-paper";
 
 
@@ -8,7 +9,7 @@ import { RadioButton } from "react-native-paper";
 
 export default function DisplayCurrencyScreen() {
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Pressable
@@ -102,68 +103,71 @@ export default function DisplayCurrencyScreen() {
                     <View style={styles.list_wrapper} >
 
 
+                        {commonCurrencies.map((currency, i) => (
+                            <View
+                                key={i}
+                                style={{
+                                    width: "100%",
+                                    alignItems: "center",
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                    paddingVertical: scaleVerticalPadding(8),
+                                    paddingHorizontal: scaleHorizontalPadding(9),
+                                    borderBottomWidth: 0.5,
+                                    borderBottomColor: "#808080"
+                                }} >
 
-                        <View style={{
-                            width: "100%",
-                            alignItems: "center",
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            paddingVertical: scaleVerticalPadding(8),
-                            paddingHorizontal: scaleHorizontalPadding(9),
-                            borderBottomWidth: 0.5,
-                            borderBottomColor: "#808080"
-                        }} >
+                                <View style={{
+                                    width: "auto",
+                                    gap: 10,
+                                    alignItems: "center",
+                                    flexDirection: "row"
+                                }} >
+                                    <RadioButton
+                                        value=""
+                                    />
 
-                            <View style={{
-                                width: "auto",
-                                gap: 10,
-                                alignItems: "center",
-                                flexDirection: "row"
-                            }} >
-                                <RadioButton
-                                    value=""
-                                />
+                                    <Image
+                                        source={require("../../../assets/onboarding/NG-flag.png")}
+                                        style={{
+                                            width: 31,
+                                            height: 21
+                                        }}
+                                    />
 
-                                <Image
-                                    source={require("../../../assets/onboarding/NG-flag.png")}
-                                    style={{
-                                        width: 31,
-                                        height: 21
-                                    }}
-                                />
-
-                                <Text
-                                    style={{
-                                        color: "#000000",
-                                        fontSize: scaleFont(14),
-                                        fontFamily: "Sora_400Regular"
-                                    }}
-                                >Nigerian Naira</Text>
-                            </View>
-
-
-                            <View style={{
-                                width: "auto",
-                                gap: 8,
-                                alignItems: "center",
-                                flexDirection: "row"
-                            }} >
-                                <Text style={{
-                                    color: "#10182A99",
-                                    fontSize: scaleFont(12),
-                                    fontFamily: "Sora_400Regular"
-                                }} >NGN</Text>
+                                    <Text
+                                        style={{
+                                            color: "#000000",
+                                            fontSize: scaleFont(14),
+                                            fontFamily: "Sora_400Regular"
+                                        }}
+                                    > {currency.title} </Text>
+                                </View>
 
 
-                                <Text
-                                    style={{
-                                        fontSize: scaleFont(13),
+                                <View style={{
+                                    width: "auto",
+                                    gap: 8,
+                                    alignItems: "center",
+                                    flexDirection: "row"
+                                }} >
+                                    <Text style={{
                                         color: "#10182A99",
-                                        fontFamily: "Sora_600SemiBold"
-                                    }}
-                                >$</Text>
+                                        fontSize: scaleFont(12),
+                                        fontFamily: "Sora_400Regular"
+                                    }} >{currency.abbreviation} </Text>
+
+
+                                    <Text
+                                        style={{
+                                            fontSize: scaleFont(13),
+                                            color: "#10182A99",
+                                            fontFamily: "Sora_600SemiBold"
+                                        }}
+                                    >$</Text>
+                                </View>
                             </View>
-                        </View>
+                        ))}
 
 
 
@@ -191,7 +195,7 @@ export default function DisplayCurrencyScreen() {
                 </TouchableOpacity>
 
             </ScrollView>
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -209,7 +213,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(14),
+        paddingVertical: scaleVerticalPadding(10),
     },
 
     backButton: {
@@ -226,7 +230,7 @@ const styles = StyleSheet.create({
     heading: {
         color: "#10182A",
         fontFamily: "Sora_600SemiBold",
-        fontSize: scaleFont(16),
+        fontSize: scaleFont(21),
     },
 
     scrollView: {

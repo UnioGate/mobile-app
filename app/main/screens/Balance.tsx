@@ -284,7 +284,9 @@ export default function Balance() {
 
 
 
-                    <TouchableOpacity style={styles.settings_button} >
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("settlement_settings")}
+                        style={styles.settings_button} >
 
                         <Ionicons
                             name="settings-sharp"
