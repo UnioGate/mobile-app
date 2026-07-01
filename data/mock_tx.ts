@@ -6,7 +6,7 @@ export const transactions: transaction_detail_type[] = [
         method: "USDT (Tron)",
         amount: 20000,
         image: "btc",
-        status: "Completed",
+        status: "Successful",
         tx_time: new Date("2026-05-17T09:21:00"),
         recipient: "James A."
     },
@@ -15,7 +15,7 @@ export const transactions: transaction_detail_type[] = [
         method: "Card",
         amount: 12000,
         image: "btc",
-        status: "Completed",
+        status: "Successful",
         tx_time: new Date("2026-04-19T10:47:00"),
         recipient: "James A."
     },
@@ -24,7 +24,7 @@ export const transactions: transaction_detail_type[] = [
         method: "Card",
         amount: 3000,
         image: "card",
-        status: "Completed",
+        status: "Successful",
         tx_time: new Date("2026-04-19T13:21:00"),
         recipient: "James A."
     },

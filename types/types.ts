@@ -109,3 +109,16 @@ export interface commonCurrenciesShape {
 }
 
 
+
+export type TeamMemberStatus = "active" | "inactive";
+
+export interface TeamMember {
+  id: string;
+  avatar?: string;
+  fullName: string;
+  role: string;
+  email: string;
+  phone: string;
+  status: TeamMemberStatus;
+  joinedAt: string;
+}

@@ -33,7 +33,7 @@ export default function Overview() {
     // This function gives the status color
     const getStatusStyle = (status: string) => {
         switch (status.toLowerCase()) {
-            case "completed":
+            case "successful":
                 return styles.successful;
             case "pending":
                 return styles.pending;
