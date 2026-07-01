@@ -16,8 +16,9 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 
 export default function TeamMembers() {
-    const [TeamMembersList, setTeamMembersList] = useState(teamMembers)
     const navigation = useNavigation<OverviewNavigationProp>()
+    const [TeamMembersList, setTeamMembersList] = useState(teamMembers);
+    const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
 
 
@@ -27,12 +28,17 @@ export default function TeamMembers() {
                 colors: {
                     primary: "#253E86",
                     background: "#E9ECF3",
-                    surface: "#FFFFFF", // menu background
-                    onSurface: "#10182A", // text color
+                    surface: "#FFFFFF",
+                    onSurface: "#10182A",
                 },
             }}
         >
-            <View style={styles.container}>
+            <Pressable
+                style={styles.container}
+                onPress={() => setOpenMenuId(null)}
+            >
+
+
                 {/* Header */}
                 <View style={styles.header}>
                     <Pressable
@@ -201,7 +207,17 @@ export default function TeamMembers() {
 
                                             {/* Team card  */}
                                             {teamMembers.map((member, i) => (
-                                                <TeamMembersCard key={i} data={member} />
+                                                <TeamMembersCard
+                                                    key={i}
+                                                    data={member}
+                                                    menuVisible={openMenuId === member.id}
+                                                    onToggleMenu={() => {
+                                                        setOpenMenuId((prev) =>
+                                                            prev === member.id ? null : member.id
+                                                        );
+                                                    }}
+                                                    closeMenu={() => setOpenMenuId(null)}
+                                                />
                                             ))}
 
                                         </View>
@@ -215,7 +231,7 @@ export default function TeamMembers() {
 
 
                 </ScrollView>
-            </View>
+            </Pressable>
         </PaperProvider>
     )
 }
