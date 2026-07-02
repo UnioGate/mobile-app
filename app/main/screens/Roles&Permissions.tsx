@@ -1,19 +1,27 @@
+import PadlockIcon from "@/components/icons/PadlockIcon";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Divider } from "react-native-paper";
+import { MainStackParamList } from "../type";
 
 
-
+type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 export default function Roles_And_Permissions() {
+    const navigation = useNavigation<OverviewNavigationProp>()
+
+
+
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Pressable
                     aria-label="back-button"
-                    // onPress={() => navigation.goBack()}
+                    onPress={() => navigation.goBack()}
                     style={styles.backButton}
                 >
                     <Ionicons
@@ -71,15 +79,20 @@ export default function Roles_And_Permissions() {
                             justifyContent: "space-between",
                             flexDirection: "row"
                         }} >
-                            <Text>Default Roles</Text>
+                            <Text
+                                style={{
+                                    fontFamily: "Sora_400Regular",
+                                    fontSize: scaleFont(12)
+                                }}
+                            >Default Roles</Text>
 
 
-                            <TouchableOpacity style={styles.settings_button} >
+                            <Pressable style={styles.settings_button} >
 
                                 <Ionicons
                                     name="add-sharp"
                                     color={"#253E86"}
-                                    size={15} />
+                                    size={17} />
 
                                 <Text style={[styles.button_text, {
                                     color: "#253E86",
@@ -87,7 +100,7 @@ export default function Roles_And_Permissions() {
                                     fontSize: scaleFont(12)
                                 }]} > Create Roles</Text>
 
-                            </TouchableOpacity>
+                            </Pressable>
 
                         </View>
 
@@ -95,7 +108,7 @@ export default function Roles_And_Permissions() {
                             backgroundColor: "#FFFFFF",
                             width: "100%",
                             borderRadius: 10,
-                            gap: 5
+                            gap: 1
                         }} >
 
                             {/* rows  */}
@@ -127,10 +140,7 @@ export default function Roles_And_Permissions() {
                                 </View>
 
 
-                                <Ionicons
-                                    size={18}
-                                    color={"#1E1E1E"}
-                                    name="lock-closed-sharp" />
+                                <PadlockIcon />
                             </View>
 
                             <Divider style={{
@@ -171,7 +181,8 @@ export default function Roles_And_Permissions() {
                                             style={{
                                                 width: 5,
                                                 height: 5,
-                                                backgroundColor: "#10182AB2"
+                                                backgroundColor: "#10182AB2",
+                                                borderRadius: "50%"
                                             }}
                                         />
 
@@ -238,7 +249,8 @@ export default function Roles_And_Permissions() {
                                             style={{
                                                 width: 5,
                                                 height: 5,
-                                                backgroundColor: "#10182AB2"
+                                                backgroundColor: "#10182AB2",
+                                                borderRadius: "50%"
                                             }}
                                         />
 
@@ -282,7 +294,12 @@ export default function Roles_And_Permissions() {
                             justifyContent: "space-between",
                             flexDirection: "row"
                         }} >
-                            <Text>Default Roles</Text>
+                            <Text
+                                style={{
+                                    fontFamily: "Sora_400Regular",
+                                    fontSize: scaleFont(12)
+                                }}
+                            >Custom Roles</Text>
                         </View>
 
                         <View style={{
@@ -326,7 +343,8 @@ export default function Roles_And_Permissions() {
                                             style={{
                                                 width: 5,
                                                 height: 5,
-                                                backgroundColor: "#10182AB2"
+                                                backgroundColor: "#10182AB2",
+                                                borderRadius: "50%"
                                             }}
                                         />
 
@@ -364,11 +382,13 @@ export default function Roles_And_Permissions() {
                 {/* Button wrapper */}
                 <View style={styles.button_wrapper} >
 
-                    <TouchableOpacity style={[styles.button]} >
+                    <Pressable
+                        onPress={() => navigation.goBack()}
+                        style={[styles.button]} >
                         <Text style={[styles.button_text, {
                             color: "#253E86"
                         }]} >Cancel</Text>
-                    </TouchableOpacity>
+                    </Pressable>
 
 
                     <TouchableOpacity
@@ -386,7 +406,7 @@ export default function Roles_And_Permissions() {
 
 
             </ScrollView>
-        </SafeAreaView>
+        </View>
 
 
 
@@ -407,7 +427,7 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         justifyContent: "space-between",
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(14),
+        paddingVertical: scaleVerticalPadding(10),
     },
 
     backButton: {
@@ -423,8 +443,8 @@ const styles = StyleSheet.create({
 
     heading: {
         color: "#10182A",
-        fontFamily: "Sora_600SemiBold",
-        fontSize: scaleFont(16),
+        fontFamily: "PlusJakartaSans_500Medium",
+        fontSize: scaleFont(21),
     },
 
     scrollView: {
@@ -481,8 +501,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: scaleVerticalPadding(7),
-        paddingHorizontal: scaleHorizontalPadding(6),
+        paddingVertical: scaleVerticalPadding(4),
+        paddingHorizontal: scaleHorizontalPadding(4),
         borderRadius: 7,
         borderWidth: 1,
         borderColor: "#253E86",
