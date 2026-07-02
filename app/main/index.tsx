@@ -24,7 +24,7 @@ import Roles_And_Permissions from "./screens/Roles&Permissions";
 import Sales from './screens/Sales';
 import SettlementSettings from "./screens/Settlements_settings";
 import TapToPay from "./screens/TapToPay";
-import TeamMemberDetails from "./screens/TeamMemberDetails";
+import TeamMemberDetails from "./screens/team_member_details/[id]";
 import TeamMembers from "./screens/TeamMembers";
 import TransactionLimitScreen from "./screens/TransactionLimitsScreen";
 import Transactions from "./screens/Transactions";
@@ -70,7 +70,7 @@ export default function Index() {
                 <Stack.Screen name="team_members" component={TeamMembers} />
                 <Stack.Screen name="add_team_members" component={AddTeamMember} />
                 <Stack.Screen name="invitation_sent" component={InvitationSection} />
-                <Stack.Screen name="team_member_detail" component={TeamMemberDetails} />
+                <Stack.Screen name="team_member_details" component={TeamMemberDetails} />
                 <Stack.Screen name="roles_and_permission" component={Roles_And_Permissions} />
                 <Stack.Screen name="bank_account" component={BankAccount} />
                 <Stack.Screen name="add_bank_account" component={AddBankAccount} />

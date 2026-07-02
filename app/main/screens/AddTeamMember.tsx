@@ -1,26 +1,26 @@
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Divider, RadioButton } from "react-native-paper";
-import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import { MainStackParamList } from "../type";
+;
 
 type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 
 export default function AddTeamMember() {
-
     const navigation = useNavigation<OverviewNavigationProp>()
 
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Pressable
                     aria-label="back-button"
-                    // onPress={() => navigation.goBack()}
+                    onPress={() => navigation.goBack()}
                     style={styles.backButton}
                 >
                     <Ionicons
@@ -286,8 +286,9 @@ export default function AddTeamMember() {
                             width: "100%",
                             backgroundColor: "#ffffff",
                             paddingHorizontal: scaleHorizontalPadding(7),
-                            paddingVertical: scaleVerticalPadding(5),
-                            borderRadius: 10
+                            paddingVertical: scaleVerticalPadding(2),
+                            borderRadius: 10,
+                            gap: 12
                         }} >
 
 
@@ -298,7 +299,6 @@ export default function AddTeamMember() {
                                 justifyContent: "flex-start",
                                 flexDirection: "row",
                                 gap: 10,
-                                paddingVertical: scaleVerticalPadding(12),
                             }} >
                                 <RadioButton
                                     value="false"
@@ -319,11 +319,6 @@ export default function AddTeamMember() {
 
                             </View>
 
-                            <Divider style={{
-                                backgroundColor: "#808080"
-                            }} />
-
-
 
                             {/* View Balance */}
 
@@ -333,7 +328,6 @@ export default function AddTeamMember() {
                                 justifyContent: "flex-start",
                                 flexDirection: "row",
                                 gap: 10,
-                                paddingVertical: scaleVerticalPadding(12),
                             }} >
                                 <RadioButton
                                     value="false"
@@ -353,12 +347,7 @@ export default function AddTeamMember() {
                                 </View>
 
                             </View>
-
-                            <Divider style={{
-                                backgroundColor: "#808080"
-                            }} />
-
-
+                            {/* ------------------------------------------- */}
 
                             <View style={{
                                 width: "100%",
@@ -366,7 +355,6 @@ export default function AddTeamMember() {
                                 justifyContent: "flex-start",
                                 flexDirection: "row",
                                 gap: 10,
-                                paddingVertical: scaleVerticalPadding(12),
                             }} >
                                 <RadioButton
                                     value="false"
@@ -387,10 +375,6 @@ export default function AddTeamMember() {
 
                             </View>
 
-                            <Divider style={{
-                                backgroundColor: "#808080"
-                            }} />
-
 
                             <View style={{
                                 width: "100%",
@@ -398,7 +382,6 @@ export default function AddTeamMember() {
                                 justifyContent: "flex-start",
                                 flexDirection: "row",
                                 gap: 10,
-                                paddingVertical: scaleVerticalPadding(12),
                             }} >
                                 <RadioButton
                                     value="false"
@@ -442,8 +425,9 @@ export default function AddTeamMember() {
                             width: "100%",
                             backgroundColor: "#ffffff",
                             paddingHorizontal: scaleHorizontalPadding(7),
-                            paddingVertical: scaleVerticalPadding(5),
-                            borderRadius: 10
+                            paddingVertical: scaleVerticalPadding(2),
+                            borderRadius: 10,
+                            gap: 12
                         }} >
 
 
@@ -456,7 +440,6 @@ export default function AddTeamMember() {
                                 justifyContent: "flex-start",
                                 flexDirection: "row",
                                 gap: 10,
-                                paddingVertical: scaleVerticalPadding(12),
                             }} >
                                 <RadioButton
                                     value="false"
@@ -477,9 +460,6 @@ export default function AddTeamMember() {
 
                             </View>
 
-                            <Divider style={{
-                                backgroundColor: "#808080"
-                            }} />
 
 
 
@@ -489,7 +469,6 @@ export default function AddTeamMember() {
                                 justifyContent: "flex-start",
                                 flexDirection: "row",
                                 gap: 10,
-                                paddingVertical: scaleVerticalPadding(12),
                             }} >
                                 <RadioButton
                                     value="false"
@@ -510,9 +489,6 @@ export default function AddTeamMember() {
 
                             </View>
 
-                            <Divider style={{
-                                backgroundColor: "#808080"
-                            }} />
 
 
                             <View style={{
@@ -521,7 +497,6 @@ export default function AddTeamMember() {
                                 justifyContent: "flex-start",
                                 flexDirection: "row",
                                 gap: 10,
-                                paddingVertical: scaleVerticalPadding(12),
                             }} >
                                 <RadioButton
                                     value="false"
@@ -580,7 +555,7 @@ export default function AddTeamMember() {
                 </View>
 
             </ScrollView>
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -598,7 +573,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(14),
+        paddingVertical: scaleVerticalPadding(10),
     },
 
     backButton: {
@@ -615,7 +590,7 @@ const styles = StyleSheet.create({
     heading: {
         color: "#10182A",
         fontFamily: "Sora_600SemiBold",
-        fontSize: scaleFont(16),
+        fontSize: scaleFont(21),
     },
 
     scrollView: {
@@ -636,7 +611,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection: "row",
         justifyContent: "space-between",
-        gap: 16
+        gap: 16,
+        marginTop: 25
     },
 
     button: {

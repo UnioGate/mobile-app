@@ -25,7 +25,6 @@ export type MainStackParamList = {
   team_members: undefined
   add_team_members: undefined;
   invitation_sent: undefined;
-  team_member_detail: undefined;
   roles_and_permission: undefined;
   bank_account: undefined;
   add_bank_account: undefined;
@@ -37,5 +36,11 @@ export type MainStackParamList = {
   withdraw_details: {
     id: string
   }
+
+  team_member_details: {
+    id: string
+  }
+
+
 };
 

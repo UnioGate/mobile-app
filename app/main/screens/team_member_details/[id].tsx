@@ -1,19 +1,57 @@
 import ProfilePlaceholder from "@/components/icons/ProfilePlaceholder";
 import { withdrawals } from "@/data/mock_withdrawal_tx";
+import { teamMembers } from "@/data/team_members_data";
+import { TeamMember } from "@/types/types";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useEffect, useState } from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { RadioButton } from "react-native-paper";
+import { MainStackParamList } from "../../type";
+
+
+
+type TransactionRouteProp = RouteProp<
+    MainStackParamList,
+    "team_member_details"
+>
+
+
+type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
+
 
 
 export default function TeamMemberDetails() {
+    const route = useRoute<TransactionRouteProp>()
+    const { id } = route.params
+    const navigation = useNavigation<NavigationProp>();
+    const [currentTeamMember, setCurrentTeamMember] = useState<TeamMember | null>(null)
+
+    useEffect(() => {
+        const currentMember = teamMembers.find((tm) => tm.id === id)
+
+        setCurrentTeamMember(currentMember ?? null)
+    }, [id])
+
+
+    if (!currentTeamMember) {
+        return (
+            <View>
+
+                <Text>Team member not found</Text>
+            </View>
+        )
+    }
+
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Pressable
                     aria-label="back-button"
-                    // onPress={() => navigation.goBack()}
+                    onPress={() => navigation.goBack()}
                     style={styles.backButton}
                 >
                     <Ionicons
@@ -24,7 +62,7 @@ export default function TeamMemberDetails() {
                 </Pressable>
 
                 <Text style={styles.heading}>
-                    John Doe
+                    {currentTeamMember?.fullName}
                 </Text>
 
                 {/* spacer for centered title */}
@@ -44,7 +82,7 @@ export default function TeamMemberDetails() {
                     borderRadius: 10,
                     paddingHorizontal: scaleHorizontalPadding(15),
                     paddingVertical: scaleVerticalPadding(5),
-                    gap: 18
+                    gap: 12
                 }} >
 
                     <View style={{
@@ -70,23 +108,23 @@ export default function TeamMemberDetails() {
                                 color: "#000000",
                                 fontSize: scaleFont(14),
                                 fontFamily: "Sora_400Regular"
-                            }}>John Doe</Text>
+                            }}>{currentTeamMember?.fullName} </Text>
 
                             <Text style={{
                                 color: "#10182AB2",
                                 fontFamily: "Sora_400Regular",
                                 fontSize: scaleFont(12)
-                            }}>Sales Representative</Text>
+                            }}>{currentTeamMember?.role}</Text>
 
 
                             <View style={{
-                                backgroundColor: "#009A49",
+                                backgroundColor: currentTeamMember.status === "active" ? "#009A49" : "#F7AA1A",
                                 paddingHorizontal: scaleHorizontalPadding(8),
                                 paddingVertical: scaleVerticalPadding(4),
                                 borderRadius: 7,
                                 width: "auto",
                                 borderWidth: 1,
-                                borderColor: "#009A49",
+                                borderColor: currentTeamMember.status === "active" ? "#009A49" : "#F7AA1A",
                                 marginTop: 3
                             }} >
 
@@ -96,7 +134,9 @@ export default function TeamMemberDetails() {
                                         fontSize: scaleFont(12),
                                         fontFamily: "Sora_400Regular"
                                     }}
-                                >Active</Text>
+                                > {currentTeamMember?.status &&
+                                    currentTeamMember?.status.charAt(0).toUpperCase()
+                                    + currentTeamMember?.status.slice(1)}  </Text>
 
                             </View>
                         </View>
@@ -121,7 +161,7 @@ export default function TeamMemberDetails() {
                                 size={16}
                                 name="call-sharp" />
 
-                            <Text style={styles.details} > +234 800 123 4567</Text>
+                            <Text style={styles.details} > {currentTeamMember?.phone} </Text>
                         </View>
 
 
@@ -137,7 +177,7 @@ export default function TeamMemberDetails() {
                                 size={16}
                                 name="mail-outline" />
 
-                            <Text style={styles.details} > johndoe@gmail.com</Text>
+                            <Text style={styles.details} > {currentTeamMember?.email} </Text>
                         </View>
 
                     </View>
@@ -148,7 +188,7 @@ export default function TeamMemberDetails() {
                         alignItems: "center",
                         gap: 8,
                         flexDirection: "row",
-                        paddingVertical: 5
+                        paddingBottom: 3
                     }} >
                         <Ionicons
                             color={"#000000"}
@@ -156,7 +196,7 @@ export default function TeamMemberDetails() {
                             size={16}
                         />
 
-                        <Text style={styles.details} > Member since March 1, 2026</Text>
+                        <Text style={styles.details} > Member since {currentTeamMember?.joinedAt}</Text>
                     </View>
 
                 </View>
@@ -173,15 +213,16 @@ export default function TeamMemberDetails() {
                         fontSize: scaleFont(12),
                         fontFamily: "Sora_400Regular"
                     }} >
-                        Permission
+                        Permissions
                     </Text>
 
                     <View style={{
                         width: "100%",
                         backgroundColor: "#ffffff",
                         paddingHorizontal: scaleHorizontalPadding(7),
-                        paddingVertical: scaleVerticalPadding(5),
-                        borderRadius: 10
+                        paddingVertical: scaleVerticalPadding(2),
+                        borderRadius: 10,
+                        gap: 12
                     }} >
 
 
@@ -192,7 +233,6 @@ export default function TeamMemberDetails() {
                             justifyContent: "flex-start",
                             flexDirection: "row",
                             gap: 10,
-                            paddingVertical: scaleVerticalPadding(5),
                         }} >
                             <RadioButton
                                 value="false"
@@ -223,7 +263,6 @@ export default function TeamMemberDetails() {
                             justifyContent: "flex-start",
                             flexDirection: "row",
                             gap: 10,
-                            paddingVertical: scaleVerticalPadding(5),
                         }} >
                             <RadioButton
                                 value="false"
@@ -253,7 +292,6 @@ export default function TeamMemberDetails() {
                             justifyContent: "flex-start",
                             flexDirection: "row",
                             gap: 10,
-                            paddingVertical: scaleVerticalPadding(5),
                         }} >
                             <RadioButton
                                 value="false"
@@ -283,7 +321,6 @@ export default function TeamMemberDetails() {
                             justifyContent: "flex-start",
                             flexDirection: "row",
                             gap: 10,
-                            paddingVertical: scaleVerticalPadding(5),
                         }} >
                             <RadioButton
                                 value="false"
@@ -313,7 +350,6 @@ export default function TeamMemberDetails() {
                             justifyContent: "flex-start",
                             flexDirection: "row",
                             gap: 10,
-                            paddingVertical: scaleVerticalPadding(5),
                         }} >
                             <RadioButton
                                 value="false"
@@ -343,7 +379,6 @@ export default function TeamMemberDetails() {
                             justifyContent: "flex-start",
                             flexDirection: "row",
                             gap: 10,
-                            paddingVertical: scaleVerticalPadding(5),
                         }} >
                             <RadioButton
                                 value="false"
@@ -373,7 +408,7 @@ export default function TeamMemberDetails() {
 
                 {/* active summary  */}
                 <View style={{
-                    gap: 10
+                    gap: 20
                 }} >
 
                     <Text style={{
@@ -440,6 +475,9 @@ export default function TeamMemberDetails() {
                         {/* The row for withdrawals */}
                         {withdrawals.slice(0, 3).map((tx, id) => (
                             <Pressable
+                                onPress={() => navigation.navigate("withdraw_details", {
+                                    id: tx.id
+                                })}
                                 key={tx.id}
                                 style={[styles.recent_withdrawal_section_bottom_row, {
                                     borderBottomColor: "#B3B3B3",
@@ -459,12 +497,16 @@ export default function TeamMemberDetails() {
 
 
                                     <Text
+                                        numberOfLines={1}
+                                        adjustsFontSizeToFit
                                         style={{
                                             color: "#10182AB2",
                                             fontSize: scaleFont(12),
                                             fontFamily: "Sora_400Regular"
                                         }}
-                                    > {tx.bank} </Text>
+                                    > {tx.bank}
+                                        {" "}
+                                        {tx.account_number.toString().replace(/^.{5}/, "*****")}</Text>
                                 </View>
 
 
@@ -476,7 +518,7 @@ export default function TeamMemberDetails() {
                                 }} >
                                     <View style={{
                                         alignItems: "flex-end",
-                                        gap: 7
+                                        gap: 12
                                     }} >
 
                                         <Text style={{
@@ -514,7 +556,7 @@ export default function TeamMemberDetails() {
 
 
             </ScrollView>
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -549,8 +591,8 @@ const styles = StyleSheet.create({
 
     heading: {
         color: "#10182A",
-        fontFamily: "Sora_600SemiBold",
-        fontSize: scaleFont(16),
+        fontFamily: "PlusJakartaSans_500Medium",
+        fontSize: scaleFont(21),
     },
 
     scrollView: {
@@ -570,11 +612,11 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#FFFFFF",
         borderRadius: 10,
-        paddingVertical: scaleVerticalPadding(9),
+        paddingVertical: scaleVerticalPadding(4),
         paddingHorizontal: scaleHorizontalPadding(16),
         alignItems: "center",
         justifyContent: "center",
-        gap: 16
+        gap: 8
     },
 
     summary_metric: {
@@ -601,7 +643,7 @@ const styles = StyleSheet.create({
         width: "100%",
         gap: 5,
         backgroundColor: "#FFFFFF",
-        paddingHorizontal: scaleHorizontalPadding(10),
+        paddingHorizontal: scaleHorizontalPadding(6),
     },
 
 

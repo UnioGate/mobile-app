@@ -35,7 +35,9 @@ export default function TeamMembersCard({
             onPress={(e) => {
                 e.stopPropagation()
                 closeMenu();
-                navigation.navigate("team_member_detail");
+                navigation.navigate("team_member_details", {
+                    id: data.id
+                });
             }}
             style={[
                 styles.team_card,
