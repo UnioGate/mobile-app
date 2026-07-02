@@ -13,6 +13,7 @@ import AddTeamMember from "./screens/AddTeamMember";
 import Balance from "./screens/Balance";
 import BankAccount from "./screens/BankAccount";
 import ContactSupport from "./screens/ContactSupport";
+import CreateRoles from "./screens/CreateRoles";
 import DisplayCurrencyScreen from "./screens/DisplayCurrencyScreen";
 import HelpCenter from "./screens/HelpCenter";
 import InvitationSection from "./screens/InvitationSent";
@@ -78,6 +79,7 @@ export default function Index() {
                 <Stack.Screen name="tx_limits" component={TransactionLimitScreen} />
                 <Stack.Screen name="contact_support" component={ContactSupport} />
                 <Stack.Screen name="help_center" component={HelpCenter} />
+                <Stack.Screen name="create_roles" component={CreateRoles} />
 
             </Stack.Navigator>
 

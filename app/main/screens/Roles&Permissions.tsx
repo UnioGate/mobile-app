@@ -87,7 +87,9 @@ export default function Roles_And_Permissions() {
                             >Default Roles</Text>
 
 
-                            <Pressable style={styles.settings_button} >
+                            <Pressable
+                                onPress={() => navigation.navigate("create_roles")}
+                                style={styles.settings_button} >
 
                                 <Ionicons
                                     name="add-sharp"
@@ -392,6 +394,7 @@ export default function Roles_And_Permissions() {
 
 
                     <TouchableOpacity
+                        activeOpacity={0.7}
                         onPress={() => navigation.navigate("invitation_sent")}
                         style={[styles.button, {
                             backgroundColor: "#253E86"
