@@ -12,6 +12,7 @@ import AddBankAccount from "./screens/Add_Bank_Account";
 import AddTeamMember from "./screens/AddTeamMember";
 import Balance from "./screens/Balance";
 import BankAccount from "./screens/BankAccount";
+import BusinessInformation from "./screens/BusinessInformation";
 import ContactSupport from "./screens/ContactSupport";
 import CreateRoles from "./screens/CreateRoles";
 import DisplayCurrencyScreen from "./screens/DisplayCurrencyScreen";
@@ -80,6 +81,7 @@ export default function Index() {
                 <Stack.Screen name="contact_support" component={ContactSupport} />
                 <Stack.Screen name="help_center" component={HelpCenter} />
                 <Stack.Screen name="create_roles" component={CreateRoles} />
+                <Stack.Screen name="business_information" component={BusinessInformation} />
 
             </Stack.Navigator>
 

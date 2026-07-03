@@ -42,7 +42,8 @@ export type MainStackParamList = {
   }
 
 
-  create_roles: undefined
+  create_roles: undefined;
+  business_information: undefined;
 
 
 };

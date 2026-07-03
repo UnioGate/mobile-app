@@ -573,9 +573,4 @@ const styles = StyleSheet.create({
         paddingVertical: scaleVerticalPadding(10),
         backgroundColor: "#D3D8E7"
     },
-
-
-
-
-
 })

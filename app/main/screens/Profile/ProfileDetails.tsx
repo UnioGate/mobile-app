@@ -273,7 +273,9 @@ export default function ProfileDetails() {
 
                     <View style={styles.category_card} >
 
-                        <View style={styles.category_card_row} >
+                        <Pressable
+                            onPress={() => navigation.navigate("business_information")}
+                            style={styles.category_card_row} >
 
                             {/* left side */}
                             <View style={styles.left_side} >
@@ -287,7 +289,7 @@ export default function ProfileDetails() {
                                 <Ionicons name="chevron-forward" size={15} color={"#4B4848"} />
                             </View>
 
-                        </View>
+                        </Pressable>
 
                         <View style={styles.category_card_row} >
 
