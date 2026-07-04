@@ -32,6 +32,7 @@ import TeamMembers from "./screens/TeamMembers";
 import TransactionLimitScreen from "./screens/TransactionLimitsScreen";
 import Transactions from "./screens/Transactions";
 import TransactionDetails from "./screens/transactions/[id]";
+import Verification_andKYC from "./screens/Verification&KYC";
 import Withdraw from "./screens/withdraw";
 import Withdraw_Details from "./screens/withdraw_screens/[id]";
 import Withdrawal_Initiated from "./screens/withdraw_screens/Withdrawal_Initiated";
@@ -84,6 +85,7 @@ export default function Index() {
                 <Stack.Screen name="create_roles" component={CreateRoles} />
                 <Stack.Screen name="business_information" component={BusinessInformation} />
                 <Stack.Screen name="edit_business_info" component={EditBusinessInfo} />
+                <Stack.Screen name="verification_and_kyc" component={Verification_andKYC} />
 
             </Stack.Navigator>
 
