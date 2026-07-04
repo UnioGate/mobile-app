@@ -66,7 +66,9 @@ export default function BusinessInformation() {
                 </Text>
 
 
-                <Pressable>
+                <Pressable
+                    onPress={() => navigation.navigate("edit_business_info")}
+                >
                     <Text style={{
                         color: "#253E86",
                         fontSize: scaleFont(14),
@@ -106,7 +108,6 @@ export default function BusinessInformation() {
                         width: 77,
                         height: 77,
                         borderRadius: "50%",
-                        backgroundColor: "red",
                         overflow: "hidden",
                         alignItems: "center",
                         justifyContent: "center"
@@ -306,7 +307,7 @@ export default function BusinessInformation() {
 
                     <TouchableOpacity
                         activeOpacity={0.7}
-                        onPress={() => navigation.navigate("invitation_sent")}
+                        onPress={() => navigation.navigate("edit_business_info")}
                         style={[styles.button, {
                             backgroundColor: "#253E86"
                         }]} >
@@ -383,7 +384,7 @@ const styles = StyleSheet.create({
         width: "100%",
         flexGrow: 1,
         alignItems: "stretch",
-        gap: 28,
+        gap: 16,
         paddingBottom: scaleVerticalPadding(20),
         paddingHorizontal: scaleHorizontalPadding(18),
         paddingVertical: scaleVerticalPadding(10),

@@ -2,13 +2,15 @@ import statesData from "@/data/states.json";
 import { DropdownOption, StateOptionSource } from "@/types/types";
 import { scaleFont, scaleHorizontalPadding } from "@/utils/utils";
 import { useMemo, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TextStyle, View, ViewStyle } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 
 
 
 interface DropdownOptionProps {
-    label?: string
+    label?: string;
+    dropdownStyle?: ViewStyle;
+    labelStyle?: TextStyle
 }
 
 
@@ -16,7 +18,7 @@ interface DropdownOptionProps {
 const STATE_OPTIONS_SOURCE = statesData as unknown as StateOptionSource[];
 
 
-export default function CustomDropdown({ label }: DropdownOptionProps) {
+export default function CustomDropdown({ label, dropdownStyle, labelStyle }: DropdownOptionProps) {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
     const currentCountry = "NG";
@@ -37,9 +39,9 @@ export default function CustomDropdown({ label }: DropdownOptionProps) {
 
     return (
         <View style={styles.dropdownContainer}  >
-            {label && (<Text style={styles.labelText}  >{label}</Text>)}
+            {label && (<Text style={[styles.labelText, labelStyle]}  >{label}</Text>)}
             <Dropdown
-                style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                style={[styles.dropdown, dropdownStyle, isFocus && { borderColor: 'blue' }]}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={styles.selectedTextStyle}
                 inputSearchStyle={styles.inputSearchStyle}

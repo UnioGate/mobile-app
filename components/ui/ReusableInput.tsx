@@ -1,13 +1,14 @@
 import { scaleFont, scaleHorizontalPadding } from '@/utils/utils';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, Text, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
+import { StyleSheet, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
 
 interface CustomInputProps extends TextInputProps {
     leftElement?: React.ReactNode;
     containerStyle?: ViewStyle;
     label?: string;
     error?: string;
+    labelStyle?: TextStyle
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -16,11 +17,12 @@ const CustomInput: React.FC<CustomInputProps> = ({
     containerStyle,
     error,
     style,
+    labelStyle,
     ...textInputProps
 }) => {
     return (
         <View style={styles.inputWrapper} >
-            <Text style={styles.label} >{label && label}</Text>
+            <Text style={[styles.label, labelStyle]} >{label && label}</Text>
             <View style={[
                 styles.container,
                 containerStyle,

@@ -5,7 +5,6 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Divider } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { MainStackParamList } from "../type";
 
 
@@ -16,7 +15,7 @@ export default function BankAccount() {
 
 
     return (
-        <SafeAreaView style={styles.container} >
+        <View style={styles.container} >
 
 
             {/* Header */}
@@ -28,7 +27,7 @@ export default function BankAccount() {
                 >
                     <Ionicons
                         name="chevron-back"
-                        size={20}
+                        size={22}
                         color="#10182A"
                     />
                 </Pressable>
@@ -45,7 +44,7 @@ export default function BankAccount() {
                     <Text
                         style={{
                             color: "#253E86",
-                            fontSize: scaleFont(14),
+                            fontSize: scaleFont(11),
                             fontFamily: "PlusJakartaSans_500Medium"
                         }}
                     >Add Account</Text>
@@ -274,7 +273,7 @@ export default function BankAccount() {
 
 
             </ScrollView>
-        </SafeAreaView >
+        </View >
     )
 }
 
@@ -296,17 +295,15 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         flexDirection: "row",
-        borderBottomWidth: 0.5,
-        borderBottomColor: "#B3B3B3",
-        paddingHorizontal: scaleHorizontalPadding(15),
-        paddingVertical: scaleVerticalPadding(9)
+        paddingHorizontal: scaleHorizontalPadding(19),
+        paddingVertical: scaleVerticalPadding(10)
     },
 
 
     heading: {
         color: "#000000",
         fontFamily: "Sora_400Regular",
-        fontSize: scaleFont(16),
+        fontSize: scaleFont(18),
         flex: 1,
         textAlign: "center"
     },

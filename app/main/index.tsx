@@ -16,6 +16,7 @@ import BusinessInformation from "./screens/BusinessInformation";
 import ContactSupport from "./screens/ContactSupport";
 import CreateRoles from "./screens/CreateRoles";
 import DisplayCurrencyScreen from "./screens/DisplayCurrencyScreen";
+import EditBusinessInfo from "./screens/EditBusinessInfo";
 import HelpCenter from "./screens/HelpCenter";
 import InvitationSection from "./screens/InvitationSent";
 import NotificationSettings from "./screens/NotificationSettings";
@@ -82,6 +83,7 @@ export default function Index() {
                 <Stack.Screen name="help_center" component={HelpCenter} />
                 <Stack.Screen name="create_roles" component={CreateRoles} />
                 <Stack.Screen name="business_information" component={BusinessInformation} />
+                <Stack.Screen name="edit_business_info" component={EditBusinessInfo} />
 
             </Stack.Navigator>
 
