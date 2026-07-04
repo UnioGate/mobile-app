@@ -46,6 +46,7 @@ export type MainStackParamList = {
   business_information: undefined;
   edit_business_info: undefined;
   verification_and_kyc: undefined
+  personal_verification: undefined
 
 
 };

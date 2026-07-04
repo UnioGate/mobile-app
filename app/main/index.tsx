@@ -22,6 +22,7 @@ import InvitationSection from "./screens/InvitationSent";
 import NotificationSettings from "./screens/NotificationSettings";
 import Overview from './screens/Overview';
 import PaymentMethods from "./screens/PaymentMethods";
+import PersonalVerification from "./screens/PersonalVerification";
 import ProfileDetails from "./screens/Profile/ProfileDetails";
 import Roles_And_Permissions from "./screens/Roles&Permissions";
 import Sales from './screens/Sales';
@@ -86,6 +87,7 @@ export default function Index() {
                 <Stack.Screen name="business_information" component={BusinessInformation} />
                 <Stack.Screen name="edit_business_info" component={EditBusinessInfo} />
                 <Stack.Screen name="verification_and_kyc" component={Verification_andKYC} />
+                <Stack.Screen name="personal_verification" component={PersonalVerification} />
 
             </Stack.Navigator>
 

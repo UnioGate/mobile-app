@@ -233,7 +233,9 @@ export default function Verification_andKYC() {
 
                             </View>
 
-                            <TouchableOpacity style={styles.step_card_btn}>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate("personal_verification")}
+                                style={styles.step_card_btn}>
                                 <Text style={styles.step_card_btn_text} >View Documents</Text>
                             </TouchableOpacity>
                         </View>
@@ -567,7 +569,7 @@ const styles = StyleSheet.create({
         gap: 16,
         paddingBottom: scaleVerticalPadding(20),
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(15),
+        paddingVertical: scaleVerticalPadding(10),
         backgroundColor: "#D3D8E7"
     },
 
