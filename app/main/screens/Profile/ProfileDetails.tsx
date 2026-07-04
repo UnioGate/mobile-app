@@ -81,7 +81,9 @@ export default function ProfileDetails() {
                         <Text style={styles.business_name} >Tech Haven Store</Text>
                         <Text style={styles.status} >Tier 2: Personal verified</Text>
 
-                        <TouchableOpacity style={styles.upgrade_button} >
+                        <TouchableOpacity
+                            activeOpacity={0.7}
+                            style={styles.upgrade_button} >
                             <Text style={styles.upgrade_buttonText} >Upgrade Account</Text>
                             <Ionicons
                                 name="chevron-forward"

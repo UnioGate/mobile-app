@@ -5,7 +5,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { MainStackParamList } from "../type";
 
 type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
@@ -17,7 +16,7 @@ export default function AddBankAccount() {
 
 
     return (
-        <SafeAreaView style={styles.container} >
+        <View style={styles.container} >
 
 
             {/* Header */}
@@ -29,7 +28,7 @@ export default function AddBankAccount() {
                 >
                     <Ionicons
                         name="chevron-back"
-                        size={20}
+                        size={22}
                         color="#10182A"
                     />
                 </Pressable>
@@ -83,7 +82,12 @@ export default function AddBankAccount() {
                             }}
                         >Select Bank</Text>
 
-                        <CustomDropdown />
+                        <CustomDropdown
+                            dropdownStyle={{
+                                borderColor: "#808080",
+                                backgroundColor: "#ffffff"
+                            }}
+                        />
 
                     </View>
 
@@ -194,7 +198,7 @@ export default function AddBankAccount() {
                 </View>
 
             </ScrollView>
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -227,7 +231,7 @@ const styles = StyleSheet.create({
     heading: {
         color: "#000000",
         fontFamily: "Sora_400Regular",
-        fontSize: scaleFont(16),
+        fontSize: scaleFont(21),
         flex: 1,
         textAlign: "center"
     },
@@ -259,7 +263,7 @@ const styles = StyleSheet.create({
 
     button_text: {
         fontFamily: "Sora_400Regular",
-        fontSize: scaleFont(10),
+        fontSize: scaleFont(13),
         textAlign: "center"
     },
 

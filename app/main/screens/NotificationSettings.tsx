@@ -4,7 +4,6 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Pressable, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from "react-native";
 import { Divider } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { MainStackParamList } from "../type";
 
 
@@ -19,7 +18,7 @@ export default function NotificationSettings() {
 
 
     return (
-        <SafeAreaView style={styles.container} >
+        <View style={styles.container} >
 
 
             {/* Header */}
@@ -31,7 +30,7 @@ export default function NotificationSettings() {
                 >
                     <Ionicons
                         name="chevron-back"
-                        size={20}
+                        size={22}
                         color="#10182A"
                     />
                 </Pressable>
@@ -46,9 +45,6 @@ export default function NotificationSettings() {
                 </Pressable>
 
             </View>
-
-
-
 
 
             {/* main content  */}
@@ -72,7 +68,7 @@ export default function NotificationSettings() {
                     <Text style={{
                         color: "#000000",
                         fontSize: scaleFont(14),
-                        fontFamily: "Sora_400Regular,"
+                        fontFamily: "Sora_400Regular"
                     }} >Enable Notifications</Text>
 
 
@@ -98,13 +94,13 @@ export default function NotificationSettings() {
                         paddingHorizontal: scaleHorizontalPadding(15),
                     }} >
 
-                        {/* payment received role */}
+                        {/* payment received row */}
                         <View style={{
                             width: "100%",
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
                             <Text style={{
                                 color: "#000000",
@@ -127,7 +123,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
                             <Text style={{
                                 color: "#000000",
@@ -153,7 +149,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
 
 
@@ -227,7 +223,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
                             <Text style={{
                                 color: "#000000",
@@ -276,7 +272,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
 
 
@@ -331,7 +327,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
                             <Text style={{
                                 color: "#000000",
@@ -354,7 +350,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
                             <Text style={{
                                 color: "#000000",
@@ -380,7 +376,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
 
 
@@ -435,7 +431,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
                             <Text style={{
                                 color: "#000000",
@@ -458,7 +454,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
                             <Text style={{
                                 color: "#000000",
@@ -484,7 +480,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
 
 
@@ -540,7 +536,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
                             <Text style={{
                                 color: "#000000",
@@ -563,7 +559,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
                             <Text style={{
                                 color: "#000000",
@@ -589,7 +585,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
 
 
@@ -645,7 +641,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
                             <Text style={{
                                 color: "#000000",
@@ -668,7 +664,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
                             <Text style={{
                                 color: "#000000",
@@ -694,7 +690,7 @@ export default function NotificationSettings() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             flexDirection: "row",
-                            paddingVertical: scaleVerticalPadding(5),
+                            paddingVertical: scaleVerticalPadding(8),
                         }} >
 
 
@@ -748,7 +744,7 @@ export default function NotificationSettings() {
                 </View>
 
             </ScrollView>
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -770,14 +766,14 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         flexDirection: "row",
         paddingHorizontal: scaleHorizontalPadding(15),
-        paddingVertical: scaleVerticalPadding(9)
+        paddingVertical: scaleVerticalPadding(10)
     },
 
 
     heading: {
         color: "#000000",
-        fontFamily: "Sora_400Regular",
-        fontSize: scaleFont(16),
+        fontFamily: "PlusJakartaSans_600SemiBold",
+        fontSize: scaleFont(21),
         flex: 1,
         textAlign: "center"
     },
@@ -809,7 +805,7 @@ const styles = StyleSheet.create({
 
     button_text: {
         fontFamily: "Sora_400Regular",
-        fontSize: scaleFont(10),
+        fontSize: scaleFont(13),
         textAlign: "center"
     },
 
@@ -820,7 +816,7 @@ const styles = StyleSheet.create({
         gap: 12,
         paddingBottom: scaleVerticalPadding(20),
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(15),
+        paddingVertical: scaleVerticalPadding(2),
         backgroundColor: "#D3D8E7"
     },
 

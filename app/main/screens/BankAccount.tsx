@@ -70,7 +70,7 @@ export default function BankAccount() {
                     <View style={{
                         backgroundColor: "#ffffff",
                         borderRadius: 10,
-                        paddingVertical: scaleVerticalPadding(15),
+                        paddingVertical: scaleVerticalPadding(10),
                         paddingHorizontal: scaleHorizontalPadding(15)
                     }} >
 
@@ -82,7 +82,7 @@ export default function BankAccount() {
                             justifyContent: "space-between",
                             flexDirection: "row",
                             paddingVertical: scaleVerticalPadding(7),
-                            paddingTop: scaleVerticalPadding(10)
+                            paddingTop: scaleVerticalPadding(1)
                         }} >
 
                             <View style={{
@@ -250,16 +250,19 @@ export default function BankAccount() {
 
 
                 {/* Button wrapper */}
-                <View style={styles.button_wrapper} >
+                <View style={[styles.button_wrapper, {
+                    marginTop: 2
+                }]} >
 
-                    <TouchableOpacity style={[styles.button]} >
+                    <Pressable style={[styles.button]} >
                         <Text style={[styles.button_text, {
                             color: "#253E86"
                         }]} >Cancel</Text>
-                    </TouchableOpacity>
+                    </Pressable>
 
 
                     <TouchableOpacity
+                        activeOpacity={0.7}
                         onPress={() => navigation.navigate("add_bank_account")}
                         style={[styles.button, {
                             backgroundColor: "#253E86"
@@ -346,7 +349,7 @@ const styles = StyleSheet.create({
         gap: 12,
         paddingBottom: scaleVerticalPadding(20),
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(15),
+        paddingVertical: scaleVerticalPadding(5),
         backgroundColor: "#D3D8E7"
     },
 

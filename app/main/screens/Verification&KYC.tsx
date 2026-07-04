@@ -321,7 +321,9 @@ export default function Verification_andKYC() {
 
                             </View>
 
-                            <TouchableOpacity style={styles.step_card_btn}>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate("business_verification")}
+                                style={styles.step_card_btn}>
                                 <Text style={styles.step_card_btn_text} >Start Business Verification</Text>
                             </TouchableOpacity>
                         </View>

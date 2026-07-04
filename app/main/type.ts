@@ -45,8 +45,9 @@ export type MainStackParamList = {
   create_roles: undefined;
   business_information: undefined;
   edit_business_info: undefined;
-  verification_and_kyc: undefined
-  personal_verification: undefined
+  verification_and_kyc: undefined;
+  personal_verification: undefined;
+  business_verification: undefined;
 
 
 };

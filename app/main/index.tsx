@@ -13,6 +13,7 @@ import AddTeamMember from "./screens/AddTeamMember";
 import Balance from "./screens/Balance";
 import BankAccount from "./screens/BankAccount";
 import BusinessInformation from "./screens/BusinessInformation";
+import BusinessVerification from "./screens/BusinessVerification";
 import ContactSupport from "./screens/ContactSupport";
 import CreateRoles from "./screens/CreateRoles";
 import DisplayCurrencyScreen from "./screens/DisplayCurrencyScreen";
@@ -88,6 +89,7 @@ export default function Index() {
                 <Stack.Screen name="edit_business_info" component={EditBusinessInfo} />
                 <Stack.Screen name="verification_and_kyc" component={Verification_andKYC} />
                 <Stack.Screen name="personal_verification" component={PersonalVerification} />
+                <Stack.Screen name="business_verification" component={BusinessVerification} />
 
             </Stack.Navigator>
 
