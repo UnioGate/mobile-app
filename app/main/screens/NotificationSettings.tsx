@@ -816,7 +816,7 @@ const styles = StyleSheet.create({
         gap: 12,
         paddingBottom: scaleVerticalPadding(20),
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(2),
+        paddingVertical: scaleVerticalPadding(4),
         backgroundColor: "#D3D8E7"
     },
 

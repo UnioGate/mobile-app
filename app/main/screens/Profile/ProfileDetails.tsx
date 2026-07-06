@@ -2,14 +2,17 @@ import BankIcon from "@/components/icons/BankIcon";
 import DoubleArrow from "@/components/icons/DoubleArrow";
 import Edit from "@/components/icons/Edit";
 import NairaSign from "@/components/icons/NairaIcon";
+import PadlockIcon from "@/components/icons/PadlockIcon";
 import RolesIcon from "@/components/icons/RolesIcon";
 import SettlementIcon from "@/components/icons/SettlementIcon";
+import SupportIcon from "@/components/icons/SupportIcon";
 import TeamIcon from "@/components/icons/Team";
 import WalletIcon from "@/components/icons/WalletIcon";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { HelpCircleIcon } from "lucide-react-native";
 import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { MainStackParamList } from "../../type";
 
@@ -342,7 +345,101 @@ export default function ProfileDetails() {
                 </View>
 
 
-                <Text style={styles.category_title} >SUPPORT & LEGAL</Text>
+                {/* SUPPORT & LEGAL */}
+                <View style={styles.category_wrapper} >
+                    <Text style={styles.category_title} >SUPPORT & LEGAL</Text>
+
+                    <View style={styles.category_card} >
+
+                        <Pressable
+                            onPress={() => navigation.navigate("help_center")}
+                            style={styles.category_card_row} >
+
+                            {/* left side */}
+                            <View style={styles.left_side} >
+                                <HelpCircleIcon color={"#1E1E1E"} height={20} width={20} />
+                                <Text style={styles.left_side_text} >Help Center</Text>
+                            </View>
+
+
+                            {/* Right side  */}
+                            <View style={styles.right_side} >
+                                <Ionicons name="chevron-forward" size={15} color={"#4B4848"} />
+                            </View>
+
+                        </Pressable>
+
+
+                        <Pressable
+                            onPress={() => navigation.navigate("contact_support")}
+                            style={[styles.category_card_row, {
+                                borderBottomWidth: 0
+                            }]} >
+
+                            {/* left side */}
+                            <View style={styles.left_side} >
+                                <SupportIcon height={20} width={19} color={"#1E1E1E"} />
+                                <Text style={styles.left_side_text} >Contact Support</Text>
+                            </View>
+
+
+                            {/* Right side  */}
+                            <View style={styles.right_side} >
+                                <Ionicons name="chevron-forward" size={15} color={"#4B4848"} />
+                            </View>
+
+                        </Pressable>
+
+                    </View>
+                </View>
+
+
+
+                {/* SECURITY */}
+                <View style={styles.category_wrapper} >
+                    <Text style={styles.category_title} >SECURITY</Text>
+
+                    <View style={styles.category_card} >
+
+                        <Pressable
+                            onPress={() => navigation.navigate("security")}
+                            style={[styles.category_card_row, {
+                                borderBottomWidth: 0
+                            }]} >
+
+                            {/* left side */}
+                            <View style={styles.left_side} >
+                                <PadlockIcon color={"#1E1E1E"} height={16} width={16} />
+                                <Text style={styles.left_side_text} >Security</Text>
+                            </View>
+
+
+                            {/* Right side  */}
+                            <View style={styles.right_side} >
+                                <Ionicons name="chevron-forward" size={15} color={"#4B4848"} />
+                            </View>
+
+                        </Pressable>
+
+                    </View>
+                </View>
+
+
+                <Pressable style={{
+                    marginHorizontal: "auto",
+                    backgroundColor: "red",
+                    borderRadius: 7,
+                    paddingVertical: scaleVerticalPadding(10),
+                    paddingHorizontal: scaleHorizontalPadding(12),
+                    marginTop: 20
+                }} >
+                    <Text style={{
+                        color: "#ffffff",
+                        fontFamily: "Sora_400Regular",
+                        fontSize: scaleFont(14),
+                        textAlign: "center"
+                    }}>Log out</Text>
+                </Pressable>
 
 
             </ScrollView >

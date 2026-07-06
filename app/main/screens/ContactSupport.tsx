@@ -1,7 +1,9 @@
+import ChatIcon from "@/components/icons/ChatIcon";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Mail, Phone } from "lucide-react-native";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Divider } from "react-native-paper";
 import { MainStackParamList } from "../type";
@@ -30,7 +32,7 @@ export default function ContactSupport() {
                 >
                     <Ionicons
                         name="chevron-back"
-                        size={20}
+                        size={22}
                         color="#10182A"
                     />
                 </Pressable>
@@ -57,8 +59,6 @@ export default function ContactSupport() {
                 showsVerticalScrollIndicator={false} >
 
 
-
-
                 {/* quick options  */}
                 <View style={{
                     width: "100%",
@@ -74,7 +74,7 @@ export default function ContactSupport() {
                             flexDirection: "row",
                             alignItems: "flex-start"
                         }} >
-                            <Ionicons name="chatbox" />
+                            <ChatIcon />
 
                             <View style={{
                                 margin: 0,
@@ -112,7 +112,7 @@ export default function ContactSupport() {
                             flexDirection: "row",
                             alignItems: "flex-start"
                         }} >
-                            <Ionicons name="chatbox" />
+                            <Mail color={"#1E1E1E"} size={16} />
 
                             <View style={{
                                 margin: 0,
@@ -151,7 +151,7 @@ export default function ContactSupport() {
                             flexDirection: "row",
                             alignItems: "flex-start"
                         }} >
-                            <Ionicons name="chatbox" />
+                            <Phone color={"#1E1E1E"} size={16} />
 
                             <View style={{
                                 margin: 0,
@@ -423,14 +423,14 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         flexDirection: "row",
         paddingHorizontal: scaleHorizontalPadding(15),
-        paddingVertical: scaleVerticalPadding(9)
+        paddingVertical: scaleVerticalPadding(10)
     },
 
 
     heading: {
         color: "#000000",
         fontFamily: "PlusJakartaSans_500Medium",
-        fontSize: scaleFont(16),
+        fontSize: scaleFont(21),
         flex: 1,
         textAlign: "center"
     },
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
         gap: 16,
         paddingBottom: scaleVerticalPadding(20),
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(15),
+        paddingVertical: scaleVerticalPadding(7),
         backgroundColor: "#D3D8E7"
     },
 
@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#ffffff",
         borderRadius: 10,
-        paddingVertical: scaleVerticalPadding(6),
+        paddingVertical: scaleVerticalPadding(9),
         paddingHorizontal: scaleHorizontalPadding(16),
         flexDirection: "row",
         alignItems: "center",

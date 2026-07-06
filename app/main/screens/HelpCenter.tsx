@@ -1,7 +1,16 @@
+import ATM_Icon from "@/components/icons/ATM_Icon";
+import ChatIcon from "@/components/icons/ChatIcon";
+import CoinsIcon from "@/components/icons/CoinsIcon";
+import RocketIcon from "@/components/icons/RocketIcon";
+import SupportIcon from "@/components/icons/SupportIcon";
+import ThumbsDownIcon from "@/components/icons/ThumbsDownIcon";
+import ThumbsUpIcon from "@/components/icons/ThumbsUpIcon";
+import TroubleshootIcon from "@/components/icons/TroubleshootIcon";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { HelpCircleIcon, ShieldCheck } from "lucide-react-native";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Divider } from "react-native-paper";
 import { MainStackParamList } from "../type";
@@ -28,7 +37,7 @@ export default function HelpCenter() {
                 >
                     <Ionicons
                         name="chevron-back"
-                        size={20}
+                        size={22}
                         color="#10182A"
                     />
                 </Pressable>
@@ -70,7 +79,7 @@ export default function HelpCenter() {
 
                     <Ionicons
                         name="search"
-                        size={13}
+                        size={18}
                         color={"#10182A99"}
                     />
 
@@ -79,9 +88,10 @@ export default function HelpCenter() {
                         padding: 1,
                         width: "100%",
                         fontFamily: "Sora_400Regular",
-                        color: "#000000"
+                        color: "#10182A99"
                     }}
                         keyboardType="default"
+                        placeholder="Search for help..."
                     />
 
                 </View>
@@ -110,7 +120,7 @@ export default function HelpCenter() {
                                 flexDirection: "row",
                                 alignItems: "flex-start"
                             }} >
-                                <Ionicons name="chatbox" />
+                                <RocketIcon height={15} width={15} color={"#1E1E1E"} />
 
                                 <View style={{
                                     margin: 0,
@@ -150,7 +160,12 @@ export default function HelpCenter() {
                                 flexDirection: "row",
                                 alignItems: "flex-start"
                             }} >
-                                <Ionicons name="chatbox" />
+
+                                <Ionicons
+                                    name="card-outline"
+                                    size={15}
+                                />
+
 
                                 <View style={{
                                     margin: 0,
@@ -190,7 +205,7 @@ export default function HelpCenter() {
                                 flexDirection: "row",
                                 alignItems: "flex-start"
                             }} >
-                                <Ionicons name="chatbox" />
+                                <ATM_Icon />
 
                                 <View style={{
                                     margin: 0,
@@ -229,7 +244,7 @@ export default function HelpCenter() {
                                 flexDirection: "row",
                                 alignItems: "flex-start"
                             }} >
-                                <Ionicons name="chatbox" />
+                                <ShieldCheck height={15} width={15} color={"#1E1E1E"} />
 
                                 <View style={{
                                     margin: 0,
@@ -268,7 +283,7 @@ export default function HelpCenter() {
                                 flexDirection: "row",
                                 alignItems: "flex-start"
                             }} >
-                                <Ionicons name="chatbox" />
+                                <TroubleshootIcon />
 
                                 <View style={{
                                     margin: 0,
@@ -308,7 +323,8 @@ export default function HelpCenter() {
                                 flexDirection: "row",
                                 alignItems: "flex-start"
                             }} >
-                                <Ionicons name="chatbox" />
+
+                                <CoinsIcon />
 
                                 <View style={{
                                     margin: 0,
@@ -375,7 +391,7 @@ export default function HelpCenter() {
                                 flexDirection: "row"
                             }} >
 
-                                <Ionicons name="add" />
+                                <HelpCircleIcon height={16} width={16} color={"#1E1E1E"} />
 
                                 <Text style={{
                                     color: "#000000",
@@ -430,18 +446,18 @@ export default function HelpCenter() {
                             <View style={{
                                 width: "auto",
                                 alignItems: "center",
-                                gap: 30,
+                                gap: 25,
                                 flexDirection: "row"
                             }} >
 
 
                                 <Pressable>
-                                    <Ionicons name="thumbs-down" />
+                                    <ThumbsUpIcon />
                                 </Pressable>
 
 
                                 <Pressable>
-                                    <Ionicons name="thumbs-down" />
+                                    <ThumbsDownIcon />
                                 </Pressable>
 
 
@@ -464,7 +480,7 @@ export default function HelpCenter() {
                     <View style={{
                         backgroundColor: "#ffffff",
                         width: "100%",
-                        paddingVertical: scaleVerticalPadding(8),
+                        paddingVertical: scaleVerticalPadding(10),
                         paddingHorizontal: scaleHorizontalPadding(15),
                         borderRadius: 10,
                         gap: 8
@@ -477,7 +493,8 @@ export default function HelpCenter() {
                             width: "100%",
                             alignItems: "center",
                             justifyContent: "space-between",
-                            flexDirection: "row"
+                            flexDirection: "row",
+                            paddingVertical: scaleVerticalPadding(5)
                         }} >
 
 
@@ -488,7 +505,7 @@ export default function HelpCenter() {
                                 flexDirection: "row"
                             }}>
 
-                                <Ionicons name="add" />
+                                <SupportIcon height={16} width={16} color={"#10182A"} />
 
                                 <Text style={{
                                     color: "#000000",
@@ -509,7 +526,8 @@ export default function HelpCenter() {
                             width: "100%",
                             alignItems: "center",
                             justifyContent: "space-between",
-                            flexDirection: "row"
+                            flexDirection: "row",
+                            paddingVertical: scaleVerticalPadding(5)
                         }} >
 
 
@@ -520,7 +538,7 @@ export default function HelpCenter() {
                                 flexDirection: "row"
                             }}>
 
-                                <Ionicons name="add" />
+                                <ChatIcon />
 
                                 <Text style={{
                                     color: "#000000",
@@ -564,7 +582,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         flexDirection: "row",
         paddingHorizontal: scaleHorizontalPadding(15),
-        paddingVertical: scaleVerticalPadding(9)
+        paddingVertical: scaleVerticalPadding(10)
     },
 
 
@@ -614,7 +632,7 @@ const styles = StyleSheet.create({
         gap: 16,
         paddingBottom: scaleVerticalPadding(20),
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(15),
+        paddingVertical: scaleVerticalPadding(6),
         backgroundColor: "#D3D8E7"
     },
 
@@ -628,8 +646,8 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#ffffff",
         borderRadius: 10,
-        paddingVertical: scaleVerticalPadding(6),
-        paddingHorizontal: scaleHorizontalPadding(16),
+        paddingVertical: scaleVerticalPadding(7),
+        paddingHorizontal: scaleHorizontalPadding(15),
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between"

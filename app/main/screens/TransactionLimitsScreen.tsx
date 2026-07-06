@@ -27,7 +27,7 @@ export default function TransactionLimitScreen() {
                 >
                     <Ionicons
                         name="chevron-back"
-                        size={20}
+                        size={22}
                         color="#10182A"
                     />
                 </Pressable>
@@ -144,7 +144,6 @@ export default function TransactionLimitScreen() {
                         alignItems: "center",
                         justifyContent: "center"
                     }}
-
                         activeOpacity={0.7}
                     >
                         <Text style={{
@@ -199,7 +198,9 @@ export default function TransactionLimitScreen() {
 
                                     <CustomProgressBar
                                         total={20000000}
-                                        amount={4000000} />
+                                        amount={4000000}
+                                        textColor="#ffffff"
+                                    />
 
                                     <View style={{
                                         width: "100%",
@@ -438,14 +439,14 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         flexDirection: "row",
         paddingHorizontal: scaleHorizontalPadding(15),
-        paddingVertical: scaleVerticalPadding(9)
+        paddingVertical: scaleVerticalPadding(10)
     },
 
 
     heading: {
         color: "#000000",
         fontFamily: "Sora_400Regular",
-        fontSize: scaleFont(16),
+        fontSize: scaleFont(21),
         flex: 1,
         textAlign: "center"
     },
@@ -488,7 +489,7 @@ const styles = StyleSheet.create({
         gap: 16,
         paddingBottom: scaleVerticalPadding(20),
         paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(15),
+        paddingVertical: scaleVerticalPadding(5),
         backgroundColor: "#D3D8E7"
     },
 

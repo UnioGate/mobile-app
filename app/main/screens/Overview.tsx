@@ -2,6 +2,7 @@ import EyeClosed from "@/components/icons/EyeClosed";
 import NFCIcon from "@/components/icons/NFCPayments";
 import SupportIcon from "@/components/icons/SupportIcon";
 import WithdrawIcon from "@/components/icons/WithdrawIcon";
+import CustomProgressBar from "@/components/ui/CustomProgressBar";
 import { transactions } from "@/data/mock_tx";
 import { LogoKey } from "@/types/types";
 import { formatBalance, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
@@ -11,7 +12,6 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { EyeIcon } from "lucide-react-native";
 import { useState } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import * as Progress from 'react-native-progress';
 import { MainStackParamList } from "../type";
 
 type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList, "overview">;
@@ -236,14 +236,10 @@ export default function Overview() {
                         flexDirection: "column",
                         gap: 5
                     }}>
-                        <Progress.Bar
-                            progress={0.5}
-                            color="#253E86"
-                            unfilledColor="#D3D8E7"
-                            borderWidth={0}
-                            borderRadius={30}
-                            width={null}
-                            height={12}
+                        <CustomProgressBar
+                            total={5000000}
+                            amount={3200000}
+                            textColor="#ffffff"
                         />
                         <Text style={styles.transacted_amount} >₦3.2M / ₦5M</Text>
                     </View>
@@ -354,7 +350,7 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         flexDirection: "column",
-        gap: 12,
+        gap: 1,
         paddingHorizontal: scaleHorizontalPadding(19),
         paddingTop: scaleVerticalPadding(20)
     },

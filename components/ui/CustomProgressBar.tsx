@@ -6,12 +6,13 @@ interface CustomProgressBarProps {
     trackColor?: string;
     thumbColor?: string
     amount: number;
-    total: number
+    total: number;
+    textColor?: string
 }
 
 
 
-export default function CustomProgressBar({ trackColor = "#D3D8E7", thumbColor = "#253E86", total, amount }: CustomProgressBarProps) {
+export default function CustomProgressBar({ trackColor = "#D3D8E7", thumbColor = "#253E86", total, amount, textColor }: CustomProgressBarProps) {
 
     const calcProgress = (): DimensionValue => {
         if (total <= 0) return "0%";
@@ -39,7 +40,7 @@ export default function CustomProgressBar({ trackColor = "#D3D8E7", thumbColor =
 
             <Text
                 style={{
-                    color: "#10182A",
+                    color: textColor ? textColor : "#10182A",
                     position: "absolute",
                     top: 0,
                     left: "50%",

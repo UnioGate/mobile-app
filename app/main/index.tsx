@@ -27,6 +27,7 @@ import PersonalVerification from "./screens/PersonalVerification";
 import ProfileDetails from "./screens/Profile/ProfileDetails";
 import Roles_And_Permissions from "./screens/Roles&Permissions";
 import Sales from './screens/Sales';
+import SecurityScreen from "./screens/Security";
 import SettlementSettings from "./screens/Settlements_settings";
 import TapToPay from "./screens/TapToPay";
 import TeamMemberDetails from "./screens/team_member_details/[id]";
@@ -90,6 +91,7 @@ export default function Index() {
                 <Stack.Screen name="verification_and_kyc" component={Verification_andKYC} />
                 <Stack.Screen name="personal_verification" component={PersonalVerification} />
                 <Stack.Screen name="business_verification" component={BusinessVerification} />
+                <Stack.Screen name="security" component={SecurityScreen} />
 
             </Stack.Navigator>
 
