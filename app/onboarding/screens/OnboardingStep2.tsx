@@ -1,11 +1,10 @@
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from '@/utils/utils';
-import { useFonts } from '@expo-google-fonts/plus-jakarta-sans';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
 import { Animated, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { fonts } from '../../../fonts/fonts';
 
 const { width, height } = Dimensions.get('window');
 
@@ -21,9 +20,15 @@ export default function OnboardingStep1() {
     }).start();
   }, []);
 
-  const [fontsLoaded] = useFonts(fonts);
 
-  if (!fontsLoaded) return null;
+
+  // saves the flag when onboarding is finished
+  const finishOnboarding = async () => {
+    await AsyncStorage.setItem("hasOnboarded", "true");
+
+    router.replace("/auth")
+  }
+
 
 
 
@@ -64,7 +69,7 @@ export default function OnboardingStep1() {
           <TouchableOpacity
             activeOpacity={0.7}
             style={styles.button}
-            onPress={() => router.push('/auth')}>
+            onPress={finishOnboarding}>
             <Text style={styles.buttonText} >Get Started</Text>
           </TouchableOpacity>
         </LinearGradient>

@@ -1,7 +1,6 @@
 import SupportIcon from '@/components/icons/SupportIcon';
 import { useStep } from '@/context/StepContext';
 import { scaleHorizontalPadding, scaleVerticalPadding } from '@/utils/utils';
-import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { router } from 'expo-router';
@@ -35,7 +34,7 @@ export default function AuthLayout() {
                         }
                     }}
                 >
-                    <Ionicons name="chevron-back" size={25} color="#10182A" />
+                    {/* <Ionicons name="chevron-back" size={25} color="#10182A" /> */}
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -73,7 +72,7 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        paddingVertical: scaleVerticalPadding(5),
+        paddingVertical: scaleVerticalPadding(10),
         paddingHorizontal: scaleHorizontalPadding(14),
         flexDirection: "row"
     },

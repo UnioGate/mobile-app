@@ -1,33 +1,50 @@
-import { AuthStackParamList } from '@/app/auth/types';
-import { fonts } from '@/fonts/fonts';
+import { requestOTP } from '@/api/otp.api';
+import { RequestOTPBody } from '@/types/types';
+import { showErrorToast, showSuccessToast } from '@/utils/toastConfig';
 import { scaleFont, scaleVerticalPadding } from '@/utils/utils';
-import { useFonts } from '@expo-google-fonts/plus-jakarta-sans';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useState } from 'react';
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { SetStateAction, useState } from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import CountryPicker, { CountryCode } from 'react-native-country-picker-modal';
 import CustomCheckbox from '../ui/CustomCheckbox';
 import CustomInput from '../ui/ReusableInput';
 
-export default function CreateAccountForm() {
 
-    const [signUpMode, setSignUpMode] = useState<"emailAddress" | "phoneNumber">("emailAddress")
 
-    const [phone, setPhone] = useState('');
-    const [email, setEmail] = useState('');
+type Props = {
+    onContinue: () => void;
+    email: string;
+    setEmail: React.Dispatch<SetStateAction<string>>
+    phone: string;
+    setPhone: React.Dispatch<SetStateAction<string>>
+    signUpMode: "emailAddress" | "phoneNumber"
+    setSignUpMode: React.Dispatch<SetStateAction<"emailAddress" | "phoneNumber">>
+};
+
+
+export default function CreateAccountForm({
+    onContinue,
+    email,
+    phone,
+    setPhone,
+    setEmail,
+    setSignUpMode,
+    signUpMode
+}: Props) {
+
+
     const [emailError, setEmailError] = useState('');
     const [phoneError, setPhoneError] = useState('');
     const [countryCode, setCountryCode] = useState<CountryCode>('NG');
     const [showCountryPicker, setShowCountryPicker] = useState(false);
     const [callingCode, setCallingCode] = useState('234');
+    const [agreeToTerms, setAgreeToTerms] = useState<boolean>(false)
+    const [loading, setLoading] = useState(false);
 
-    const [fontsLoaded] = useFonts(fonts);
 
-    const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
-    // Validation function
+    // Validation functions
+    // validate email
     const validateEmail = (value: string) => {
         if (!value && signUpMode === "emailAddress") return 'Email is required';
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -35,6 +52,7 @@ export default function CreateAccountForm() {
         return '';
     };
 
+    // validate phone number
     const validatePhone = (value: string) => {
         if (!value && signUpMode === "phoneNumber") return 'Phone number is required';
         if (!/^\d{10,15}$/.test(value)) return 'Enter a valid phone number';
@@ -42,11 +60,67 @@ export default function CreateAccountForm() {
     };
 
 
+    // toggle signup
     const toggleSignupMode = () => {
         setSignUpMode(signUpMode === "emailAddress" ? "phoneNumber" : "emailAddress");
     }
 
-    if (!fontsLoaded) return null;
+
+
+
+    // here we validate on submission, then call the OTP
+    const getOTP = async () => {
+
+        const error =
+            signUpMode === "emailAddress" ? validateEmail(email)
+                : validatePhone(phone)
+
+        if (error) {
+            if (signUpMode === "emailAddress") {
+                setEmailError(error)
+            }
+
+            else {
+                setPhoneError(error)
+            }
+
+            return;
+        }
+
+        if (!agreeToTerms) {
+            showErrorToast("You must agree to the Terms & Conditions",
+                "")
+            return;
+        }
+
+        // then if the validation passes, we then call our backend to send OTP then move to the OTP screen
+        try {
+            setLoading(true);
+
+
+            const payload: RequestOTPBody = {
+                identifier: signUpMode === "emailAddress" ?
+                    email.toLocaleLowerCase() : phone,
+
+                type: signUpMode === "emailAddress" ?
+                    "email" : "whatsapp"
+            };
+
+            await requestOTP(payload);
+            showSuccessToast(
+                `A verification code has been sent to your ${signUpMode === "emailAddress" ? "email" : "WhatsApp"
+                }.`
+            );
+            onContinue()
+        }
+        catch (error) {
+            console.error(error)
+        }
+
+        finally {
+            setLoading(false);
+        }
+    }
 
 
     return (
@@ -124,6 +198,7 @@ export default function CreateAccountForm() {
                             label='Email address'
                             placeholder="Enter Email address"
                             keyboardType="email-address"
+                            inputMode='email'
                             placeholderTextColor="#CCCCCC"
                             value={email}
                             onChangeText={(text) => {
@@ -145,15 +220,22 @@ export default function CreateAccountForm() {
                 <CustomCheckbox
                     label='Agree with'
                     linkText='Terms & Conditions'
-                    path='/terms&condtions'
+                    path='https://www.uniogate.com/terms'
+                    checked={agreeToTerms}
+                    setChecked={setAgreeToTerms}
                 />
 
                 <TouchableOpacity
                     style={styles.button}
                     activeOpacity={0.7}
-                    onPress={() => navigation.navigate('PersonalInformation')}
+                    onPress={getOTP}
+                    disabled={loading}
                 >
-                    <Text style={styles.buttonText} > Sign up</Text>
+                    {loading ? (
+                        <ActivityIndicator color="#ffffff" />
+                    ) : (
+                        <Text style={styles.buttonText}>Sign up</Text>
+                    )}
                 </TouchableOpacity>
 
                 <Text style={styles.otherOptionText}

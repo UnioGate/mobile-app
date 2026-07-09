@@ -10,24 +10,46 @@ import { StyleSheet, Text, View } from 'react-native';
 import type { AuthStackParamList } from '../types';
 
 
+
 export default function CreateAccount() {
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-    const [currentForm, setCurrentForm] = useState("createAccountForm")
+    const [currentForm, setCurrentForm] = useState<"createAccountForm" | "otp">("createAccountForm");
+    const [signUpMode, setSignUpMode] = useState<"emailAddress" | "phoneNumber">("emailAddress")
+    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
+
 
 
     const [fontsLoaded] = useFonts(fonts);
 
     if (!fontsLoaded) return null;
 
+
     return (
         <View style={styles.container} >
 
             {
                 currentForm === "createAccountForm" ? (
-                    <CreateAccountForm />
+                    <CreateAccountForm
+                        onContinue={() => setCurrentForm("otp")}
+                        email={email}
+                        setEmail={setEmail}
+                        phone={phone}
+                        setPhone={setPhone}
+                        signUpMode={signUpMode}
+                        setSignUpMode={setSignUpMode}
+                    />
                 )
                     : (
-                        <OTPForm />
+                        <OTPForm
+                            email={email}
+                            setEmail={setEmail}
+                            phone={phone}
+                            setPhone={setPhone}
+                            signUpMode={signUpMode}
+                            setSignUpMode={setSignUpMode}
+                            setCurrentForm={setCurrentForm}
+                        />
                     )
             }
 

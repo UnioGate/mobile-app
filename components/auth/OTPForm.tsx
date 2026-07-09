@@ -1,6 +1,13 @@
+import { verifyOTP } from "@/api/otp.api";
+import { AuthStackParamList } from "@/app/auth/types";
+import { VerifyOTPBody } from "@/types/types";
+import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { scaleFont, scaleVerticalPadding } from "@/utils/utils";
-import { useEffect, useRef, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import React, { SetStateAction, useEffect, useRef, useState } from "react";
 import {
+    ActivityIndicator,
     StyleSheet,
     Text,
     TextInput,
@@ -11,10 +18,32 @@ import {
 const OTP_LENGTH = 6;
 const RESEND_SECONDS = 60;
 
-export default function OTPForm() {
+
+type Props = {
+    email: string;
+    setEmail: React.Dispatch<SetStateAction<string>>
+    phone: string;
+    setPhone: React.Dispatch<SetStateAction<string>>
+    signUpMode: "emailAddress" | "phoneNumber"
+    setSignUpMode: React.Dispatch<SetStateAction<"emailAddress" | "phoneNumber">>
+    setCurrentForm: React.Dispatch<SetStateAction<"createAccountForm" | "otp">>
+};
+
+export default function OTPForm({
+    email,
+    phone,
+    setEmail,
+    setPhone,
+    setSignUpMode,
+    signUpMode,
+    setCurrentForm
+}: Props) {
+
+    const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
     const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
     const [timer, setTimer] = useState(RESEND_SECONDS);
     const [isResendDisabled, setIsResendDisabled] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const inputs = useRef<Array<TextInput | null>>([]);
 
@@ -73,12 +102,46 @@ export default function OTPForm() {
         }
     }, [otp]);
 
+
+    // this function handles the code verification
+    const onSubmit = async () => {
+        // all the prior validation will be done before it then submits
+
+
+        try {
+            setLoading(true);
+
+            const payload: VerifyOTPBody = {
+                identifier: signUpMode === "emailAddress" ?
+                    email.toLocaleLowerCase() : phone,
+
+                code: Number(otp.join(""))
+            }
+
+            const response = await verifyOTP(payload);
+            showSuccessToast(response.message);
+            navigation.navigate("PersonalInformation")
+            setOtp([])
+        }
+
+        catch (error) {
+            showErrorToast("Verification Failed!", String(error))
+            return;
+        }
+
+        finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <View style={styles.screenContainer}>
             <Text style={styles.pageTitle}>OTP Verification</Text>
 
             <Text style={styles.paragraph}>
-                Enter the 6-digit code sent to +234********26. Didn&apos;t receive a
+                Enter the 6-digit code sent to
+                {signUpMode === "emailAddress" ? " chiscookeke11@gmail.com" : "+234********26"}.{"\n"}
+                Didn&apos;t receive a
                 code? <Text style={styles.tryAgainText}>Try again</Text>
             </Text>
 
@@ -117,14 +180,25 @@ export default function OTPForm() {
                 </View>
 
                 <View style={styles.buttonWrapper}>
-                    <TouchableOpacity style={styles.outlineButton} activeOpacity={0.7}>
+                    <TouchableOpacity
+                        onPress={() => setCurrentForm("createAccountForm")}
+                        style={styles.outlineButton}
+                        activeOpacity={0.7}>
                         <Text style={styles.outlineButtonText}>Back</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
+                        disabled={loading}
+                        onPress={onSubmit}
                         style={styles.button}
                         activeOpacity={0.7}>
-                        <Text style={styles.buttonText}>Confirm</Text>
+
+                        {loading ? (
+                            <ActivityIndicator color="#ffffff" />
+                        ) : (
+                            <Text style={styles.buttonText}>Confirm</Text>
+                        )}
+
                     </TouchableOpacity>
                 </View>
             </View>
@@ -223,12 +297,12 @@ const styles = StyleSheet.create({
     },
     outlineButtonText: {
         color: "#10182A",
-        fontSize: scaleFont(20),
+        fontSize: scaleFont(16),
         fontFamily: "Sora_400Regular",
     },
     buttonText: {
         color: "#ffffff",
-        fontSize: scaleFont(20),
+        fontSize: scaleFont(16),
         fontFamily: "Sora_400Regular",
     },
 });

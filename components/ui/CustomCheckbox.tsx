@@ -1,18 +1,25 @@
 import { scaleFont } from '@/utils/utils';
 import { Ionicons } from '@expo/vector-icons';
-import { ReactNode, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { ReactNode, SetStateAction } from 'react';
+import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 
 interface CustomCheckboxProps {
     label: ReactNode,
     linkText: string,
     path: string,
-    subtext?: string
+    subtext?: string;
+    checked: boolean;
+    setChecked: React.Dispatch<SetStateAction<boolean>>
 }
 
-export default function CustomCheckbox({ label, linkText, path, subtext }: CustomCheckboxProps) {
-    const [checked, setChecked] = useState(false);
+export default function CustomCheckbox({
+    label,
+    linkText,
+    path,
+    subtext,
+    checked, setChecked
+}: CustomCheckboxProps) {
 
     return (
         <View style={styles.checkboxContainer}>
@@ -29,7 +36,11 @@ export default function CustomCheckbox({ label, linkText, path, subtext }: Custo
                 gap: 4
             }} >
                 <Text style={styles.checkboxLabel}>
-                    {label} <Text style={styles.checkboxLink}>{linkText}</Text>
+                    {label} {" "}
+                    <Text
+                        onPress={() => Linking.openURL(path)}
+                        style={styles.checkboxLink}>
+                        {linkText}</Text>
                 </Text>
 
                 <Text style={styles.subtext} >{subtext}</Text>

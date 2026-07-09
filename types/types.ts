@@ -122,3 +122,30 @@ export interface TeamMember {
   status: TeamMemberStatus;
   joinedAt: string;
 }
+
+
+
+export interface RequestOTPBody {
+  identifier: string;
+  type: "email" | "whatsapp";
+}
+
+
+export interface VerifyOTPBody {
+  identifier: string;
+  code: number
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
