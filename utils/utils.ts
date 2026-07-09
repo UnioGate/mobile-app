@@ -24,6 +24,7 @@ export const scaleHorizontalPadding = (size: number) => {
 
 
 
+// this formats any balance passed into it, to a .00 format
 export const formatBalance = (value: number) => {
     return value.toLocaleString("en-NG", {
         minimumFractionDigits: 2,
@@ -38,3 +39,30 @@ export const copyItem = async (item: string) => {
     await Clipboard.setStringAsync(item)
     showSuccessToast("Copied!")
 }
+
+
+// masking email characters
+export const maskEmail = (email: string) => {
+    const [username, domain] = email.split("@")
+
+    if (!username || !domain) return email;
+
+    // keep the first 2 characters
+    if (username.length <= 2) {
+        return `${username}***@${domain}`
+    }
+
+    const visible = username.slice(0, 2);
+    const masked = "*".repeat(username.length - 2);
+
+    return `${visible}${masked}@${domain}`
+}
+
+
+
+// masking phone numbers
+export const maskPhone = (phone: string) => {
+    if (phone.length <= 6) return phone;
+
+    return `${phone.slice(0, 3)}${"*".repeat(phone.length - 6)}${phone.slice(-3)}`;
+};

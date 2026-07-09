@@ -1,8 +1,9 @@
 import SupportIcon from '@/components/icons/SupportIcon';
 import { useStep } from '@/context/StepContext';
 import { scaleHorizontalPadding, scaleVerticalPadding } from '@/utils/utils';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -18,8 +19,9 @@ const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 
 export default function AuthLayout() {
-    const navigation = useNavigation();
     const { currentStep, setCurrentStep } = useStep();
+    const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -27,14 +29,14 @@ export default function AuthLayout() {
             <View style={styles.navbar}>
                 <TouchableOpacity
                     onPress={() => {
-                        if (currentStep === 2) {
-                            setCurrentStep(1);
-                        } else {
-                            navigation.goBack();
-                        }
+                        navigation.navigate("CreateAccount");
                     }}
                 >
-                    {/* <Ionicons name="chevron-back" size={25} color="#10182A" /> */}
+                    {currentStep === 1 ? null
+                        : <Ionicons name="chevron-back" size={25} color="#10182A" />
+                    }
+
+                    <Ionicons name="chevron-back" size={25} color="#10182A" />
                 </TouchableOpacity>
 
                 <TouchableOpacity

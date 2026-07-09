@@ -164,8 +164,8 @@ const styles = StyleSheet.create({
     },
 
     profilePicWrapper: {
-        width: 169,
-        height: 169,
+        width: 140,
+        height: 140,
         borderRadius: 84.5,
         position: "relative"
     },
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
         height: "auto",
         marginVertical: scaleVerticalPadding(30),
         width: "100%",
-        gap: 24,
+        gap: 16,
     },
 
     inputsWrapper: {

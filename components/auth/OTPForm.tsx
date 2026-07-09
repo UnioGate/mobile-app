@@ -1,8 +1,8 @@
-import { verifyOTP } from "@/api/otp.api";
+import { requestOTP, verifyOTP } from "@/api/otp.api";
 import { AuthStackParamList } from "@/app/auth/types";
-import { VerifyOTPBody } from "@/types/types";
+import { RequestOTPBody, VerifyOTPBody } from "@/types/types";
 import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
-import { scaleFont, scaleVerticalPadding } from "@/utils/utils";
+import { maskEmail, maskPhone, scaleFont, scaleVerticalPadding } from "@/utils/utils";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { SetStateAction, useEffect, useRef, useState } from "react";
@@ -47,6 +47,8 @@ export default function OTPForm({
 
     const inputs = useRef<Array<TextInput | null>>([]);
 
+
+    // timer for the resend OTP functionality
     useEffect(() => {
         if (timer <= 0) {
             setIsResendDisabled(false);
@@ -60,17 +62,15 @@ export default function OTPForm({
         return () => clearInterval(interval);
     }, [timer]);
 
-    const handleResend = () => {
-        setTimer(RESEND_SECONDS);
-        setIsResendDisabled(true);
-        setOtp(Array(OTP_LENGTH).fill(""));
-        inputs.current[0]?.focus();
-        console.log("Resend OTP...");
-    };
 
+
+
+    // This function handles change
     const handleChange = (text: string, index: number) => {
+
         if (text.length > 1) {
             const pasted = text.slice(0, OTP_LENGTH).split("");
+
             const normalized = Array(OTP_LENGTH)
                 .fill("")
                 .map((_, i) => pasted[i] ?? "");
@@ -89,24 +89,24 @@ export default function OTPForm({
         }
     };
 
+
+    // using backspace for deleting digits
     const handleBackspace = (key: string, index: number) => {
         if (key === "Backspace" && index > 0 && !otp[index]) {
             inputs.current[index - 1]?.focus();
         }
     };
 
-    useEffect(() => {
-        if (otp.every((digit) => digit !== "")) {
-            const code = otp.join("");
-            console.log("OTP Entered:", code);
-        }
-    }, [otp]);
+
 
 
     // this function handles the code verification
     const onSubmit = async () => {
-        // all the prior validation will be done before it then submits
 
+        if (otp.some((digit) => digit === "")) {
+            showErrorToast("Please enter the complete OTP!")
+            return;
+        }
 
         try {
             setLoading(true);
@@ -120,12 +120,12 @@ export default function OTPForm({
 
             const response = await verifyOTP(payload);
             showSuccessToast(response.message);
-            navigation.navigate("PersonalInformation")
-            setOtp([])
+            navigation.replace("PersonalInformation")
+            setOtp(Array(OTP_LENGTH).fill(""));
         }
 
         catch (error) {
-            showErrorToast("Verification Failed!", String(error))
+            showErrorToast("Verification Failed!")
             return;
         }
 
@@ -134,19 +134,61 @@ export default function OTPForm({
         }
     }
 
+
+    // This handles resend the OTP code
+    const resendOTPCode = async () => {
+
+        try {
+
+            const payload: RequestOTPBody = {
+                identifier: signUpMode === "emailAddress" ?
+                    email.toLocaleLowerCase() : phone,
+
+                type: signUpMode === "emailAddress" ?
+                    "email" : "whatsapp"
+            };
+
+            await requestOTP(payload);
+            showSuccessToast(
+                `A verification code has been sent to your ${signUpMode === "emailAddress" ? "email" : "WhatsApp"
+                }.`
+            );
+
+            setTimer(RESEND_SECONDS);
+            setIsResendDisabled(true);
+            setOtp(Array(OTP_LENGTH).fill(""));
+            inputs.current[0]?.focus();
+        }
+        catch (error) {
+            console.error("Failed to send OTP!")
+        }
+
+    }
+
+
+
     return (
         <View style={styles.screenContainer}>
             <Text style={styles.pageTitle}>OTP Verification</Text>
 
             <Text style={styles.paragraph}>
                 Enter the 6-digit code sent to
-                {signUpMode === "emailAddress" ? " chiscookeke11@gmail.com" : "+234********26"}.{"\n"}
+                {signUpMode === "emailAddress" ?
+                    maskEmail(email)
+                    : maskPhone(phone)}.
+                {"\n"}
                 Didn&apos;t receive a
-                code? <Text style={styles.tryAgainText}>Try again</Text>
+                code?
+
+                <Text
+                    disabled={isResendDisabled}
+                    onPress={resendOTPCode}
+                    style={styles.tryAgainText}> Try again</Text>
             </Text>
 
             <View style={styles.otpContainer}>
                 {otp.map((digit, index) => (
+
                     <TextInput
                         key={index}
                         style={[styles.box, {
@@ -162,6 +204,7 @@ export default function OTPForm({
                         }}
                         textContentType="oneTimeCode"
                         autoComplete="sms-otp"
+                        inputMode="numeric"
                     />
                 ))}
             </View>
@@ -173,7 +216,9 @@ export default function OTPForm({
                     {isResendDisabled ? (
                         <Text style={styles.timerText}>Resend code in {timer}s</Text>
                     ) : (
-                        <TouchableOpacity onPress={handleResend}>
+                        <TouchableOpacity
+                            disabled={isResendDisabled}
+                            onPress={resendOTPCode}>
                             <Text style={styles.bottomSectionText}>Resend Code</Text>
                         </TouchableOpacity>
                     )}

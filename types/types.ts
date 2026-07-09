@@ -137,6 +137,15 @@ export interface VerifyOTPBody {
 }
 
 
+export interface CompleteProfileBody {
+  identifier: string;
+  firstName: string;
+  lastName: string,
+  country: string,
+  email?: string,
+  phoneNumber?: string
+  inviteBusinessId: string | null
+}
 
 
 
