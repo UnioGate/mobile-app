@@ -16,3 +16,4 @@ export const verifyOTP = async (data: VerifyOTPBody) => {
 
     return response.data;
 }
+

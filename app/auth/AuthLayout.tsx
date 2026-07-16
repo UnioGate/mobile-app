@@ -1,8 +1,7 @@
 import SupportIcon from '@/components/icons/SupportIcon';
-import { useStep } from '@/context/StepContext';
 import { scaleHorizontalPadding, scaleVerticalPadding } from '@/utils/utils';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useNavigationState } from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { router } from 'expo-router';
 import React from 'react';
@@ -19,25 +18,32 @@ const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 
 export default function AuthLayout() {
-    const { currentStep, setCurrentStep } = useStep();
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
+
+
+    const currentRoute = useNavigationState(
+        state => state.routes[state.index].name
+    );
 
 
     return (
         <SafeAreaView style={styles.container}>
 
             <View style={styles.navbar}>
-                <TouchableOpacity
-                    onPress={() => {
-                        navigation.navigate("CreateAccount");
-                    }}
-                >
-                    {currentStep === 1 ? null
-                        : <Ionicons name="chevron-back" size={25} color="#10182A" />
-                    }
 
-                    <Ionicons name="chevron-back" size={25} color="#10182A" />
-                </TouchableOpacity>
+                {currentRoute === "PersonalInformation" ? (
+                    <TouchableOpacity
+                        onPress={() => navigation.goBack()}
+                    >
+                        <Ionicons
+                            name="chevron-back"
+                            size={25}
+                            color="#10182A"
+                        />
+                    </TouchableOpacity>
+                ) : (
+                    <View style={{ width: 25 }} />
+                )}
 
                 <TouchableOpacity
                     onPress={() => router.push("/main/screens/ContactSupport")}

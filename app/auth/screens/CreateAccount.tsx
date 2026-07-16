@@ -13,7 +13,7 @@ import type { AuthStackParamList } from '../types';
 
 export default function CreateAccount() {
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-    const [currentForm, setCurrentForm] = useState<"createAccountForm" | "otp">("createAccountForm");
+    const [currentForm, setCurrentForm] = useState<"createAccountForm" | "otp">("otp");
     const [signUpMode, setSignUpMode] = useState<"emailAddress" | "phoneNumber">("emailAddress")
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');

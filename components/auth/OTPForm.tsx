@@ -32,9 +32,6 @@ type Props = {
 export default function OTPForm({
     email,
     phone,
-    setEmail,
-    setPhone,
-    setSignUpMode,
     signUpMode,
     setCurrentForm
 }: Props) {
