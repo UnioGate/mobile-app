@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
         color: "#CCCCCCCC",
         fontSize: scaleFont(15),
         fontFamily: 'Sora_400Regular',
+        marginTop: "auto"
     },
 
     bottomTextLink: {

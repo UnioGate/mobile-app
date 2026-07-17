@@ -1,5 +1,5 @@
 import statesData from "@/data/states.json";
-import { DropdownOption, StateOptionSource } from "@/types/types";
+import { DropdownOption, State } from "@/types/types";
 import { scaleFont, scaleHorizontalPadding } from "@/utils/utils";
 import { useMemo, useState } from "react";
 import { StyleSheet, Text, TextStyle, View, ViewStyle } from "react-native";
@@ -10,22 +10,23 @@ import { Dropdown } from "react-native-element-dropdown";
 interface DropdownOptionProps {
     label?: string;
     dropdownStyle?: ViewStyle;
-    labelStyle?: TextStyle
+    labelStyle?: TextStyle;
+    currentCountry?: string;
+    options?: DropdownOption[]
 }
 
 
 
-const STATE_OPTIONS_SOURCE = statesData as unknown as StateOptionSource[];
+const STATE_OPTIONS_SOURCE = statesData as State[];
 
 
-export default function CustomDropdown({ label, dropdownStyle, labelStyle }: DropdownOptionProps) {
+export default function CustomDropdown({ label, dropdownStyle, labelStyle, currentCountry, options }: DropdownOptionProps) {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
-    const currentCountry = "NG";
     const stateOptions = useMemo<DropdownOption[]>(
         () =>
             STATE_OPTIONS_SOURCE
-                .filter((state) => state.country_code === currentCountry)
+                .filter((state) => state.country_name === currentCountry)
                 .map((state) => ({
                     label: state.name,
                     value: state.name,
@@ -46,7 +47,7 @@ export default function CustomDropdown({ label, dropdownStyle, labelStyle }: Dro
                 selectedTextStyle={styles.selectedTextStyle}
                 inputSearchStyle={styles.inputSearchStyle}
                 iconStyle={styles.iconStyle}
-                data={stateOptions}
+                data={options || stateOptions}
                 search
                 maxHeight={300}
                 labelField="label"

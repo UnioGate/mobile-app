@@ -3,6 +3,7 @@ import { RequestOTPBody } from '@/types/types';
 import { showErrorToast, showSuccessToast } from '@/utils/toastConfig';
 import { scaleFont, scaleVerticalPadding } from '@/utils/utils';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { SetStateAction, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import CountryPicker, { CountryCode } from 'react-native-country-picker-modal';
@@ -93,7 +94,8 @@ export default function CreateAccountForm({
             return;
         }
 
-        // then if the validation passes, we then call our backend to send OTP then move to the OTP screen
+        // then if the validation passes,
+        // we then call our backend to send OTP then move to the OTP screen
         try {
             setLoading(true);
 
@@ -111,7 +113,18 @@ export default function CreateAccountForm({
                 `A verification code has been sent to your ${signUpMode === "emailAddress" ? "email" : "WhatsApp"
                 }.`
             );
+
+            await AsyncStorage.setItem(
+                "signup_data",
+                JSON.stringify({
+                    email: email,
+                    phoneNumber: phone,
+                    type: signUpMode === "emailAddress" ?
+                        "email" : "whatsapp"
+                })
+            )
             onContinue()
+
         }
         catch (error) {
             console.error(error)

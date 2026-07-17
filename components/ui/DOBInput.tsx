@@ -21,6 +21,9 @@ export default function DateOfBirthInput({
   onDateChange
 }: DateOfBirthInputProps) {
 
+
+
+  // handle change function
   const handleChange = (_: any, selectedDate?: Date) => {
     setShowPicker(false);
 
@@ -28,6 +31,14 @@ export default function DateOfBirthInput({
       onDateChange(selectedDate);
     }
   };
+
+
+
+  // calculating maximum date so as to allow only clients of 18 yrs and above
+  const maxDate = new Date();
+  maxDate.setFullYear(maxDate.getFullYear() - 18);
+
+
 
   return (
     <View>
@@ -45,7 +56,7 @@ export default function DateOfBirthInput({
           mode="date"
           display="default"
           onChange={handleChange}
-          maximumDate={new Date()}
+          maximumDate={maxDate}
         />
       )}
     </View>

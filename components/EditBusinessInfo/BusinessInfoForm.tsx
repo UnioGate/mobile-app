@@ -8,11 +8,15 @@ import { StyleSheet, Text, View } from "react-native";
 
 
 export default function BusinessInfoForm() {
+
+
+
+
+
+
     return (
         <View style={styles.form_wrapper} >
             <Text style={styles.form_heading}>Business Information</Text>
-
-
 
             <View style={styles.inputs_wrapper} >
 

@@ -139,18 +139,54 @@ export interface VerifyOTPBody {
 
 export interface CompleteProfileBody {
   identifier?: string;
+  type?: string;
   firstName: string;
   lastName: string,
   country: string,
   email?: string,
   phoneNumber?: string
   inviteBusinessId: string | null;
-  dob: Date
+  dob?: Date | null
 }
 
 
 
+export interface CompleteBusinessInformationBody {
+  company_name: string;
+  address: string;
+  state: string;
+  city: string;
+  postal_code: string;
+  primary_currency: string;
+}
 
+
+export type State = {
+  id: number;
+  name: string;
+  country_id: number;
+  country_code: string;
+  country_name: string;
+  iso2: string;
+  iso3166_2: string;
+  fips_code: string;
+  type: string;
+  level: string | null;
+  parent_id: number | null;
+  native: string;
+  latitude: string;
+  longitude: string;
+  timezone: string;
+  translations: Record<string, string>;
+  wikiDataId: string;
+  population: number | null;
+};
+
+
+export type Currency = {
+  country: string,
+  currency_code: string
+}
 
 
 

@@ -122,7 +122,8 @@ export default function OTPForm({
         }
 
         catch (error) {
-            showErrorToast("Verification Failed!")
+            showErrorToast("Verification Failed!");
+            console.error(error)
             return;
         }
 

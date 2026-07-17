@@ -1,10 +1,16 @@
+import { completeProfile } from "@/api/onboarding.api";
+import { useStep } from "@/context/StepContext";
 import { CompleteProfileBody } from "@/types/types";
+import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { scaleFont, scaleVerticalPadding, updateFormField } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import * as ImagePicker from 'expo-image-picker';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import CountryPicker, { CountryCode } from "react-native-country-picker-modal";
+import { ActivityIndicator } from "react-native-paper";
 import DateOfBirthInput from "../ui/DOBInput";
 import CustomInput from "../ui/ReusableInput";
 
@@ -16,17 +22,42 @@ export default function PersonalInformationForm() {
     const [showCountryPicker, setShowCountryPicker] = useState(false);
     const [showPicker, setShowPicker] = useState(false)
     const [error, setError] = useState("")
+    const { currentStep, setCurrentStep } = useStep();
+    const SIGNUP_KEY = "signup_data";
+    const [loading, setLoading] = useState(false)
 
     const [formValues, setFormValues] = useState<CompleteProfileBody>({
         firstName: "",
         lastName: "",
         email: "",
         phoneNumber: "",
-        dob: new Date(),
-        country: "",
+        dob: null,
+        country: "Nigeria",
         inviteBusinessId: "",
         identifier: ""
     })
+
+
+
+    // retrieve cached data from the db
+    useEffect(() => {
+        const getCachedData = async () => {
+            const data = await AsyncStorage.getItem(SIGNUP_KEY);
+
+            if (!data) return;
+
+            const signupData = JSON.parse(data);
+
+            setFormValues((prev) => ({
+                ...prev,
+                email: signupData.email,
+                type: signupData.type,
+                phoneNumber: signupData.phoneNumber,
+            }));
+        };
+
+        getCachedData();
+    }, []);
 
 
 
@@ -122,12 +153,12 @@ export default function PersonalInformationForm() {
 
 
     // this function handles the form submission
-    const handleSubmit = async () => {
+    const handleNext = async () => {
         const error =
             validateFirstName(formValues.firstName) ||
             validateLastName(formValues.lastName) ||
             validateEmail(formValues.email!) ||
-            validateDOB(formValues.dob) ||
+            validateDOB(formValues.dob!) ||
             validateCountry(formValues.country) ||
             validatePhoneNumber(formValues.phoneNumber!);
 
@@ -138,8 +169,77 @@ export default function PersonalInformationForm() {
 
         setError("");
 
-        // Proceed with API call
-        console.log(formValues);
+
+        try {
+            setLoading(true);
+
+            const data = await AsyncStorage.getItem(SIGNUP_KEY);
+
+            if (!data) {
+                showErrorToast("Failed! Please reauthenticate")
+                return;
+            };
+
+            const signupData = JSON.parse(data);
+
+            const identifier =
+                signupData.type === "email"
+                    ? signupData.email
+                    : signupData.phoneNumber;
+
+            const payload: CompleteProfileBody = {
+                identifier,
+                firstName: formValues.firstName,
+                lastName: formValues.lastName,
+                country: formValues.country,
+                email: formValues.email,
+                phoneNumber: formValues.phoneNumber,
+                inviteBusinessId: formValues.inviteBusinessId,
+            }
+
+            console.log("signupData", signupData);
+            console.log("formValues", formValues);
+
+            console.log("payload", JSON.stringify(payload, null, 2));
+
+
+            const response = await completeProfile(payload)
+
+            if (!response.ok) {
+                showErrorToast(response.error);
+                return;
+            }
+
+            // add cached data to db
+            await AsyncStorage.setItem(SIGNUP_KEY, JSON.stringify(formValues))
+            showSuccessToast(response.message)
+            setCurrentStep(2)
+
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                showErrorToast(
+                    error.response?.data?.message ??
+                    error.message
+                );
+                console.log("Status:", error.response?.status);
+                console.log("Response Data:", error.response?.data);
+                console.log("Response Headers:", error.response?.headers);
+                console.log("Request Config:", error.config);
+
+            } else if (error instanceof Error) {
+                showErrorToast(error.message);
+                console.error(error)
+            } else {
+                showErrorToast("Something went wrong");
+                console.error(error)
+            }
+        }
+
+
+        finally {
+            setLoading(false)
+        }
+
     };
 
 
@@ -147,7 +247,6 @@ export default function PersonalInformationForm() {
 
     return (
         <View style={styles.container}  >
-
 
             {/* profile picture input */}
             <Pressable
@@ -208,7 +307,7 @@ export default function PersonalInformationForm() {
                     {/* First Input */}
                     <View style={{ flexBasis: "50%" }}  >
                         <DateOfBirthInput
-                            date={formValues.dob}
+                            date={formValues.dob!}
                             onDateChange={(date) =>
                                 updateFormField("dob", date, setFormValues)
                             }
@@ -241,6 +340,7 @@ export default function PersonalInformationForm() {
                                         setCountryCode(country.cca2);
                                         setCountryName(country.name as string);
                                         setShowCountryPicker(false);
+                                        updateFormField("country", country.name as string, setFormValues)
                                     }}
                                 />
                             } />
@@ -267,9 +367,14 @@ export default function PersonalInformationForm() {
             <TouchableOpacity
                 style={styles.button}
                 activeOpacity={0.7}
-                onPress={handleSubmit}
+                onPress={handleNext}
+                disabled={loading}
             >
-                <Text style={styles.buttonText} > Continue</Text>
+                {loading ? (
+                    <ActivityIndicator color="#ffffff" />
+                ) : (
+                    <Text style={styles.buttonText}>Continue</Text>
+                )}
             </TouchableOpacity>
 
         </View >
@@ -346,8 +451,8 @@ const styles = StyleSheet.create({
     errorText: {
         color: 'red',
         fontSize: scaleFont(12),
-        marginTop: 4,
         fontFamily: 'Sora_400Regular',
+        alignSelf: "flex-start"
     },
 
 })
