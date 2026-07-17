@@ -1,4 +1,5 @@
 import * as Clipboard from "expo-clipboard";
+import React from "react";
 import { Dimensions } from "react-native";
 import { showSuccessToast } from "./toastConfig";
 
@@ -65,4 +66,20 @@ export const maskPhone = (phone: string) => {
     if (phone.length <= 6) return phone;
 
     return `${phone.slice(0, 3)}${"*".repeat(phone.length - 6)}${phone.slice(-3)}`;
+};
+
+
+
+
+
+// this controls text input change
+export const updateFormField = <T extends object, K extends keyof T>(
+    name: K,
+    value: T[K],
+    setter: React.Dispatch<React.SetStateAction<T>>
+) => {
+    setter((prev) => ({
+        ...prev,
+        [name]: value,
+    }));
 };

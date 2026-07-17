@@ -1,19 +1,21 @@
 import CreateAccountForm from '@/components/auth/CreateAccountForm';
 import OTPForm from '@/components/auth/OTPForm';
+import SupportIcon from '@/components/icons/SupportIcon';
 import { fonts } from '@/fonts/fonts';
-import { scaleFont, scaleVerticalPadding } from '@/utils/utils';
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from '@/utils/utils';
 import { useFonts } from '@expo-google-fonts/plus-jakarta-sans';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { router } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { AuthStackParamList } from '../types';
 
 
 
 export default function CreateAccount() {
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-    const [currentForm, setCurrentForm] = useState<"createAccountForm" | "otp">("otp");
+    const [currentForm, setCurrentForm] = useState<"createAccountForm" | "otp">("createAccountForm");
     const [signUpMode, setSignUpMode] = useState<"emailAddress" | "phoneNumber">("emailAddress")
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
@@ -27,6 +29,18 @@ export default function CreateAccount() {
 
     return (
         <View style={styles.container} >
+
+            <View style={styles.navbar}>
+
+                <View style={{ width: 25 }} />
+
+
+                <TouchableOpacity
+                    onPress={() => router.push("/main/screens/ContactSupport")}
+                >
+                    <SupportIcon height={22} width={22} color="#10182A" />
+                </TouchableOpacity>
+            </View>
 
             {
                 currentForm === "createAccountForm" ? (
@@ -72,9 +86,12 @@ const styles = StyleSheet.create({
         backgroundColor: "#ffffff",
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between",
+        justifyContent: "flex-start",
         flexDirection: "column",
-        paddingVertical: scaleVerticalPadding(13)
+        paddingHorizontal: scaleHorizontalPadding(20),
+        paddingVertical: scaleVerticalPadding(10),
+        paddingTop: scaleVerticalPadding(5),
+        gap: 16
     },
 
 
@@ -87,5 +104,15 @@ const styles = StyleSheet.create({
     bottomTextLink: {
         color: "#10182A",
         textDecorationLine: "underline"
-    }
+    },
+
+
+
+    navbar: {
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexDirection: "row"
+    },
 })

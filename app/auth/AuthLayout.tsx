@@ -29,7 +29,7 @@ export default function AuthLayout() {
     return (
         <SafeAreaView style={styles.container}>
 
-            <View style={styles.navbar}>
+            {/* <View style={styles.navbar}>
 
                 {currentRoute === "PersonalInformation" ? (
                     <TouchableOpacity
@@ -50,7 +50,7 @@ export default function AuthLayout() {
                 >
                     <SupportIcon height={22} width={22} color="#10182A" />
                 </TouchableOpacity>
-            </View>
+            </View> */}
 
             <Stack.Navigator screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="CreateAccount" component={CreateAccount} />

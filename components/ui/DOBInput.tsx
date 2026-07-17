@@ -1,19 +1,31 @@
 
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import React, { useState } from "react";
+import React from "react";
 import { View } from "react-native";
+import { TextInputProps } from "react-native-paper";
 import CustomInput from "./ReusableInput";
 
 
-export default function DateOfBirthInput() {
-  const [date, setDate] = useState<Date | null>(null);
-  const [showPicker, setShowPicker] = useState(false);
+interface DateOfBirthInputProps extends TextInputProps {
+  date: Date;
+  onDateChange: (date: Date) => void;
+  showPicker: boolean;
+  setShowPicker: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-  const handleChange = (event: any, selectedDate?: Date) => {
+export default function DateOfBirthInput({
+  date,
+  setShowPicker,
+  showPicker,
+  onDateChange
+}: DateOfBirthInputProps) {
+
+  const handleChange = (_: any, selectedDate?: Date) => {
     setShowPicker(false);
+
     if (selectedDate) {
-      setDate(selectedDate);
+      onDateChange(selectedDate);
     }
   };
 

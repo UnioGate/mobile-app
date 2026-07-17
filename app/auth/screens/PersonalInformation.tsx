@@ -1,6 +1,7 @@
 import { AuthStackParamList } from '@/app/auth/types';
 import BusinessInformationForm from '@/components/auth/BusinessInformationForm';
 import PersonalInformationForm from '@/components/auth/PersonalInformationForm';
+import SupportIcon from '@/components/icons/SupportIcon';
 import StepTracker from "@/components/ui/StepTracker";
 import { useStep } from '@/context/StepContext';
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from '@/utils/utils';
@@ -8,13 +9,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { router } from 'expo-router';
-import { useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 
 
 export default function PersonalInformation() {
-    const [error, setError] = useState("")
     const { currentStep, setCurrentStep } = useStep();
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
@@ -26,6 +25,35 @@ export default function PersonalInformation() {
                 style={{ flex: 1, width: "100%" }}
                 contentContainerStyle={styles.scrollView_style}
                 showsVerticalScrollIndicator={false}  >
+
+                <View style={styles.navbar}>
+
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            currentStep === 1 ?
+                                navigation.navigate("SignIn")
+                                : setCurrentStep(1)
+                        }
+                        }
+                    >
+                        <Ionicons
+                            name="chevron-back"
+                            size={25}
+                            color="#10182A"
+                        />
+                    </TouchableOpacity>
+
+
+
+
+
+                    <TouchableOpacity
+                        onPress={() => router.push("/main/screens/ContactSupport")}
+                    >
+                        <SupportIcon height={22} width={22} color="#10182A" />
+                    </TouchableOpacity>
+                </View>
 
                 {/* The page title  */}
                 <View style={styles.heading} >
@@ -48,28 +76,6 @@ export default function PersonalInformation() {
                     <BusinessInformationForm />
                 )}
 
-
-                {/* The error statement  */}
-                {error ? <Text style={styles.errorText}>
-                    <Ionicons name="alert-circle" size={14} color="red" /> {error}</Text> : null}
-
-
-                <TouchableOpacity
-                    style={styles.button}
-                    activeOpacity={0.7}
-                    onPress={() => {
-                        if (currentStep === 1) {
-                            setCurrentStep(2)
-                        }
-                        else {
-                            router.replace("/CongratulationsScreen")
-                        }
-                    }}
-                >
-                    <Text style={styles.buttonText} > Continue</Text>
-                </TouchableOpacity>
-
-
             </ScrollView>
         </View>
     )
@@ -88,6 +94,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#ffffff",
         paddingHorizontal: scaleHorizontalPadding(20),
         paddingVertical: scaleVerticalPadding(10),
+        paddingTop: scaleVerticalPadding(5),
         display: "flex",
         alignItems: "center",
         flexDirection: "column",
@@ -128,11 +135,12 @@ const styles = StyleSheet.create({
         fontFamily: 'Sora_400Regular',
     },
 
-    errorText: {
-        color: 'red',
-        fontSize: scaleFont(12),
-        marginTop: 4,
-        fontFamily: 'Sora_400Regular',
+    navbar: {
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexDirection: "row"
     },
 
 })

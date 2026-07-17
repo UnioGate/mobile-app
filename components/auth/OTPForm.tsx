@@ -188,9 +188,7 @@ export default function OTPForm({
 
                     <TextInput
                         key={index}
-                        style={[styles.box, {
-                            marginLeft: index + 1 === 4 ? 30 : 0
-                        }]}
+                        style={[styles.box]}
                         keyboardType="number-pad"
                         maxLength={1}
                         value={digit}
@@ -255,7 +253,6 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         gap: 24,
         width: "100%",
-        paddingHorizontal: 26,
     },
     pageTitle: {
         color: "#10182A",
@@ -273,10 +270,11 @@ const styles = StyleSheet.create({
     },
     otpContainer: {
         flexDirection: "row",
-        gap: 10,
+        gap: 6,
     },
     box: {
-        width: 50,
+        width: "100%",
+        maxWidth: 50,
         height: 60,
         borderRadius: 12,
         borderWidth: 1,

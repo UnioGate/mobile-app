@@ -261,7 +261,6 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         gap: 36,
         width: "100%",
-        paddingHorizontal: 26,
         height: "auto"
     },
 
