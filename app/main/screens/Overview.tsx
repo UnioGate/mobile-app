@@ -351,8 +351,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection: "column",
         gap: 1,
-        paddingHorizontal: scaleHorizontalPadding(19),
-        paddingTop: scaleVerticalPadding(20)
+        paddingTop: scaleVerticalPadding(20),
+        width: "100%"
     },
 
     header: {
@@ -360,7 +360,8 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        flexDirection: "row"
+        flexDirection: "row",
+        paddingHorizontal: scaleHorizontalPadding(7),
     },
 
     profilePicWrapper: {
@@ -423,7 +424,8 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        paddingVertical: scaleVerticalPadding(12)
+        paddingVertical: scaleVerticalPadding(12),
+        paddingHorizontal: scaleHorizontalPadding(7),
     },
 
     CTABannner: {

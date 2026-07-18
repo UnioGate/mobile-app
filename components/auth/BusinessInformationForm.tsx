@@ -1,11 +1,16 @@
+import { createBusiness } from "@/api/onboarding.api";
 import { CompleteBusinessInformationBody, CompleteProfileBody, Currency, DropdownOption } from "@/types/types";
+import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { scaleFont, scaleVerticalPadding, updateFormField } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import { Image } from "expo-image";
 import * as ImagePicker from 'expo-image-picker';
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import currencies from "../../data/country-by-currency-code.json";
 import CustomDropdown from "../ui/CustomDropdown";
 import CustomInput from "../ui/ReusableInput";
@@ -18,14 +23,15 @@ export default function BusinessInformationForm() {
     const [logoImage, setLogoImage] = useState<string | null>(null)
     const currenciesData = currencies as Currency[]
     const [currencyOption, setCurrencyOptions] = useState<DropdownOption[]>([])
+    const [loading, setLoading] = useState(false)
 
     const [formValues, setFormValues] = useState<CompleteBusinessInformationBody>({
         address: "",
         city: "",
-        company_name: "",
-        postal_code: "",
-        primary_currency: "",
-        state: ""
+        name: "",
+        postalCode: "",
+        primaryCurrency: "",
+        town: "",
     });
 
 
@@ -74,6 +80,10 @@ export default function BusinessInformationForm() {
 
     // here we filter currency based on the country
     useEffect(() => {
+
+        if (!cachedData?.country) return;
+
+
         const data = currenciesData
             .filter((c) => c.country === cachedData?.country)
             .map((c) => ({
@@ -81,8 +91,10 @@ export default function BusinessInformationForm() {
                 value: c.currency_code
             }))
 
+        console.log("Currencies:", data);
+
         setCurrencyOptions(data)
-    }, [])
+    }, [cachedData])
 
 
 
@@ -122,7 +134,7 @@ export default function BusinessInformationForm() {
 
     // Validate postal code
     const validatePostalCode = (value: string) => {
-        if (!value.trim()) return 'Postal code is required'
+        if (!value) return 'Postal code is required'
 
         return ''
     }
@@ -141,10 +153,10 @@ export default function BusinessInformationForm() {
         const error =
             validateAddress(formValues.address)
         validateCity(formValues.city)
-        validateCompanyName(formValues.company_name)
-        validateCurrency(formValues.primary_currency)
-        validatePostalCode(formValues.postal_code)
-        validateState(formValues.state)
+        validateCompanyName(formValues.name)
+        validateCurrency(formValues.primaryCurrency)
+        validatePostalCode(formValues.postalCode)
+        validateState(formValues.town)
 
 
         if (error) {
@@ -156,27 +168,72 @@ export default function BusinessInformationForm() {
         setError("")
 
         /// now we submit to the B.E
-        
+        try {
+            setLoading(true)
+
+            const payload: CompleteBusinessInformationBody = {
+                userId: cachedData?.userId,
+                name: formValues.name,
+                address: formValues.address,
+                city: formValues.city,
+                town: formValues.town,
+                postalCode: formValues.postalCode,
+                primaryCurrency: formValues.primaryCurrency
+            }
+
+            console.log("payload:", JSON.stringify(payload, null, 2));
+
+            const response = await createBusiness(payload)
+
+            if (!response.ok) {
+                showErrorToast(response.error)
+                console.error(response.error)
+                return;
+            }
+
+
+
+            // remove cached data from local storage
+            await AsyncStorage.removeItem(SIGNUP_KEY);
+            showSuccessToast(response.message)
+            // then navigate to the main screen
+            router.replace("/main")
+        }
+        catch (error) {
+            if (axios.isAxiosError(error)) {
+                showErrorToast(
+                    error.response?.data?.message ??
+                    error.message
+                );
+                console.log("Status:", error.response?.status);
+                console.log("Response Data:", error.response?.data);
+                console.log("Response Headers:", error.response?.headers);
+                console.log("Request Config:", error.config);
+
+            } else if (error instanceof Error) {
+                showErrorToast(error.message);
+                console.error(error)
+            } else {
+                showErrorToast("Something went wrong");
+                console.error(error)
+            }
+        }
+
+        finally {
+            setLoading(false)
+        }
     }
 
 
     return (
         <View style={styles.container}>
 
-            <Text>
-                {cachedData?.lastName}
-                {cachedData?.firstName}
-                {cachedData?.country}
-
-
-            </Text>
-
             {/* Company name input */}
             <CustomInput
                 label="Company/Trading name"
                 keyboardType="default"
-                value={formValues.company_name}
-                onChangeText={(text) => updateFormField("company_name", text, setFormValues)}
+                value={formValues.name}
+                onChangeText={(text) => updateFormField("name", text, setFormValues)}
             />
 
             {/* Company address input */}
@@ -193,6 +250,10 @@ export default function BusinessInformationForm() {
                     <CustomDropdown
                         label="State"
                         currentCountry={cachedData?.country}
+                        value={formValues.city}
+                        onChange={(value) =>
+                            updateFormField("city", value, setFormValues)
+                        }
                     />
                 </View>
 
@@ -201,8 +262,8 @@ export default function BusinessInformationForm() {
                     <CustomInput
                         label="City / Town"
                         keyboardType="default"
-                        value={formValues.city}
-                        onChangeText={(text) => updateFormField("city", text, setFormValues)}
+                        value={formValues.town}
+                        onChangeText={(text) => updateFormField("town", text, setFormValues)}
                     />
                 </View>
             </View>
@@ -212,10 +273,11 @@ export default function BusinessInformationForm() {
                 <View style={styles.halfInput}>
                     <CustomInput
                         label="Postal code"
-                        placeholder="Optional"
                         keyboardType="number-pad"
-                        value={formValues.postal_code}
-                        onChangeText={(text) => updateFormField("postal_code", text, setFormValues)}
+                        value={formValues.postalCode}
+                        onChangeText={(text) =>
+                            updateFormField("postalCode", text, setFormValues)
+                        }
                     />
                 </View>
 
@@ -224,6 +286,10 @@ export default function BusinessInformationForm() {
                     <CustomDropdown
                         options={currencyOption}
                         label="Primary Currency"
+                        value={formValues.primaryCurrency}
+                        onChange={(value) =>
+                            updateFormField("primaryCurrency", value, setFormValues)
+                        }
                     />
                 </View>
             </View>
@@ -267,8 +333,13 @@ export default function BusinessInformationForm() {
                 style={styles.button}
                 activeOpacity={0.7}
                 onPress={handleSubmit}
+                disabled={loading}
             >
-                <Text style={styles.buttonText} > Complete Setup</Text>
+                {loading ? (
+                    <ActivityIndicator color="#ffffff" />
+                ) : (
+                    <Text style={styles.buttonText}>Complete Setup</Text>
+                )}
             </TouchableOpacity>
         </View>
     );

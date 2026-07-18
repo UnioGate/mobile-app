@@ -146,18 +146,20 @@ export interface CompleteProfileBody {
   email?: string,
   phoneNumber?: string
   inviteBusinessId: string | null;
-  dob?: Date | null
+  dob?: Date | null;
+  userId?: string
 }
 
 
 
 export interface CompleteBusinessInformationBody {
-  company_name: string;
+  name: string;
   address: string;
-  state: string;
   city: string;
-  postal_code: string;
-  primary_currency: string;
+  town: string;
+  postalCode: string;
+  primaryCurrency: string;
+  userId?: string;
 }
 
 

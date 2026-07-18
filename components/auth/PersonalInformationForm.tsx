@@ -207,11 +207,18 @@ export default function PersonalInformationForm() {
 
             if (!response.ok) {
                 showErrorToast(response.error);
+                console.error(response.error)
                 return;
             }
 
             // add cached data to db
-            await AsyncStorage.setItem(SIGNUP_KEY, JSON.stringify(formValues))
+            const userId = response.userId
+
+            await AsyncStorage.setItem(SIGNUP_KEY, JSON.stringify({
+                ...formValues,
+                userId
+            }));
+
             showSuccessToast(response.message)
             setCurrentStep(2)
 

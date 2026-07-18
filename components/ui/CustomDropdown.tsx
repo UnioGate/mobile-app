@@ -13,6 +13,8 @@ interface DropdownOptionProps {
     labelStyle?: TextStyle;
     currentCountry?: string;
     options?: DropdownOption[]
+    value?: string;
+    onChange?: (value: string) => void;
 }
 
 
@@ -20,8 +22,17 @@ interface DropdownOptionProps {
 const STATE_OPTIONS_SOURCE = statesData as State[];
 
 
-export default function CustomDropdown({ label, dropdownStyle, labelStyle, currentCountry, options }: DropdownOptionProps) {
-    const [value, setValue] = useState(null);
+export default function CustomDropdown({
+    label,
+    dropdownStyle,
+    labelStyle,
+    currentCountry,
+    options,
+    value,
+    onChange
+}: DropdownOptionProps) {
+
+
     const [isFocus, setIsFocus] = useState(false);
     const stateOptions = useMemo<DropdownOption[]>(
         () =>
@@ -57,8 +68,8 @@ export default function CustomDropdown({ label, dropdownStyle, labelStyle, curre
                 value={value}
                 onFocus={() => setIsFocus(true)}
                 onBlur={() => setIsFocus(false)}
-                onChange={item => {
-                    setValue(item.value);
+                onChange={(item) => {
+                    onChange?.(item.value);
                     setIsFocus(false);
                 }}
             />
