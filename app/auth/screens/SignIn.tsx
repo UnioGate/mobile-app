@@ -1,9 +1,11 @@
 
 import SignInForm from '@/components/auth/SignInForm';
-import { scaleFont } from '@/utils/utils';
+import SupportIcon from '@/components/icons/SupportIcon';
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from '@/utils/utils';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { router } from 'expo-router';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { AuthStackParamList } from '../types';
 
 export default function SignIn() {
@@ -12,6 +14,20 @@ export default function SignIn() {
 
     return (
         <View style={styles.container} >
+
+            <View style={styles.navbar}>
+
+                <View style={{ width: 25 }} />
+
+
+                <TouchableOpacity
+                    onPress={() => router.push("/main/screens/ContactSupport")}
+                >
+                    <SupportIcon height={22} width={22} color="#10182A" />
+                </TouchableOpacity>
+            </View>
+
+
             <ScrollView
                 contentContainerStyle={styles.content}
                 showsVerticalScrollIndicator={false}
@@ -40,6 +56,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#ffffff",
+        paddingHorizontal: scaleHorizontalPadding(20),
+        paddingVertical: scaleVerticalPadding(10),
+        paddingTop: scaleVerticalPadding(5),
+        gap: 16
     },
 
     content: {
@@ -51,7 +71,7 @@ const styles = StyleSheet.create({
     },
 
     bottomTextWrapper: {
-        paddingBottom: 12
+        paddingBottom: scaleVerticalPadding(12)
     },
 
     bottomText: {
@@ -63,5 +83,13 @@ const styles = StyleSheet.create({
     bottomTextLink: {
         color: "#2DBAA4",
         textDecorationLine: "underline"
-    }
+    },
+
+    navbar: {
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexDirection: "row"
+    },
 })

@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import * as ImagePicker from 'expo-image-picker';
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import CountryPicker, { CountryCode } from "react-native-country-picker-modal";
@@ -211,16 +212,26 @@ export default function PersonalInformationForm() {
                 return;
             }
 
-            // add cached data to db
-            const userId = response.userId
+            if (response.isInvitedRep) {
+                // Session already set, this rep is done onboarding.
+                router.replace("/main");
+            }
 
-            await AsyncStorage.setItem(SIGNUP_KEY, JSON.stringify({
-                ...formValues,
-                userId
-            }));
+            else {
 
-            showSuccessToast(response.message)
-            setCurrentStep(2)
+                // Owner path: still needs to create their business.
+
+                // add cached data to db
+                const userId = response.userId
+
+                await AsyncStorage.setItem(SIGNUP_KEY, JSON.stringify({
+                    ...formValues,
+                    userId
+                }));
+
+                showSuccessToast(response.message)
+                setCurrentStep(2)
+            }
 
         } catch (error) {
             if (axios.isAxiosError(error)) {

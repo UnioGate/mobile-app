@@ -1,4 +1,7 @@
+import { useAuthStore } from "@/stores/authStore";
+import { useBusinessStore } from "@/stores/businessStore";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useEffect } from "react";
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CryptoStepOne from "./screens/(crypto_payment_steps)/CryptoStepOne";
@@ -46,8 +49,15 @@ import { MainStackParamList } from './type';
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
 export default function Index() {
+    const accessToken = useAuthStore((s) => s.accessToken);
+    const fetchBusinesses = useBusinessStore((s) => s.fetchBusinesses)
 
 
+    useEffect(() => {
+        if (accessToken) {
+            fetchBusinesses();
+        }
+    }, [accessToken]);
 
     return (
 

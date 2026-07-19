@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         flexDirection: "row",
-        paddingHorizontal: scaleHorizontalPadding(7),
+        paddingHorizontal: scaleHorizontalPadding(10),
     },
 
     profilePicWrapper: {
@@ -425,7 +425,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         gap: 12,
         paddingVertical: scaleVerticalPadding(12),
-        paddingHorizontal: scaleHorizontalPadding(7),
+        paddingHorizontal: scaleHorizontalPadding(10),
     },
 
     CTABannner: {

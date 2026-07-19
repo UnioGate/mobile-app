@@ -1,4 +1,6 @@
 import ImageIcon from "@/components/icons/ImageIcon";
+import { useAuthStore } from "@/stores/authStore";
+import { useBusinesses, useBusinessStore } from "@/stores/businessStore";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -16,7 +18,14 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 export default function BusinessInformation() {
     const navigation = useNavigation<OverviewNavigationProp>()
     const [logoImage, setLogoImage] = useState<string | null>(null)
+    const businesses = useBusinesses();
+    const currentBusiness = useBusinessStore((s) =>
+        s.getCurrentBusiness(useAuthStore.getState().role?.businessId)
+    );
 
+
+    console.log("The businesses:", currentBusiness)
+    console.log("businesses:", businesses)
 
 
     // This handles business logo selection
@@ -165,7 +174,7 @@ export default function BusinessInformation() {
                         color: "#10182AB2",
                         fontFamily: "Sora_400Regular",
                         fontSize: scaleFont(12)
-                    }}>Business Details</Text>
+                    }}> Business Details </Text>
 
                     {/* card */}
                     <View style={{
@@ -176,7 +185,7 @@ export default function BusinessInformation() {
 
                         {/* business Name */}
                         <View style={styles.card_row} >
-                            <Text style={styles.card_row_text} >Business Name</Text>
+                            <Text style={styles.card_row_text} >{currentBusiness?.name ?? "Business Name"}</Text>
                         </View>
 
                         <Divider style={{
@@ -185,7 +194,7 @@ export default function BusinessInformation() {
 
                         {/* Business Address */}
                         <View style={styles.card_row} >
-                            <Text style={styles.card_row_text} >Business Address</Text>
+                            <Text style={styles.card_row_text} > {currentBusiness?.city ?? "Business Address"} </Text>
                         </View>
 
 

@@ -32,7 +32,7 @@ export default function PersonalInformation() {
                     <TouchableOpacity
                         onPress={() => {
                             currentStep === 1 ?
-                                navigation.navigate("SignIn")
+                                navigation.navigate("CreateAccount")
                                 : setCurrentStep(1)
                         }
                         }

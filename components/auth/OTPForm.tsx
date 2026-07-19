@@ -5,6 +5,7 @@ import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { maskEmail, maskPhone, scaleFont, scaleVerticalPadding } from "@/utils/utils";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { router } from "expo-router";
 import React, { SetStateAction, useEffect, useRef, useState } from "react";
 import {
     ActivityIndicator,
@@ -117,8 +118,22 @@ export default function OTPForm({
 
             const response = await verifyOTP(payload);
             showSuccessToast(response.message);
-            navigation.replace("PersonalInformation")
-            setOtp(Array(OTP_LENGTH).fill(""));
+
+
+            if (response.isNewUser) {
+                // New user; no session yet, route to profile completion.
+                // Carry the invite along if this is an invited sales rep.
+                navigation.replace("PersonalInformation")
+                setOtp(Array(OTP_LENGTH).fill(""));
+            }
+
+            else {
+                // Existing user; verifyOTP already called setSession() internally,
+                // tokens are in the store, safe to go straight to the app.
+                showSuccessToast("Welcome back!");
+                router.replace("/main")
+                setOtp(Array(OTP_LENGTH).fill(""));
+            }
         }
 
         catch (error) {
