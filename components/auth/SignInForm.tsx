@@ -1,27 +1,50 @@
+import { requestOTP } from '@/api/otp.api';
+import { RequestOTPBody } from '@/types/types';
+import { showSuccessToast } from '@/utils/toastConfig';
 import { scaleFont, scaleVerticalPadding } from '@/utils/utils';
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { SetStateAction, useState } from 'react';
 import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import CountryPicker, { CountryCode } from 'react-native-country-picker-modal';
+import { ActivityIndicator } from 'react-native-paper';
 import CustomInput from '../ui/ReusableInput';
 
 
 
-export default function SignInForm() {
+interface SignInFormProps {
+    email: string;
+    setEmail: React.Dispatch<SetStateAction<string>>
+    phone: string;
+    setPhone: React.Dispatch<SetStateAction<string>>
+    signInMode: "emailAddress" | "phoneNumber"
+    setSignInMode: React.Dispatch<SetStateAction<"emailAddress" | "phoneNumber">>
+    step: "signin_step" | "otp_step";
+    setStep: React.Dispatch<SetStateAction<"signin_step" | "otp_step">>
+}
 
-    const [signInMode, setSignInMode] = useState<"emailAddress" | "phoneNumber">("emailAddress")
+export default function SignInForm({
+    email,
+    phone,
+    setEmail,
+    setPhone,
+    setSignInMode,
+    signInMode,
+    setStep,
+    step
+}: SignInFormProps) {
 
-    const [phone, setPhone] = useState('');
-    const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
     const [phoneError, setPhoneError] = useState('');
     const [countryCode, setCountryCode] = useState<CountryCode>('NG');
     const [showCountryPicker, setShowCountryPicker] = useState(false);
     const [callingCode, setCallingCode] = useState('234');
+    const [loading, setLoading] = useState(false)
 
 
 
     // Validation function
+    // validate email
     const validateEmail = (value: string) => {
         if (!value && signInMode === "emailAddress") return 'Email is required';
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,6 +52,8 @@ export default function SignInForm() {
         return '';
     };
 
+
+    // validate phone number
     const validatePhone = (value: string) => {
         if (!value && signInMode === "phoneNumber") return 'Phone number is required';
         if (!/^\d{10,15}$/.test(value)) return 'Enter a valid phone number';
@@ -36,8 +61,74 @@ export default function SignInForm() {
     };
 
 
+
+    // toggle signup mode
     const toggleSignupMode = () => {
         setSignInMode(signInMode === "emailAddress" ? "phoneNumber" : "emailAddress");
+    }
+
+
+
+    // here we validate on submission, then call the OTP
+    const getOTP = async () => {
+
+        const error =
+            signInMode === "emailAddress" ? validateEmail(email)
+                : validatePhone(phone)
+
+        if (error) {
+            if (signInMode === "emailAddress") {
+                setEmailError(error)
+            }
+
+            else {
+                setPhoneError(error)
+            }
+
+            return;
+        }
+
+        // then if the validation passes,
+        // we then call our backend to send OTP then move to the OTP screen
+        try {
+            setLoading(true);
+
+
+            const payload: RequestOTPBody = {
+                identifier: signInMode === "emailAddress" ?
+                    email.toLocaleLowerCase() : phone,
+
+                type: signInMode === "emailAddress" ?
+                    "email" : "whatsapp"
+            };
+
+            await requestOTP(payload);
+            showSuccessToast(
+                `A verification code has been sent to your ${signInMode === "emailAddress" ? "email" : "WhatsApp"
+                }.`
+            );
+
+            await AsyncStorage.setItem(
+                "signup_data",
+                JSON.stringify({
+                    email: email,
+                    phoneNumber: phone,
+                    type: signInMode === "emailAddress" ?
+                        "email" : "whatsapp"
+                })
+            )
+
+            setStep("otp_step")
+
+
+        }
+        catch (error) {
+            console.error(error)
+        }
+
+        finally {
+            setLoading(false);
+        }
     }
 
 
@@ -144,10 +235,16 @@ export default function SignInForm() {
 
 
                 <TouchableOpacity
+                    onPress={getOTP}
                     style={styles.button}
                     activeOpacity={0.7}
                 >
-                    <Text style={styles.buttonText} >Sign in</Text>
+
+                    {loading ? (
+                        <ActivityIndicator color="#ffffff" />
+                    ) : (
+                        <Text style={styles.buttonText}>Sign in</Text>
+                    )}
                 </TouchableOpacity>
             </View>
 

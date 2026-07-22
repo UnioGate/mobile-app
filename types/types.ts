@@ -287,3 +287,10 @@ export interface RatesResponse {
   };
   timestamp: string;
 }
+
+
+
+export interface inviteBody {
+  identifier: string;
+  type: string;
+}

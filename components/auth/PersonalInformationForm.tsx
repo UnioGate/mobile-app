@@ -51,7 +51,7 @@ export default function PersonalInformationForm() {
 
             setFormValues((prev) => ({
                 ...prev,
-                email: signupData.email,
+                email: signupData.email.toLowerCase(),
                 type: signupData.type,
                 phoneNumber: signupData.phoneNumber,
             }));
@@ -185,7 +185,7 @@ export default function PersonalInformationForm() {
 
             const identifier =
                 signupData.type === "email"
-                    ? signupData.email
+                    ? signupData.email.toLowerCase()
                     : signupData.phoneNumber;
 
             const payload: CompleteProfileBody = {
@@ -193,7 +193,7 @@ export default function PersonalInformationForm() {
                 firstName: formValues.firstName,
                 lastName: formValues.lastName,
                 country: formValues.country,
-                email: formValues.email,
+                email: formValues.email?.toLowerCase(),
                 phoneNumber: formValues.phoneNumber,
                 inviteBusinessId: formValues.inviteBusinessId,
             }

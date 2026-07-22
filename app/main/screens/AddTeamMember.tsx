@@ -1,9 +1,14 @@
-import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { addTeamMember } from "@/api/businessService.api";
+import { inviteBody } from "@/types/types";
+import { showErrorToast } from "@/utils/toastConfig";
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding, updateFormField } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import axios from "axios";
+import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { Divider, RadioButton } from "react-native-paper";
+import { ActivityIndicator, Divider, RadioButton } from "react-native-paper";
 import { MainStackParamList } from "../type";
 ;
 
@@ -12,6 +17,71 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 export default function AddTeamMember() {
     const navigation = useNavigation<OverviewNavigationProp>()
+    const [loading, setLoading] = useState(false)
+    const [formValues, setFormValues] = useState({
+        email: ""
+    })
+
+
+
+    // Validation functions
+    const validateEmail = (value: string) => {
+        if (!value.trim()) return "Email is required"
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) return 'Enter a valid email';
+        return '';
+    }
+
+
+
+
+    // this function sends an invite to team members
+    const addMember = async () => {
+
+        const error =
+            validateEmail(formValues.email);
+
+
+        if (error) {
+            showErrorToast(error)
+            return;
+        }
+
+        try {
+            setLoading(true)
+            const payload: inviteBody = {
+                identifier: formValues.email.toLowerCase(),
+                type: "email"
+            }
+
+            const response = await addTeamMember(payload)
+
+            if (!response.ok) {
+                console.error(response.error)
+                showErrorToast(response.error)
+                return;
+            }
+
+            navigation.navigate("invitation_sent")
+            return;
+        }
+        catch (error) {
+            if (axios.isAxiosError(error)) {
+                showErrorToast(
+                    error.response?.data?.message ??
+                    error.message
+                );
+                console.log("Status:", error.response?.status);
+                console.log("Response Data:", error.response?.data);
+                console.log("Response Headers:", error.response?.headers);
+                console.log("Request Config:", error.config);
+            }
+        }
+        finally {
+            setLoading(false)
+        }
+    }
 
 
     return (
@@ -90,6 +160,7 @@ export default function AddTeamMember() {
                         }} >
 
                             <TextInput
+                                keyboardType="phone-pad"
                                 placeholder="Phone number"
                                 style={{
                                     fontSize: scaleFont(14),
@@ -114,12 +185,14 @@ export default function AddTeamMember() {
                         }} >
 
                             <TextInput
+                                keyboardType="email-address"
                                 placeholder="Email address (optional)"
                                 style={{
                                     fontSize: scaleFont(14),
                                     color: "#10182AB2",
                                     fontFamily: "Sora_400Regular"
                                 }}
+                                onChangeText={(text) => updateFormField("email", text, setFormValues)}
                             />
 
                         </View>
@@ -535,7 +608,9 @@ export default function AddTeamMember() {
 
                 <View style={styles.button_wrapper} >
 
-                    <TouchableOpacity style={[styles.button]} >
+                    <TouchableOpacity
+                        onPress={() => navigation.goBack()}
+                        style={[styles.button]} >
                         <Text style={[styles.button_text, {
                             color: "#253E86"
                         }]} >Cancel</Text>
@@ -543,13 +618,17 @@ export default function AddTeamMember() {
 
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("invitation_sent")}
+                        onPress={addMember}
                         style={[styles.button, {
                             backgroundColor: "#253E86"
                         }]} >
-                        <Text style={[styles.button_text, {
-                            color: "#ffffff"
-                        }]} >Send Invite</Text>
+                        {loading ? (
+                            <ActivityIndicator color="#ffffff" />
+                        ) : (
+                            <Text style={[styles.button_text, {
+                                color: "#ffffff"
+                            }]} >Send Invite</Text>
+                        )}
                     </TouchableOpacity>
 
                 </View>

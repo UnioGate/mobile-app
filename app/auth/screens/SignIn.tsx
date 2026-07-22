@@ -1,15 +1,21 @@
 
+import OTPForm from '@/components/auth/OTPForm';
 import SignInForm from '@/components/auth/SignInForm';
 import SupportIcon from '@/components/icons/SupportIcon';
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from '@/utils/utils';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { AuthStackParamList } from '../types';
 
 export default function SignIn() {
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
+    const [step, setStep] = useState<"signin_step" | "otp_step">("signin_step")
+    const [signInMode, setSignInMode] = useState<"emailAddress" | "phoneNumber">("emailAddress")
+    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
 
 
     return (
@@ -33,7 +39,28 @@ export default function SignIn() {
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
             >
-                <SignInForm />
+                {step === "signin_step" ? (
+                    <SignInForm
+                        email={email}
+                        setEmail={setEmail}
+                        phone={phone}
+                        setPhone={setPhone}
+                        signInMode={signInMode}
+                        setSignInMode={setSignInMode}
+                        setStep={setStep}
+                        step={step}
+                    />
+                ) : (
+                    <OTPForm
+                        email={email}
+                        setEmail={setEmail}
+                        phone={phone}
+                        setPhone={setPhone}
+                        signUpMode={signInMode}
+                        setSignUpMode={setSignInMode}
+                        mode='signin'
+                    />
+                )}
 
                 {/* This is the bottom text on the page  */}
                 <View style={styles.bottomTextWrapper}>
@@ -56,7 +83,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#ffffff",
-        paddingHorizontal: scaleHorizontalPadding(20),
+        paddingHorizontal: scaleHorizontalPadding(16),
         paddingVertical: scaleVerticalPadding(10),
         paddingTop: scaleVerticalPadding(5),
         gap: 16

@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/stores/authStore";
-import { Business } from "@/types/types";
+import { Business, inviteBody } from "@/types/types";
 import axios from "axios";
 import { api } from "./axios";
 
@@ -65,3 +65,34 @@ export const switchBusiness = async (businessId: string) => {
         return { ok: false, error: "Something went wrong" };
     }
 };
+
+
+
+
+export const addTeamMember = async (data: inviteBody) => {
+
+    try {
+        const response = await api.post("/onboarding/invite-sales-rep", data);
+        const result = response.data
+
+        return {
+            ok: true,
+            message: result.message
+        };
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            return {
+                ok: false,
+                error: error.response?.data.error ?? error.message
+            }
+        }
+
+        return {
+            ok: false,
+            error: "Something went wrong"
+        }
+
+    }
+
+}

@@ -1,5 +1,5 @@
 
-import { listBusinesses } from "@/api/businessService";
+import { listBusinesses } from "@/api/businessService.api";
 import { Business } from "@/types/types";
 import { create } from "zustand";
 

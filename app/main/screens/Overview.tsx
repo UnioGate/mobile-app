@@ -4,6 +4,7 @@ import SupportIcon from "@/components/icons/SupportIcon";
 import WithdrawIcon from "@/components/icons/WithdrawIcon";
 import CustomProgressBar from "@/components/ui/CustomProgressBar";
 import { transactions } from "@/data/mock_tx";
+import { useCurrentUser } from "@/stores/authStore";
 import { LogoKey } from "@/types/types";
 import { formatBalance, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,6 +21,7 @@ export default function Overview() {
     const navigation = useNavigation<OverviewNavigationProp>()
     const balance = 24740.5;
     const [showBalance, setShowBalance] = useState(true)
+    const user = useCurrentUser()
 
 
 
@@ -69,7 +71,7 @@ export default function Overview() {
                     </Pressable>
 
                     <Text style={styles.hellotext} >
-                        Hello, <Text style={styles.userName} >UnioGate</Text></Text>
+                        Hello, <Text style={styles.userName} > {user?.firstName} {user?.lastName} </Text></Text>
                 </View>
 
 

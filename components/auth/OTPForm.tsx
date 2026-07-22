@@ -1,5 +1,6 @@
 import { requestOTP, verifyOTP } from "@/api/otp.api";
 import { AuthStackParamList } from "@/app/auth/types";
+import { useStep } from "@/context/StepContext";
 import { RequestOTPBody, VerifyOTPBody } from "@/types/types";
 import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { maskEmail, maskPhone, scaleFont, scaleVerticalPadding } from "@/utils/utils";
@@ -27,14 +28,16 @@ type Props = {
     setPhone: React.Dispatch<SetStateAction<string>>
     signUpMode: "emailAddress" | "phoneNumber"
     setSignUpMode: React.Dispatch<SetStateAction<"emailAddress" | "phoneNumber">>
-    setCurrentForm: React.Dispatch<SetStateAction<"createAccountForm" | "otp">>
+    setCurrentForm?: React.Dispatch<SetStateAction<"createAccountForm" | "otp">>
+    mode?: "signin" | "signup"
 };
 
 export default function OTPForm({
     email,
     phone,
     signUpMode,
-    setCurrentForm
+    setCurrentForm,
+    mode = "signup"
 }: Props) {
 
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
@@ -42,7 +45,7 @@ export default function OTPForm({
     const [timer, setTimer] = useState(RESEND_SECONDS);
     const [isResendDisabled, setIsResendDisabled] = useState(true);
     const [loading, setLoading] = useState(false);
-
+    const { currentStep, setCurrentStep } = useStep()
     const inputs = useRef<Array<TextInput | null>>([]);
 
 
@@ -118,21 +121,40 @@ export default function OTPForm({
 
             const response = await verifyOTP(payload);
             showSuccessToast(response.message);
+            console.log(response)
 
 
             if (response.isNewUser) {
+                if (mode === "signin") {
+                    // user tried to sign in but no account exists.
+                    showErrorToast("No account found with this email. Please sign up.");
+                    setOtp(Array(OTP_LENGTH).fill(""));
+                    return;
+                }
+
                 // New user; no session yet, route to profile completion.
                 // Carry the invite along if this is an invited sales rep.
                 navigation.replace("PersonalInformation")
                 setOtp(Array(OTP_LENGTH).fill(""));
+                return;
             }
 
             else {
+                if (response.isNewUser === false && response.message === "Complete your business setup to continue.") {
+                    setCurrentStep(2);
+                    navigation.replace("PersonalInformation");
+                    setOtp(Array(OTP_LENGTH).fill(""));
+                    console.log("response:", response) // remember to store the response to local storage
+                    return;
+                }
+
+
                 // Existing user; verifyOTP already called setSession() internally,
                 // tokens are in the store, safe to go straight to the app.
                 showSuccessToast("Welcome back!");
                 router.replace("/main")
                 setOtp(Array(OTP_LENGTH).fill(""));
+                return;
             }
         }
 
@@ -185,7 +207,7 @@ export default function OTPForm({
             <Text style={styles.pageTitle}>OTP Verification</Text>
 
             <Text style={styles.paragraph}>
-                Enter the 6-digit code sent to
+                Enter the 6-digit code sent to {" "}
                 {signUpMode === "emailAddress" ?
                     maskEmail(email)
                     : maskPhone(phone)}.
@@ -237,7 +259,7 @@ export default function OTPForm({
 
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity
-                        onPress={() => setCurrentForm("createAccountForm")}
+                        onPress={() => setCurrentForm?.("createAccountForm")}
                         style={styles.outlineButton}
                         activeOpacity={0.7}>
                         <Text style={styles.outlineButtonText}>Back</Text>

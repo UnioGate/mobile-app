@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "flex-start",
         flexDirection: "column",
-        paddingHorizontal: scaleHorizontalPadding(20),
+        paddingHorizontal: scaleHorizontalPadding(16),
         paddingVertical: scaleVerticalPadding(10),
         paddingTop: scaleVerticalPadding(5),
         gap: 16

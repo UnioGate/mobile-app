@@ -1,4 +1,6 @@
+import { logout } from "@/api/logout.api";
 import * as Clipboard from "expo-clipboard";
+import { router } from "expo-router";
 import React from "react";
 import { Dimensions } from "react-native";
 import { showSuccessToast } from "./toastConfig";
@@ -83,3 +85,11 @@ export const updateFormField = <T extends object, K extends keyof T>(
         [name]: value,
     }));
 };
+
+
+
+// This function handles log out all round the app
+export const handleLogOut = async () => {
+    await logout()
+    router.replace("/auth/screens/SignIn")
+}

@@ -8,7 +8,8 @@ import SettlementIcon from "@/components/icons/SettlementIcon";
 import SupportIcon from "@/components/icons/SupportIcon";
 import TeamIcon from "@/components/icons/Team";
 import WalletIcon from "@/components/icons/WalletIcon";
-import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { useCurrentUser } from "@/stores/authStore";
+import { handleLogOut, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -21,7 +22,7 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 export default function ProfileDetails() {
     const navigation = useNavigation<OverviewNavigationProp>()
-
+    const user = useCurrentUser()
 
 
     return (
@@ -81,7 +82,7 @@ export default function ProfileDetails() {
                     {/* card */}
                     <View style={styles.card_details}  >
 
-                        <Text style={styles.business_name} >Tech Haven Store</Text>
+                        <Text style={styles.business_name} > {user?.firstName} {user?.lastName}</Text>
                         <Text style={styles.status} >Tier 2: Personal verified</Text>
 
                         <TouchableOpacity
@@ -432,7 +433,9 @@ export default function ProfileDetails() {
                     paddingVertical: scaleVerticalPadding(10),
                     paddingHorizontal: scaleHorizontalPadding(12),
                     marginTop: 20
-                }} >
+                }}
+                    onPress={handleLogOut}
+                >
                     <Text style={{
                         color: "#ffffff",
                         fontFamily: "Sora_400Regular",

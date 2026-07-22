@@ -1,6 +1,6 @@
 import ImageIcon from "@/components/icons/ImageIcon";
-import { useAuthStore } from "@/stores/authStore";
-import { useBusinesses, useBusinessStore } from "@/stores/businessStore";
+import { useAuthStore, useCurrentUser } from "@/stores/authStore";
+import { useBusinessStore } from "@/stores/businessStore";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -18,14 +18,10 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 export default function BusinessInformation() {
     const navigation = useNavigation<OverviewNavigationProp>()
     const [logoImage, setLogoImage] = useState<string | null>(null)
-    const businesses = useBusinesses();
     const currentBusiness = useBusinessStore((s) =>
         s.getCurrentBusiness(useAuthStore.getState().role?.businessId)
     );
-
-
-    console.log("The businesses:", currentBusiness)
-    console.log("businesses:", businesses)
+    const user = useCurrentUser()
 
 
     // This handles business logo selection
@@ -222,7 +218,7 @@ export default function BusinessInformation() {
 
                         {/* Email address */}
                         <View style={styles.card_row} >
-                            <Text style={styles.card_row_text} >Email address</Text>
+                            <Text style={styles.card_row_text} >{user?.email ?? ""} </Text>
                         </View>
 
                         <Divider style={{
@@ -231,7 +227,7 @@ export default function BusinessInformation() {
 
                         {/* Phone number */}
                         <View style={styles.card_row} >
-                            <Text style={styles.card_row_text} >Phone number</Text>
+                            <Text style={styles.card_row_text} >{user?.phoneNumber ?? "Phone number"} </Text>
                         </View>
 
                         <Divider style={{
