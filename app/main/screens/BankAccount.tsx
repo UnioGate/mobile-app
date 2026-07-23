@@ -1,4 +1,3 @@
-import CustomCheckbox from "@/components/ui/CustomCheckbox";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -44,7 +43,7 @@ export default function BankAccount() {
                     <Text
                         style={{
                             color: "#253E86",
-                            fontSize: scaleFont(11),
+                            fontSize: scaleFont(12),
                             fontFamily: "PlusJakartaSans_500Medium"
                         }}
                     >Add Account</Text>
@@ -236,13 +235,6 @@ export default function BankAccount() {
 
                     </View>
 
-                    <View>
-                        <CustomCheckbox
-                            label="I confirm this information is accurate."
-                            linkText=""
-                            path=""
-                        />
-                    </View>
                 </View>
 
 
@@ -254,7 +246,9 @@ export default function BankAccount() {
                     marginTop: 2
                 }]} >
 
-                    <Pressable style={[styles.button]} >
+                    <Pressable
+                        onPress={() => navigation.goBack()}
+                        style={[styles.button]} >
                         <Text style={[styles.button_text, {
                             color: "#253E86"
                         }]} >Cancel</Text>
@@ -298,8 +292,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         flexDirection: "row",
-        paddingHorizontal: scaleHorizontalPadding(19),
-        paddingVertical: scaleVerticalPadding(10)
+        paddingHorizontal: scaleHorizontalPadding(10),
+        paddingVertical: scaleVerticalPadding(13)
     },
 
 
@@ -338,7 +332,7 @@ const styles = StyleSheet.create({
 
     button_text: {
         fontFamily: "Sora_400Regular",
-        fontSize: scaleFont(10),
+        fontSize: scaleFont(13),
         textAlign: "center"
     },
 
@@ -348,7 +342,7 @@ const styles = StyleSheet.create({
         alignItems: "stretch",
         gap: 12,
         paddingBottom: scaleVerticalPadding(20),
-        paddingHorizontal: scaleHorizontalPadding(19),
+        paddingHorizontal: scaleHorizontalPadding(10),
         paddingVertical: scaleVerticalPadding(5),
         backgroundColor: "#D3D8E7"
     },

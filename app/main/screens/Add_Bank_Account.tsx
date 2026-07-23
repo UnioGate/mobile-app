@@ -1,17 +1,157 @@
+import { getBanks, resolveBankAcct, saveBankAccount } from "@/api/bank-accounts.api";
 import CustomCheckbox from "@/components/ui/CustomCheckbox";
 import CustomDropdown from "@/components/ui/CustomDropdown";
-import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { bankAccountBody, bankAccountResolveBody, DropdownOption } from "@/types/types";
+import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
+import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding, updateFormField } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import { MainStackParamList } from "../type";
 
 type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 
 export default function AddBankAccount() {
-    const navigation = useNavigation<OverviewNavigationProp>()
+    const navigation = useNavigation<OverviewNavigationProp>();
+    const [confirmation, setConfirmation] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [resolving, setResolving] = useState(false)
+    const [bankOptions, setBankOptions] = useState<DropdownOption[]>([])
+    const [incompleteNumber, setIncompleteNumber] = useState(false)
+    const [resolvedName, setResolvedName] = useState("");
+    const [formValues, setFormValues] = useState({
+        accountNumber: "",
+        bankName: "",
+        bankCode: ""
+    })
+
+
+
+    // this fetches the bank accts on page load
+    useEffect(() => {
+        const fetchBanks = async () => {
+            const response = await getBanks();
+
+            if (response.ok) {
+                const options: DropdownOption[] = response.banks.map((bank) => ({
+                    label: bank.name,
+                    value: bank.code,
+                }));
+                setBankOptions(options);
+            } else {
+                showErrorToast(response.error ?? "Failed to fetch banks!");
+            }
+        };
+
+        fetchBanks();
+    }, []);
+
+
+
+
+
+    // This handles the form submission
+    const handleSubmit = async () => {
+
+
+
+        setLoading(true);
+
+        try {
+            const payload: bankAccountBody = {
+                accountNumber: formValues.accountNumber,
+                bankCode: formValues.bankCode,
+                bankName: formValues.bankName
+            }
+
+            const response = await saveBankAccount(payload);
+
+            if (!response.ok) {
+                showErrorToast(response.error)
+                console.error(response.error)
+                return;
+            }
+
+            showSuccessToast(response.message);
+            setFormValues({
+                accountNumber: "",
+                bankCode: "",
+                bankName: ""
+            })
+
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                showErrorToast(
+                    error.response?.data?.message ??
+                    error.message
+                );
+                console.log("Status:", error.response?.status);
+                console.log("Response Data:", error.response?.data);
+                console.log("Response Headers:", error.response?.headers);
+                console.log("Request Config:", error.config);
+            }
+            showErrorToast("Something went wrong");
+            console.error(error)
+        }
+
+        finally {
+            setLoading(false)
+        }
+    }
+
+
+
+
+    // This function finds the an account number if it exists
+    const findBankAcct = async (data: bankAccountResolveBody) => {
+
+        if (data.accountNumber.length < 10 || !data.bankCode) {
+            setIncompleteNumber(true)
+            return;
+        }
+
+        setIncompleteNumber(false)
+        setResolving(true)
+
+        try {
+            const response = await resolveBankAcct(data);
+
+            if (!response.ok) {
+                showErrorToast(response.error)
+                console.error(response.error)
+                setResolvedName("")
+                return;
+            }
+
+            setResolvedName(response.accountName);
+
+        } catch (error) {
+
+            if (axios.isAxiosError(error)) {
+                showErrorToast(
+                    error.response?.data?.message ??
+                    error.message
+                );
+                console.log("Status:", error.response?.status);
+                console.log("Response Data:", error.response?.data);
+                console.log("Response Headers:", error.response?.headers);
+                console.log("Request Config:", error.config);
+            }
+
+
+            showErrorToast("Something went wrong");
+            console.error(error)
+        }
+        finally {
+            setResolving(false)
+        }
+
+    }
 
 
 
@@ -52,10 +192,7 @@ export default function AddBankAccount() {
             <ScrollView
                 style={{ flex: 1, width: "100%" }}
                 contentContainerStyle={styles.scrollView_style}
-                showsVerticalScrollIndicator={false} >
-
-
-
+                showsVerticalScrollIndicator={false}>
 
                 {/* the form  */}
                 <View style={{
@@ -65,7 +202,6 @@ export default function AddBankAccount() {
                     gap: 10,
                     borderRadius: 10
                 }} >
-
 
                     {/* Select bank  */}
 
@@ -86,6 +222,15 @@ export default function AddBankAccount() {
                             dropdownStyle={{
                                 borderColor: "#808080",
                                 backgroundColor: "#ffffff"
+                            }}
+                            options={bankOptions}
+                            onChange={(value: string) => {
+                                const selected = bankOptions.find((option) => option.value === value);
+                                setFormValues((prev) => ({
+                                    ...prev,
+                                    bankCode: value,
+                                    bankName: selected ? String(selected.label) : "",
+                                }));
                             }}
                         />
 
@@ -112,7 +257,7 @@ export default function AddBankAccount() {
                             style={{
                                 width: "100%",
                                 borderWidth: 0.5,
-                                borderColor: "#808080",
+                                borderColor: incompleteNumber ? "red" : "#808080",
                                 borderRadius: 7,
                                 paddingVertical: scaleVerticalPadding(12),
                                 paddingHorizontal: scaleHorizontalPadding(6),
@@ -120,6 +265,11 @@ export default function AddBankAccount() {
                                 fontFamily: "Sora_400Regular",
                                 color: "#000000"
                             }}
+                            onChangeText={(text) => updateFormField("accountNumber", text, setFormValues)}
+                            onBlur={() => findBankAcct({
+                                accountNumber: formValues.accountNumber,
+                                bankCode: formValues.bankCode
+                            })}
                         />
 
                     </View>
@@ -142,7 +292,8 @@ export default function AddBankAccount() {
                         >Account Name</Text>
 
                         <TextInput
-                            placeholder="Uniogate"
+                            placeholder={resolving ? "Verifying..." : "Account name will appear here"}
+                            value={resolvedName}
                             keyboardType="default"
                             style={{
                                 width: "100%",
@@ -155,22 +306,20 @@ export default function AddBankAccount() {
                                 fontFamily: "Sora_400Regular",
                                 color: "#000000"
                             }}
+                            readOnly
                         />
 
                     </View>
-
-
-
-
                 </View>
 
 
                 <View>
                     <CustomCheckbox
-                        label={`I confirm this information is accurate. `}
+                        label="I confirm this information is accurate."
                         linkText=""
                         path=""
-                        subtext="For security, only business accounts in your registered name can be added"
+                        checked={confirmation}
+                        setChecked={setConfirmation}
                     />
                 </View>
 
@@ -178,7 +327,9 @@ export default function AddBankAccount() {
                 {/* Button wrapper */}
                 <View style={styles.button_wrapper} >
 
-                    <TouchableOpacity style={[styles.button]} >
+                    <TouchableOpacity
+                        onPress={() => navigation.goBack()}
+                        style={[styles.button]} >
                         <Text style={[styles.button_text, {
                             color: "#253E86"
                         }]} >Cancel</Text>
@@ -186,13 +337,18 @@ export default function AddBankAccount() {
 
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("add_bank_account")}
+                        onPress={handleSubmit}
                         style={[styles.button, {
                             backgroundColor: "#253E86"
                         }]} >
-                        <Text style={[styles.button_text, {
-                            color: "#ffffff"
-                        }]} >Add Account</Text>
+
+                        {loading ? (
+                            <ActivityIndicator color="#ffffff" />
+                        ) : (
+                            <Text style={[styles.button_text, {
+                                color: "#ffffff"
+                            }]} >Add Account</Text>
+                        )}
                     </TouchableOpacity>
 
                 </View>

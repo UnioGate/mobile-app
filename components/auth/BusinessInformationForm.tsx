@@ -191,8 +191,6 @@ export default function BusinessInformationForm() {
                 return;
             }
 
-
-
             // remove cached data from local storage
             await AsyncStorage.removeItem(SIGNUP_KEY);
             showSuccessToast(response.message)

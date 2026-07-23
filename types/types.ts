@@ -294,3 +294,23 @@ export interface inviteBody {
   identifier: string;
   type: string;
 }
+
+
+export interface Bank {
+  name: string;
+  code: string;
+}
+
+
+
+export interface bankAccountBody {
+  accountNumber: string;
+  bankCode: string;
+  bankName: string;
+  id?: string
+}
+
+export interface bankAccountResolveBody {
+  accountNumber: string;
+  bankCode: string
+}

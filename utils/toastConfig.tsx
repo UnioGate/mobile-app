@@ -102,7 +102,7 @@ export const toastConfig = {
 
 const baseToastOptions: Pick<ToastShowParams, "position" | "topOffset"> = {
   position: "top",
-  topOffset: 60,
+  topOffset: 50,
 };
 
 export const showErrorToast = (text1: string, text2?: string) => {
