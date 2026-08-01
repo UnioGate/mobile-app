@@ -1,5 +1,6 @@
 
 import SuccessSVG from "@/components/ui/success";
+import { useSaleStore } from "@/stores/saleStore";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -12,6 +13,7 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList, "Cry
 
 export default function CryptoSuccess() {
     const navigation = useNavigation<OverviewNavigationProp>()
+    const { saleResponse, sale } = useSaleStore()
 
 
     return (
@@ -26,7 +28,12 @@ export default function CryptoSuccess() {
 
                 <View style={styles.heading} >
                     <SuccessSVG width={110} height={110} />
-                    <Text style={styles.heading_text} >Payment Successful</Text>
+                    {saleResponse?.status === "expired" ? (
+                        <Text style={styles.heading_text} >Payment Successful</Text>
+                    )
+                        : (
+                            <Text style={styles.heading_text} >Payment Failed</Text>
+                        )}
                 </View>
 
 
@@ -46,13 +53,13 @@ export default function CryptoSuccess() {
                                 resizeMode="contain"
                             />
 
-                            <Text style={styles.payment_summary_top_text} >USDT (Tron)</Text>
+                            <Text style={styles.payment_summary_top_text} >{sale.currency} {(sale.network)}</Text>
                         </View>
 
 
                         {/* the center  */}
                         <View style={styles.payment_summary_center}  >
-                            <Text style={styles.payment_summary_center_amount}  >₦ 8,500</Text>
+                            <Text style={styles.payment_summary_center_amount}  >₦ {saleResponse?.amount} </Text>
 
                             <View
                                 style={{

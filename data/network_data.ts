@@ -6,15 +6,15 @@ import { networkOptionData } from "@/types/types";
 export const networkOptions: networkOptionData[] = [
     {
         img: "eth",
-        title: "Ethereum"
+        title: "eth"
     },
 
     {
         img: "tron",
-        title: "Tron"
+        title: "tron"
     },
     {
         img: "base",
-        title: "Base"
+        title: "base"
     }
 ]

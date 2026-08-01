@@ -1,12 +1,15 @@
 
+import { getSalesById } from "@/api/sales.api";
 import LogoReveal from "@/components/LogoReveal";
+import { useSaleStore } from "@/stores/saleStore";
+import { useWalletStore } from "@/stores/WalletStore";
 import { showSuccessToast } from "@/utils/toastConfig";
-import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { maskAddress, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import * as Clipboard from "expo-clipboard";
-import { useState } from "react";
+import { useEffect } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { MainStackParamList } from "../../type";
 
@@ -22,15 +25,71 @@ type NavigationProp = NativeStackNavigationProp<
 
 export default function CryptoStepTwo() {
     const navigation = useNavigation<NavigationProp>();
-    const [timeOut, setTimeout] = useState(true)
-    const [selectedCoin, setSelectedCoin] = useState("CNGN")
-    const walletAddress = "TRX1234567890ABCDEFGHIJKLMN90";
     const { width } = useWindowDimensions();
+    const { saleResponse, sale, isTimeOut, setIsTimeOut } = useSaleStore()
+    const selectedCoin = sale.currency;
+    const { rate, fetchRates } = useWalletStore()
 
+    if (sale.currency !== "USDT" && sale.currency !== "USDC") {
+        return;
+    }
+
+    const currentRateInNGN = rate.rates[sale?.currency ?? "USDT"].NGN
+
+
+
+
+
+    // this handles the copy functionality
     const copyAddress = async () => {
-        await Clipboard.setStringAsync(walletAddress);
-        showSuccessToast("Copied!")
+        await Clipboard.setStringAsync(saleResponse?.walletAddress ?? "");
+        showSuccessToast("Wallet address copied!")
     };
+
+
+    // this useEffect fetches the current exchange rate
+    useEffect(() => {
+        fetchRates()
+    }, [])
+
+
+
+    // this handles the polling functionality on the frontend
+    useEffect(() => {
+        const saleId = saleResponse?.id;
+        if (!saleId) return;
+
+        const pollInterval = setInterval(async () => {
+            const response = await getSalesById(saleId);
+
+            if (!response.ok) {
+                // Don't stop polling on a transient network error - just skip this tick.
+                console.error(response.error);
+                return;
+            }
+
+            const updatedSale = response.sale;
+
+            // re-renders with the fresh data.
+            useSaleStore.getState().setSaleResponse(updatedSale);
+
+            if (updatedSale.status === "confirmed") {
+                clearInterval(pollInterval);
+                navigation.navigate("CryptoSuccess");
+            } else if (updatedSale.status === "expired") {
+                clearInterval(pollInterval);
+                setIsTimeOut(true);
+            }
+        }, 4000); // every 4s - the sale window is 10 minutes, no need to hammer the API
+
+        // Cleanup: stop polling if the user navigates away from this screen
+        // before the sale resolves.
+        return () => clearInterval(pollInterval);
+    }, [saleResponse?.id]);
+
+
+
+
 
 
     return (
@@ -63,7 +122,7 @@ export default function CryptoStepTwo() {
                 </View>
 
 
-                {timeOut ? (
+                {isTimeOut ? (
                     <View style={styles.timeout_wrapper} >
 
                         <Ionicons name="warning" color={"#FF0707"} size={63} />
@@ -154,16 +213,18 @@ export default function CryptoStepTwo() {
 
 
                                 {/* The network display  */}
-                                <Text style={styles.network_text} >Ethereum</Text>
+                                <Text style={styles.network_text} >{sale.network} </Text>
 
 
                                 {/* amount display  */}
                                 <View style={styles.amount_display} >
-                                    <Text style={styles.amount_text} >₦ 8,500</Text>
+                                    <Text style={styles.amount_text} >₦{Number(saleResponse?.amount).toLocaleString()} </Text>
 
                                     <View style={styles.exchange_rate} >
-                                        <Text style={styles.equivalent} >5.15 USDT</Text>
-                                        <Text style={styles.rate} >1 USDT = ₦1,650</Text>
+                                        <Text style={styles.equivalent} >
+                                            {(Number(sale.amount) / currentRateInNGN).toFixed(2)}
+                                            {sale.currency}</Text>
+                                        <Text style={styles.rate} >1 {sale.currency} = ₦{currentRateInNGN}</Text>
                                     </View>
                                 </View>
 
@@ -174,7 +235,7 @@ export default function CryptoStepTwo() {
 
                                     <Image
                                         source={{
-                                            uri: "https://res.cloudinary.com/dwedz2laa/image/upload/v1781208493/zhosd1cger6rbp8pz7rp.png",
+                                            uri: saleResponse?.qrCode,
                                         }}
                                         style={[styles.qr_box, {
                                             width: Math.min(width * 0.65, 320)
@@ -193,7 +254,7 @@ export default function CryptoStepTwo() {
 
                                     <View style={styles.address_container} >
                                         <Text style={styles.wallet_address} >
-                                            TRX1234****************90</Text>
+                                            {maskAddress(saleResponse?.walletAddress ?? '')}</Text>
 
                                         <Pressable
                                             onPress={copyAddress}
@@ -216,14 +277,26 @@ export default function CryptoStepTwo() {
                                         color={"#253E86"}
                                     />
 
-                                    <View style={{
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        gap: 10
-                                    }} >
-                                        <Text style={styles.status_text} >Waiting for payment...</Text>
-                                        <LogoReveal />
-                                    </View>
+                                    {saleResponse?.status === "pending" ? (
+                                        <View style={{
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            gap: 10
+                                        }} >
+                                            <Text style={styles.status_text} >Waiting for payment...</Text>
+                                            <LogoReveal />
+                                        </View>)
+                                        : (
+                                            <View style={{
+                                                flexDirection: "row",
+                                                alignItems: "center",
+                                                gap: 10
+                                            }} >
+                                                <Text style={styles.status_text} >Payment detected, Confirming...</Text>
+                                                <LogoReveal />
+                                            </View>
+                                        )
+                                    }
                                 </View>
 
 

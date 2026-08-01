@@ -95,3 +95,31 @@ export const resolveBankAcct = async (data: bankAccountResolveBody) => {
 }
 
 
+
+
+export const fetchMyAccounts = async () => {
+    try {
+        const response = await api.get("/bank-accounts")
+        const result = response.data;
+
+
+        return {
+            ok: true,
+            accounts: result.bankAccounts
+        }
+
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            return {
+                ok: false,
+                error: error.response?.data.error ?? error.message
+            }
+        }
+
+        return {
+            ok: false,
+            error: "Something went wrong"
+        }
+    }
+}

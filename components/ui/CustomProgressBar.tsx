@@ -18,7 +18,7 @@ export default function CustomProgressBar({ trackColor = "#D3D8E7", thumbColor =
         if (total <= 0) return "0%";
 
         const percentage = Math.min(
-            Math.max((amount / total) * 100, 0),
+            Math.round((amount / total) * 100),
             100
         );
 

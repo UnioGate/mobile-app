@@ -1,12 +1,17 @@
+import { createSale } from "@/api/sales.api";
 import { networkOptions } from "@/data/network_data";
 import { stableCoinData } from "@/data/stableCoinData";
-import { networkKey, networkOptionData, stableCoinKey, stableCoinOptionData } from "@/types/types";
+import { useSaleStore } from "@/stores/saleStore";
+import { networkKey, networkOptionData, SalesBody, stableCoinKey, stableCoinOptionData } from "@/types/types";
+import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import axios from "axios";
 import { useState } from "react";
 import { Animated, Easing, Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import { MainStackParamList } from "../../type";
 
 
@@ -41,8 +46,12 @@ export default function CryptoStepOne() {
     const [network, setNetwork] = useState<networkOptionData | null>(null)
     const [activeDrawer, setActiveDrawer] = useState<DrawerType>(null);
     const translateY = useState(new Animated.Value(300))[0];
+    const { sale, setSaleResponse, setSalesData } = useSaleStore();
+    const [loading, setLoading] = useState(false)
 
 
+
+    // this function controls the drawer
     const toggleDrawer = (drawer: DrawerType) => {
         if (drawer === activeDrawer) return;
 
@@ -66,6 +75,72 @@ export default function CryptoStepOne() {
         }
     };
 
+
+
+
+
+    // this function controls the submission
+    const submit = async () => {
+
+
+        if (!sale.currency) {
+            showErrorToast("Please select a currency!")
+            return;
+        }
+
+
+        if (!sale.network) {
+            showErrorToast("Please select a network!")
+            return;
+        }
+
+        setLoading(true)
+
+
+        try {
+            const payload: SalesBody = {
+                amount: sale.amount,
+                currency: stableCoin?.title,
+                description: sale.description,
+                network: network?.title,
+                paymentType: sale.paymentType
+            }
+
+            console.log("The payload", payload)
+
+            const response = await createSale(payload)
+            console.log(payload)
+
+            if (!response.ok || !response.createSalesResponse) {
+                showErrorToast(response.error)
+                console.error(response.error)
+                return;
+            }
+
+            showSuccessToast(response.message);
+            setSaleResponse(response.createSalesResponse)
+            navigation.navigate("cryptoStepTwo")
+
+
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                showErrorToast(
+                    error.response?.data?.message ??
+                    error.message
+                );
+                console.log("Status:", error.response?.status);
+                console.log("Response Data:", error.response?.data);
+                console.log("Response Headers:", error.response?.headers);
+                console.log("Request Config:", error.config);
+            }
+            showErrorToast("Something went wrong");
+            console.error(error)
+        }
+
+        finally {
+            setLoading(false)
+        }
+    }
 
 
     return (
@@ -186,150 +261,162 @@ export default function CryptoStepOne() {
 
 
                 {/* Render button conditionally once the inputs have been selected */}
-                {
-                    stableCoin && network ? (
-                        <TouchableOpacity
-                            style={styles.button}
-                            activeOpacity={0.7}
-                            onPress={() => navigation.navigate("cryptoStepTwo")}
-                        >
-                            <Text style={styles.buttonText} > Continue</Text>
-                        </TouchableOpacity>
-                    )
-                        :
-                        null
+                {stableCoin && network ? (
+                    <TouchableOpacity
+                        style={styles.button}
+                        activeOpacity={0.7}
+                        onPress={submit}
+                    >
+                        {loading ? (
+                            <ActivityIndicator color="#ffffff" />
+                        )
+                            : (
+                                <Text style={styles.buttonText} > Continue</Text>
+                            )}
+                    </TouchableOpacity>
+                )
+                    :
+                    null
                 }
-
-
             </View>
 
 
 
             {/* The coin options drawer  */}
-            {activeDrawer === "coin" && (
-                <Animated.View
-                    style={[
-                        styles.drawer,
-                        { transform: [{ translateY }] }
-                    ]} >
-                    <Text style={styles.drawerText} >Select Stablecoin</Text>
+            {
+                activeDrawer === "coin" && (
+                    <Animated.View
+                        style={[
+                            styles.drawer,
+                            { transform: [{ translateY }] }
+                        ]} >
+                        <Text style={styles.drawerText} >Select Stablecoin</Text>
 
 
-                    <View style={styles.drawer_grid} >
+                        <View style={styles.drawer_grid} >
 
-                        {
-                            stableCoinData.map((option, i) => (
-                                <Pressable
-                                    onPress={() => {
-                                        setStableCoin(option)
-                                        toggleDrawer(null)
-                                    }}
-                                    key={i} style={styles.drawer_option}
-                                >
-                                    <View
-                                        style={{ marginLeft: "auto" }}>
-                                        <Ionicons
-                                            name={stableCoin?.title === option.title ? 'checkbox-outline' : 'square-outline'}
-                                            size={20}
-                                            color="#1D1B20"
-                                        />
-                                    </View>
-
-
-                                    <Image
-                                        source={icon[option.img]}
-                                        style={{ width: 50, height: 50, }}
-                                        resizeMode="contain"
-                                    />
-
-
-                                    <View
-                                        style={{
-                                            gap: 5,
-                                            width: "100%",
-                                            alignItems: "center",
-                                            justifyContent: "center"
+                            {
+                                stableCoinData.map((option, i) => (
+                                    <Pressable
+                                        onPress={() => {
+                                            setStableCoin(option)
+                                            toggleDrawer(null)
+                                            setSalesData({
+                                                currency: option.title
+                                            })
                                         }}
+                                        key={i} style={styles.drawer_option}
                                     >
-                                        <Text
-                                            style={styles.drawer_option_heading} >
-                                            {option.title} </Text>
+                                        <View
+                                            style={{ marginLeft: "auto" }}>
+                                            <Ionicons
+                                                name={stableCoin?.title === option.title ? 'checkbox-outline' : 'square-outline'}
+                                                size={20}
+                                                color="#1D1B20"
+                                            />
+                                        </View>
 
 
-                                        <Text
-                                            numberOfLines={1}
-                                            adjustsFontSizeToFit
-                                            style={styles.drawer_option_subtitle} > {option.rate} </Text>
-                                    </View>
+                                        <Image
+                                            source={icon[option.img]}
+                                            style={{ width: 50, height: 50, }}
+                                            resizeMode="contain"
+                                        />
 
-                                </Pressable>
-                            ))
-                        }
 
-                    </View>
+                                        <View
+                                            style={{
+                                                gap: 5,
+                                                width: "100%",
+                                                alignItems: "center",
+                                                justifyContent: "center"
+                                            }}
+                                        >
+                                            <Text
+                                                style={styles.drawer_option_heading} >
+                                                {option.title} </Text>
 
-                </Animated.View>
-            )}
+
+                                            <Text
+                                                numberOfLines={1}
+                                                adjustsFontSizeToFit
+                                                style={styles.drawer_option_subtitle} > {option.rate} </Text>
+                                        </View>
+
+                                    </Pressable>
+                                ))
+                            }
+
+                        </View>
+
+                    </Animated.View>
+                )
+            }
 
 
 
 
             {/* The network options drawer  */}
-            {activeDrawer === "network" && (
-                <Animated.View
-                    style={[
-                        styles.drawer,
-                        { transform: [{ translateY }] }
-                    ]} >
-                    <Text style={styles.drawerText} >Select Network</Text>
+            {
+                activeDrawer === "network" && (
+                    <Animated.View
+                        style={[
+                            styles.drawer,
+                            { transform: [{ translateY }] }
+                        ]} >
+                        <Text style={styles.drawerText} >Select Network</Text>
 
 
-                    <View style={styles.drawer_grid} >
+                        <View style={styles.drawer_grid} >
 
-                        {
-                            networkOptions.map((option, i) => (
-                                <Pressable
-                                    onPress={() => {
-                                        setNetwork(option)
-                                        toggleDrawer(null)
-                                    }}
-                                    key={i} style={styles.drawer_option}
-                                >
-                                    <View
-                                        style={{ marginLeft: "auto" }}>
-                                        <Ionicons
-                                            name={network?.title === option.title ? 'checkbox-outline' : 'square-outline'}
-                                            size={20}
-                                            color="#1D1B20"
-                                        />
-                                    </View>
-
-
-                                    <Image
-                                        source={networkIcon[option.img]}
-                                        style={{ width: 50, height: 50, }}
-                                        resizeMode="contain"
-                                    />
-
-
-                                    <View
-                                        style={{
-                                            gap: 5,
-                                            alignItems: "center",
-                                            justifyContent: "center"
+                            {
+                                networkOptions.map((option, i) => (
+                                    <Pressable
+                                        onPress={() => {
+                                            setNetwork(option)
+                                            toggleDrawer(null)
+                                            setSalesData({
+                                                network: option.title
+                                            })
                                         }}
+                                        key={i} style={styles.drawer_option}
                                     >
-                                        <Text style={styles.drawer_option_heading} > {option.title} </Text>
-                                    </View>
+                                        <View
+                                            style={{ marginLeft: "auto" }}>
+                                            <Ionicons
+                                                name={network?.title === option.title ? 'checkbox-outline' : 'square-outline'}
+                                                size={20}
+                                                color="#1D1B20"
+                                            />
+                                        </View>
 
-                                </Pressable>
-                            ))
-                        }
 
-                    </View>
+                                        <Image
+                                            source={networkIcon[option.img]}
+                                            style={{ width: 50, height: 50, }}
+                                            resizeMode="contain"
+                                        />
 
-                </Animated.View>
-            )}
+
+                                        <View
+                                            style={{
+                                                gap: 5,
+                                                alignItems: "center",
+                                                justifyContent: "center"
+                                            }}
+                                        >
+                                            <Text style={styles.drawer_option_heading} > {option.title} </Text>
+                                        </View>
+
+                                    </Pressable>
+                                ))
+                            }
+
+                        </View>
+
+                    </Animated.View>
+                )
+            }
 
 
 

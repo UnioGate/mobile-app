@@ -2,16 +2,18 @@ import EyeClosed from "@/components/icons/EyeClosed";
 import NFCIcon from "@/components/icons/NFCPayments";
 import SupportIcon from "@/components/icons/SupportIcon";
 import WithdrawIcon from "@/components/icons/WithdrawIcon";
+import TransactionCard from "@/components/TransactionCard";
 import CustomProgressBar from "@/components/ui/CustomProgressBar";
-import { transactions } from "@/data/mock_tx";
 import { useCurrentUser } from "@/stores/authStore";
-import { LogoKey } from "@/types/types";
-import { formatBalance, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { useSaleStore } from "@/stores/saleStore";
+import { useWalletStore } from "@/stores/WalletStore";
+import { SaleRecord } from "@/types/types";
+import { formatBalance, getDateLabel, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { EyeIcon } from "lucide-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { MainStackParamList } from "../type";
 
@@ -19,42 +21,65 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList, "ove
 
 export default function Overview() {
     const navigation = useNavigation<OverviewNavigationProp>()
-    const balance = 24740.5;
     const [showBalance, setShowBalance] = useState(true)
     const user = useCurrentUser()
+    const { salesHistory,
+        fetchSalesHistory,
+        todaySales,
+        filterTodaySales,
+        sumDailyTx,
+        sumTodayTX,
+    }
+        = useSaleStore()
+
+    const { fetchBalance,
+        walletBalance,
+    } = useWalletStore()
 
 
 
     // Masking logic for balance
     const displayBalance = showBalance
-        ? `₦${formatBalance(balance)}`
-        : "₦ *******";
+        ? `₦${formatBalance(Number(walletBalance))}`
+        : `₦ ${"*".repeat(walletBalance.length)}`;
 
 
+    // this useEffect fetches sales history
+    useEffect(() => {
+        fetchSalesHistory();
+        fetchBalance()
+    }, []);
 
-    // This function gives the status color
-    const getStatusStyle = (status: string) => {
-        switch (status.toLowerCase()) {
-            case "successful":
-                return styles.successful;
-            case "pending":
-                return styles.pending;
-            case "failed":
-                return styles.unsuccessful;
-            case "unsuccessful":
-                return styles.unsuccessful;
-            default:
-                return {};
+
+    // this useEffect calls the function to filter out today's sales
+    useEffect(() => {
+        filterTodaySales();
+        sumDailyTx();
+    }, [salesHistory]);
+
+
+    // sorting the array according to the latest before grouping them
+    const sortedSales = [...(salesHistory ?? [])].sort(
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+
+
+    // This groups the transaction according to the transaction date
+    const groupedSales = sortedSales?.reduce((acc, sale) => {
+        const label = getDateLabel(sale.createdAt);
+
+        if (!acc[label]) {
+            acc[label] = [];
         }
-    };
+
+        acc[label].push(sale);
+
+        return acc;
+    }, {} as Record<string, SaleRecord[]>);
 
 
 
-    const logos: Record<LogoKey, any> = {
-        eth: require("../../../assets/logos/eth_icon.png"),
-        btc: require("../../../assets/logos/logos_bitcoin.png"),
-        card: require("../../../assets/logos/card.png")
-    };
 
 
 
@@ -199,7 +224,7 @@ export default function Overview() {
 
                     <View style={styles.leftSide} >
                         <View style={styles.text_wrapper} >
-                            <Text style={styles.boldText} >24</Text>
+                            <Text style={styles.boldText} >{todaySales.length}</Text>
                             <Text style={styles.label} >Today&apos;s Transaction</Text>
                         </View>
                     </View>
@@ -210,7 +235,7 @@ export default function Overview() {
                             <Text
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
-                                style={styles.boldText} >₦128,400</Text>
+                                style={styles.boldText} >₦{sumTodayTX.toLocaleString()} </Text>
 
 
                             <Text
@@ -240,7 +265,7 @@ export default function Overview() {
                     }}>
                         <CustomProgressBar
                             total={5000000}
-                            amount={3200000}
+                            amount={sumTodayTX}
                             textColor="#ffffff"
                         />
                         <Text style={styles.transacted_amount} >₦3.2M / ₦5M</Text>
@@ -271,65 +296,16 @@ export default function Overview() {
                         </Pressable>
                     </View>
 
-                    <Text style={styles.today_text} >Today </Text>
+                    {groupedSales &&
+                        Object.entries(groupedSales).slice(0, 1).map(([label, sales]) => (
+                            <View key={label}>
+                                <Text style={styles.today_text}>{label}</Text>
 
-
-
-                    {/* The history  */}
-                    <View style={styles.history} >
-
-                        {/* The individual history card  */}
-                        {
-                            transactions.map((tx, i) => (
-                                <Pressable
-                                    onPress={() => navigation.navigate("transaction_details", {
-                                        id: tx.id
-                                    })}
-                                    key={i}
-                                    style={styles.history_card} >
-
-                                    <View style={styles.history_card_left_side} >
-
-                                        <Image
-                                            source={logos[tx.image]}
-                                            style={{ width: 30, height: 30, marginTop: 7, objectFit: "contain" }}
-                                        />
-
-                                        <View
-                                            style={{
-                                                width: "auto",
-                                                display: "flex",
-                                                alignItems: "flex-start",
-                                                justifyContent: "center"
-                                            }}
-                                        >
-                                            <Text style={styles.curreny}  >{tx.method} </Text>
-                                            <Text style={styles.time} >{tx.tx_time.toDateString()} </Text>
-                                        </View>
-                                    </View>
-
-
-
-                                    <View style={styles.history_card_right_side} >
-                                        <Text
-                                            adjustsFontSizeToFit
-                                            numberOfLines={1}
-                                            style={styles.history_amount} >
-                                            ₦{tx.amount.toLocaleString(
-                                                undefined, {
-                                                minimumFractionDigits: 2,
-                                                maximumFractionDigits: 2
-                                            }
-                                            )} </Text>
-
-                                        <Text style={[styles.history_status, getStatusStyle(tx.status)]} >{tx.status} </Text>
-                                    </View>
-
-                                </Pressable>
-                            ))
-                        }
-
-                    </View>
+                                {sales.slice(0, 5).map((tx) => (
+                                    <TransactionCard key={tx.id} tx={tx} />
+                                ))}
+                            </View>
+                        ))}
 
 
                 </View>
@@ -663,68 +639,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         gap: 20,
     },
-
-    history_card: {
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        flexDirection: "row",
-        padding: 2
-    },
-
-    history_card_left_side: {
-        width: "auto",
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        flexDirection: "row"
-    },
-
-    curreny: {
-        fontSize: scaleFont(14),
-        color: "#10182A",
-        fontFamily: "Sora_400Regular"
-    },
-
-    time: {
-        fontSize: scaleFont(10),
-        color: "#B3B3B3",
-        fontFamily: "Sora_300Light"
-    },
-
-
-
-    history_card_right_side: {
-        display: "flex",
-        alignItems: "flex-end",
-        flexDirection: "column",
-        gap: 3,
-    },
-
-    history_amount: {
-        color: "#10182A",
-        fontSize: scaleFont(13),
-        fontFamily: "Sora_400Regular"
-    },
-
-    history_status: {
-        fontSize: scaleFont(10),
-        fontFamily: "Sora_300Light"
-    },
-
-    successful: {
-        color: "#009A49"
-    },
-
-    pending: {
-        color: "#F7931A"
-    },
-
-    unsuccessful: {
-        color: "#FF0707"
-    }
-
 
 
 

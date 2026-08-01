@@ -15,7 +15,7 @@ export type StateOptionSource = {
   country_code: string;
 };
 
-export type LogoKey = "eth" | "btc" | "card";
+export type LogoKey = "eth" | "btc" | "card" | "usdc" | "usdt" | "cngn";
 
 export type TransactionStatus = "Completed" | "Pending" | "Failed" | "Successful" | "Unsuccessful";
 
@@ -46,6 +46,7 @@ export type method_option_type = {
   title: string;
   subtitle: string;
   image: methodKey;
+  value: "" | "crypto" | "nfc" | "bank_transfer"
 }
 
 
@@ -53,7 +54,7 @@ export type stableCoinKey = "usdt" | "usdc" | "cngn"
 
 
 export type stableCoinOptionData = {
-  title: string;
+  title: "USDT" | "USDC" | "NGN" | "CNGN" | "";
   rate: string;
   img: stableCoinKey;
 }
@@ -64,7 +65,7 @@ export type networkKey = "eth" | "tron" | "base"
 
 
 export type networkOptionData = {
-  title: string;
+  title: "tron" | "base" | "nomba" | "eth" | "";
   img: networkKey;
 }
 
@@ -313,4 +314,58 @@ export interface bankAccountBody {
 export interface bankAccountResolveBody {
   accountNumber: string;
   bankCode: string
+}
+
+
+
+export interface myAccount {
+  id: string
+  accountNumber: string
+  bank: string
+  accountName: string
+}
+
+
+export interface SalesBody {
+  amount: string,
+  paymentType: "bank_transfer" | "crypto" | "nfc" | "",
+  description: string,
+  currency?: "USDT" | "USDC" | "NGN" | "CNGN" | "",
+  network?: "tron" | "base" | "nomba" | "eth" | ""
+}
+
+
+export interface CreateSalesResponse {
+  id: string,
+  amount: string,
+  paymentType: string,
+  status: "pending" | "confirmed" | "expired",
+  walletAddress: string,
+  expiresAt: string,
+  qrCode: string
+}
+
+
+export interface SaleRecord {
+  id: string;
+
+  amount: string;
+  amountPaid: string | null;
+
+  paymentType: "crypto" | "bank_transfer";
+  currency: "USDT" | "USDC" | "NGN";
+  network: "base" | "tron" | "nomba";
+
+  status: "pending" | "completed" | "failed" | "expired";
+
+  description: string | null;
+
+  walletAddress: string;
+  cryptoTxHash: string | null;
+
+  expiresAt: string;
+  createdAt: string;
+
+  businessId: string;
+  initiatorId: string;
 }

@@ -93,3 +93,79 @@ export const handleLogOut = async () => {
     await logout()
     router.replace("/auth/screens/SignIn")
 }
+
+
+
+
+
+// this truncates and mask the wallet address
+export const maskAddress = (address: string) => {
+    if (address.length <= 6) return address;
+
+    return `${address.slice(0, 7)}${"*".repeat(15)}${address.slice(-3)}`
+}
+
+
+
+
+
+// This helper functions help format the date then check if it is today, yesterday, or another day
+export const formatTransactionDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date()
+
+    const isToday = date.toDateString() === now.toDateString();
+
+    const yesterday = new Date();
+    yesterday.setDate(now.getDate() - 1)
+
+    const isYesterday = date.toDateString() === yesterday.toDateString();
+
+
+    const time = date.toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+    })
+        .toLowerCase();
+
+
+    if (isToday) {
+        return `Today, ${time.toUpperCase()}`
+    }
+
+
+    if (isYesterday) {
+        return `Yesterday, ${time.toUpperCase()}`
+    }
+
+    return `${date.toLocaleDateString([], {
+        weekday: "long"
+    })}, ${time}`;
+}
+
+
+
+
+
+
+// Date label helper
+export const getDateLabel = (dateString: string) => {
+    const date = new Date(dateString);
+    const today = new Date();
+
+    if (date.toDateString() === today.toDateString()) {
+        return "Today";
+    }
+
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    if (date.toDateString() === yesterday.toDateString()) {
+        return "Yesterday";
+    }
+
+    return date.toLocaleDateString([], {
+        weekday: "long",
+    });
+};

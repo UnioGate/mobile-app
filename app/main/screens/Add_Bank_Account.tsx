@@ -69,6 +69,8 @@ export default function AddBankAccount() {
                 bankName: formValues.bankName
             }
 
+            console.log("The payload", payload)
+
             const response = await saveBankAccount(payload);
 
             if (!response.ok) {
@@ -254,6 +256,7 @@ export default function AddBankAccount() {
                         <TextInput
                             placeholder="0123456789"
                             keyboardType="number-pad"
+                            maxLength={10}
                             style={{
                                 width: "100%",
                                 borderWidth: 0.5,

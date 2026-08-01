@@ -1,10 +1,11 @@
 import CustomInput from "@/components/ui/ReusableInput";
 import { payment_method } from "@/data/payment_methods";
+import { useSaleStore } from "@/stores/saleStore";
 import { methodKey } from "@/types/types";
 import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Delete } from "lucide-react-native";
 import { useMemo, useState } from "react";
@@ -22,10 +23,11 @@ type NavigationProp = NativeStackNavigationProp<
 
 export default function Sales() {
     const navigation = useNavigation<NavigationProp>();
-    const [selectedMethod, setSelectedMethod] = useState('')
-    const [amount, setAmount] = useState("0");
     const [addCustomer, setAddCustomer] = useState(false);
     const [showRecipientModal, setShowRecipientModal] = useState(false);
+    const { setSalesData, sale, resetSale } = useSaleStore();
+    const amount = sale.amount;
+    const selectedMethod = sale.paymentType
 
     const [recipient, setRecipient] = useState({
         customer_Name: "",
@@ -55,28 +57,43 @@ export default function Sales() {
 
 
     const handleKeyPress = (value: string | number) => {
-        setAmount(prev => {
-            // prevent multiple dots
-            if (value === "." && prev.includes(".")) return prev;
+        const currentAmount = sale.amount
+        // prevent multiple dots
+        if (value === "." && currentAmount.includes(".")) return;
 
-            // replace initial 0
-            if (prev === "0" && value !== ".") {
-                return String(value);
-            }
+        // replace initial 0
+        if (currentAmount === "0" && value !== ".") {
+            setSalesData({
+                amount: String(value)
+            });
+            return;
+        }
 
-            return prev + value;
-        });
+        setSalesData({
+            amount: currentAmount + value
+        })
     };
+
 
     const handleDelete = () => {
-        setAmount(prev => {
-            if (prev.length <= 1) return "0";
-            return prev.slice(0, -1);
+        const currentAmount = sale.amount;
+
+        if (currentAmount.length <= 1) {
+            setSalesData({
+                amount: "0",
+            });
+            return;
+        }
+
+        setSalesData({
+            amount: currentAmount.slice(0, -1),
         });
     };
 
+
+
     const handleClear = () => {
-        setAmount("0");
+        resetSale()
         showSuccessToast("Cleared", "Amount has been reset");
     };
 
@@ -91,26 +108,40 @@ export default function Sales() {
 
 
     const handleContinue = () => {
+
+        if (selectedMethod === "bank_transfer") {
+            navigation.navigate("transferStepOne")
+            return;
+        }
+
+        else if (selectedMethod === "crypto") {
+            navigation.navigate("cryptoStepOne")
+            return;
+        }
+
+        if (selectedMethod === "nfc") {
+            navigation.navigate("tap_to_pay")
+            return;
+        }
+    }
+
+
+
+    // This function handles the submission
+    const submit = async () => {
+        if (amount.length < 1) {
+            showErrorToast("Please enter an amount!")
+            return;
+        }
+
         if (!selectedMethod || selectedMethod.trim() === "") {
             showErrorToast("Select a payment method",
                 "Select a payment method from the options")
             return;
         }
 
-        if (selectedMethod === "Card/Transfer") {
-            navigation.navigate("transferStepOne")
-            return;
-        }
+        handleContinue()
 
-        else if (selectedMethod === "Crypto") {
-            navigation.navigate("cryptoStepOne")
-            return;
-        }
-
-        if (selectedMethod === "Tap to Pay") {
-            navigation.navigate("tap_to_pay")
-            return;
-        }
     }
 
 
@@ -164,6 +195,12 @@ export default function Sales() {
                         placeholder="Add description..."
                         style={styles.description_input}
                         keyboardType="default"
+                        value={sale.description}
+                        onChangeText={(value) => {
+                            setSalesData({
+                                description: value
+                            })
+                        }}
                     />
                 </View>
             </View>
@@ -183,7 +220,12 @@ export default function Sales() {
                         {
                             payment_method.map((option, i) => (
                                 <Pressable
-                                    onPress={() => setSelectedMethod(option.title)}
+                                    onPress={() => {
+                                        setSalesData({
+                                            paymentType: option.value
+                                        })
+                                        console.log(option.value)
+                                    }}
                                     key={i}
                                     style={styles.method_item} >
                                     <Image
@@ -208,7 +250,7 @@ export default function Sales() {
                                         > {option.subtitle} </Text>
                                     </View>
 
-                                    {selectedMethod === option.title && (
+                                    {selectedMethod === option.value && (
                                         <View
                                             style={styles.selected}
                                         >
@@ -291,7 +333,7 @@ export default function Sales() {
             <TouchableOpacity
                 style={styles.button}
                 activeOpacity={0.7}
-                onPress={handleContinue}
+                onPress={submit}
             >
                 <Text style={styles.buttonText} > Continue</Text>
             </TouchableOpacity>

@@ -1,9 +1,10 @@
-// walletService.ts
 import { RatesResponse, TotalBalanceResponse, Wallet } from "@/types/types";
 import axios from "axios";
 import { api } from "./axios";
 
 
+
+// this endpoint gets all the user wallets
 export const getWallets = async () => {
     try {
         const response = await api.get("/wallets");
@@ -24,7 +25,7 @@ export const getWallets = async () => {
 };
 
 
-
+// this functions fetches the wallet balance
 export const getTotalBalance = async () => {
     try {
         const response = await api.get("/wallets/total-balance");
@@ -48,6 +49,8 @@ export const getTotalBalance = async () => {
 
 
 
+
+// this function fetches the exchange rates
 export const getRates = async () => {
     try {
         const response = await api.get("/wallets/rates");

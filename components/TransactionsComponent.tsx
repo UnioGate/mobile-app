@@ -1,5 +1,4 @@
 import { MainStackParamList } from "@/app/main/type";
-import { transactions } from "@/data/mock_tx";
 import { GroupedTx, LogoKey } from "@/types/types";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
@@ -51,7 +50,10 @@ export default function TransactionsComponent() {
     const logos: Record<LogoKey, any> = {
         eth: require("../assets/logos/eth_icon.png"),
         btc: require("../assets/logos/logos_bitcoin.png"),
-        card: require("../assets/logos/card.png")
+        card: require("../assets/logos/card.png"),
+        cngn: require("../assets/logos/card.png"),
+        usdc: require("../assets/logos/card.png"),
+        usdt: require("../assets/logos/card.png")
     };
 
     return (
