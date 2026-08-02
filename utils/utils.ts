@@ -1,4 +1,7 @@
 import { logout } from "@/api/logout.api";
+import { tierData } from "@/data/tier_data";
+import { useTierStore } from "@/stores/tierStore";
+import { currentTier } from "@/types/types";
 import * as Clipboard from "expo-clipboard";
 import { router } from "expo-router";
 import React from "react";
@@ -169,3 +172,54 @@ export const getDateLabel = (dateString: string) => {
         weekday: "long",
     });
 };
+
+
+
+
+
+
+
+// this function fetches the tiers
+export const getTierDetails = (tier: currentTier) => {
+
+    const userTier = tierData.find((t) => t.title === tier)
+    useTierStore.setState({
+        tierDetails: userTier
+    });
+}
+
+
+
+
+// this function calculates the amount of sales left
+export const calcSalesLeft = (limit: number, totalSalesToday: number) => {
+
+    const result = limit - totalSalesToday
+    return result;
+}
+
+
+
+
+
+
+// This functions converts numbers into short form
+export const formatCompactNumbers = (value: number): string => {
+    const units = [
+        { value: 1_000_000_000_000, suffix: "T" },
+        { value: 1_000_000_000, suffix: "B" },
+        { value: 1_000_000, suffix: "M" },
+        { value: 1_000, suffix: "K" },
+    ];
+
+    for (const unit of units) {
+        if (value >= unit.value) {
+            return `₦${(value / unit.value)
+                .toFixed(1)
+                .replace(/\.0$/, "")
+                }${unit.suffix}`
+        }
+    }
+
+    return value.toString()
+}

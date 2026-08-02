@@ -1,8 +1,16 @@
-import { scaleFont } from "@/utils/utils";
+import { fetchMyAccounts } from "@/api/bank-accounts.api";
+import { withdrawBank } from "@/api/withdraw.api";
+import { useWalletStore } from "@/stores/WalletStore";
+import { BankWithdrawRequest, myAccount } from "@/types/types";
+import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
+import { formatBalance, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import { MainStackParamList } from "../type";
 
 type NavigationProp = NativeStackNavigationProp<
@@ -12,6 +20,87 @@ type NavigationProp = NativeStackNavigationProp<
 
 export default function Withdraw() {
     const navigation = useNavigation<NavigationProp>();
+    const { walletBalance } = useWalletStore()
+    const [withdrawalAmount, setWithdrawalAmount] = useState("")
+    const [accounts, setAccounts] = useState<myAccount[]>([])
+    const [processing, setProcessing] = useState(false)
+
+
+    // fetch bank accounts
+    useEffect(() => {
+
+        const fetchAccounts = async () => {
+            const response = await fetchMyAccounts()
+
+            if (!response.ok) {
+                showErrorToast("Failed to fetch accounts!")
+                return;
+            }
+            setAccounts(response.accounts)
+        }
+
+        fetchAccounts()
+    }, [])
+
+
+
+    // submission function
+    const submit = async () => {
+        if (!withdrawalAmount) {
+            showErrorToast("Please enter an amount");
+            return;
+        }
+
+        // if (withdrawalAmount > walletBalance) {
+        //     showErrorToast("Insufficient funds");
+        //     return;
+        // }
+
+
+
+        setProcessing(true)
+
+        try {
+
+            const payload: BankWithdrawRequest = {
+                amount: withdrawalAmount,
+                bankAccountId: "",
+                walletId: ""
+            }
+
+
+            const response = await withdrawBank(payload)
+
+            if (!response?.ok) {
+                console.error("Failed to place withdrawal", response.error);
+                showErrorToast(response.message)
+            }
+
+            console.log(response);
+            showSuccessToast(response.message)
+            useWalletStore.setState({
+                walletBalance: response.newBalance
+            })
+
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                showErrorToast(
+                    error.response?.data?.message ??
+                    error.message
+                );
+                console.log("Status:", error.response?.status);
+                console.log("Response Data:", error.response?.data);
+                console.log("Response Headers:", error.response?.headers);
+                console.log("Request Config:", error.config);
+            }
+            showErrorToast("Something went wrong");
+            console.error(error)
+        }
+
+        finally {
+            setProcessing(false)
+        }
+    }
 
 
     return (
@@ -42,7 +131,7 @@ export default function Withdraw() {
             {/* balance */}
             <View style={styles.balance_box} >
                 <Text style={styles.balance_box_heading} >Available to withdraw</Text>
-                <Text style={styles.balance} >₦ 247,850.50</Text>
+                <Text style={styles.balance} >₦ {formatBalance(Number(walletBalance))} </Text>
             </View>
 
 
@@ -74,11 +163,24 @@ export default function Withdraw() {
                                 <TextInput
                                     keyboardType="number-pad"
                                     style={styles.text_input}
+                                    value={withdrawalAmount}
+                                    onChangeText={(value) => {
+                                        setWithdrawalAmount(value)
+                                    }}
                                 />
                             </View>
 
-                            <TouchableOpacity style={styles.amount_wrapper_button} >
-                                <Text style={styles.amount_wrapper_button_text} >Withdraw</Text>
+                            <TouchableOpacity
+                                onPress={submit}
+                                disabled={processing}
+                                style={styles.amount_wrapper_button} >
+                                {processing ? (
+                                    <ActivityIndicator color="#ffffff" />
+                                ) : (
+                                    <Text style={styles.amount_wrapper_button_text} >
+                                        Withdraw
+                                    </Text>
+                                )}
                             </TouchableOpacity>
                         </View>
 
@@ -169,7 +271,7 @@ export default function Withdraw() {
                         paddingVertical: 8
                     }} >
                         <Text style={styles.amount_breakdown_row_heading} >Withdrawal Amount</Text>
-                        <Text style={styles.amount_breakdown_row_value} >₦ 0</Text>
+                        <Text style={styles.amount_breakdown_row_value} >₦ {withdrawalAmount}</Text>
                     </View>
 
 
@@ -235,10 +337,10 @@ export default function Withdraw() {
 
 
                     <TouchableOpacity
-                    onPress={() => navigation.navigate("withdraw_initiated")}
-                    style={[styles.button, {
-                        backgroundColor: "#253E86"
-                    }]} >
+                        onPress={() => navigation.navigate("withdraw_initiated")}
+                        style={[styles.button, {
+                            backgroundColor: "#253E86"
+                        }]} >
                         <Text style={[styles.button_text, {
                             color: "#ffffff"
                         }]} >Withdraw 0</Text>
@@ -246,11 +348,11 @@ export default function Withdraw() {
 
                 </View>
 
-            </ScrollView>
+            </ScrollView >
 
 
 
-        </View>
+        </View >
     )
 }
 
@@ -264,9 +366,9 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         gap: 17,
-        paddingHorizontal: 19,
-        paddingBottom: 15,
-        paddingTop: 30,
+        paddingHorizontal: scaleHorizontalPadding(15),
+        paddingBottom: scaleVerticalPadding(15),
+        paddingTop: scaleVerticalPadding(10),
     },
 
     scrollView_container: {

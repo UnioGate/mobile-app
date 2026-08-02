@@ -1,3 +1,5 @@
+import { fetchSales } from "@/api/sales.api";
+import { getTotalBalance } from "@/api/walletService.api";
 import EyeClosed from "@/components/icons/EyeClosed";
 import NFCIcon from "@/components/icons/NFCPayments";
 import SupportIcon from "@/components/icons/SupportIcon";
@@ -6,15 +8,17 @@ import TransactionCard from "@/components/TransactionCard";
 import CustomProgressBar from "@/components/ui/CustomProgressBar";
 import { useCurrentUser } from "@/stores/authStore";
 import { useSaleStore } from "@/stores/saleStore";
+import { useTierStore } from "@/stores/tierStore";
 import { useWalletStore } from "@/stores/WalletStore";
 import { SaleRecord } from "@/types/types";
-import { formatBalance, getDateLabel, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { showErrorToast } from "@/utils/toastConfig";
+import { formatBalance, formatCompactNumbers, getDateLabel, getTierDetails, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { EyeIcon } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { MainStackParamList } from "../type";
 
 type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList, "overview">;
@@ -22,6 +26,7 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList, "ove
 export default function Overview() {
     const navigation = useNavigation<OverviewNavigationProp>()
     const [showBalance, setShowBalance] = useState(true)
+    const [refreshing, setRefreshing] = useState(false)
     const user = useCurrentUser()
     const { salesHistory,
         fetchSalesHistory,
@@ -36,11 +41,12 @@ export default function Overview() {
         walletBalance,
     } = useWalletStore()
 
-
+    const { tierDetails }
+        = useTierStore()
 
     // Masking logic for balance
     const displayBalance = showBalance
-        ? `₦${formatBalance(Number(walletBalance))}`
+        ? `₦ ${formatBalance(Number(walletBalance))}`
         : `₦ ${"*".repeat(walletBalance.length)}`;
 
 
@@ -82,6 +88,53 @@ export default function Overview() {
 
 
 
+    // This handles the screen refresh function
+    const onRefresh = () => {
+
+        setRefreshing(true)
+
+        fetchBalance();
+        fetchSalesHistory();
+
+        setRefreshing(false)
+    }
+
+
+    // this polls the backend constantly for balance & history updates
+    useEffect(() => {
+        const pollData = async () => {
+            try {
+                const [balanceResponse, historyResponse] = await Promise.all([
+                    getTotalBalance(),
+                    fetchSales(),
+                ]);
+
+                if (balanceResponse.ok) {
+                    useWalletStore.setState({
+                        walletBalance: balanceResponse.totalBalanceNgn,
+                    })
+                };
+
+                if (historyResponse.ok) {
+                    useSaleStore.setState({
+                        salesHistory: historyResponse.sale
+                    });
+                };
+
+            } catch (error) {
+                console.error(error)
+            }
+        };
+
+        pollData()
+
+        getTierDetails("Tier 2")
+
+        // Poll this data every 5 seconds
+        const interval = setInterval(pollData, 5000)
+
+        return () => clearInterval(interval);
+    }, [])
 
     return (
         <View style={styles.container} >
@@ -132,6 +185,12 @@ export default function Overview() {
                 style={{ maxHeight: "100%" }}
                 contentContainerStyle={styles.scrollView}
                 showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
             >
                 {/* The banner showing the balance and call to action buttons  */}
                 <View style={styles.CTABannner} >
@@ -163,7 +222,7 @@ export default function Overview() {
                             </Pressable>
                         </View>
 
-                        <Text style={styles.tierStatus} >Tier 2: Personal verified</Text>
+                        <Text style={styles.tierStatus} >{tierDetails?.title}: Personal verified</Text>
                     </View>
 
 
@@ -200,7 +259,12 @@ export default function Overview() {
 
 
                         {/* Tap to pay  */}
-                        <Pressable style={styles.CTA_button} >
+                        <Pressable
+                            onPress={() => {
+                                showErrorToast("This feature is unavailable")
+                            }}
+
+                            style={styles.CTA_button} >
                             <View style={styles.circle} >
                                 <NFCIcon
                                     height={24}
@@ -253,7 +317,7 @@ export default function Overview() {
                 <View style={styles.tx_limit} >
                     <View style={styles.tx_limit_tracker_heading} >
                         <Text style={styles.tx_limit_tracker_head_text} >Daily Transaction Limit  </Text>
-                        <Text style={styles.tx_limit_tracker_head_text} >Tier 2</Text>
+                        <Text style={styles.tx_limit_tracker_head_text} >Tier 1</Text>
                     </View>
 
                     <View style={{
@@ -264,11 +328,11 @@ export default function Overview() {
                         gap: 5
                     }}>
                         <CustomProgressBar
-                            total={5000000}
+                            total={Number(tierDetails?.dailySalesLimit)}
                             amount={sumTodayTX}
                             textColor="#ffffff"
                         />
-                        <Text style={styles.transacted_amount} >₦3.2M / ₦5M</Text>
+                        <Text style={styles.transacted_amount} >{formatCompactNumbers(sumTodayTX)} /{formatCompactNumbers(Number(tierDetails?.dailySalesLimit))} </Text>
                     </View>
 
 
@@ -461,7 +525,7 @@ const styles = StyleSheet.create({
     CTA_buttons_wrapper: {
         display: "flex",
         alignItems: "center",
-        gap: 50,
+        gap: 40,
         justifyContent: "center",
         flexDirection: "row",
         width: "100%",

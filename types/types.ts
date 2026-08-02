@@ -369,3 +369,47 @@ export interface SaleRecord {
   businessId: string;
   initiatorId: string;
 }
+
+
+export interface Breakdown {
+  currency: string,
+  amount: string,
+  ngnEquivalent: string
+}
+
+
+export interface BankWithdrawRequest {
+  walletId: string;
+  bankAccountId: string;
+  amount: string
+}
+
+
+
+export interface BankWithdrawResponse {
+  reference: string,
+  transactionId: string;
+  amount: string;
+  status: "Success" | "Pending";
+  bankAccount: {
+    accountNumber: string,
+    accountName: string,
+    bank: string
+  }
+}
+
+
+export type currentTier = "Tier 1" | "Tier 2" | "Tier 3"
+
+export interface tierShape {
+  dailySalesLimit: number,
+  dailyWithdrawalLimit: number,
+  monthlyWithdrawalLimit: number | string,
+  resetTime: number,
+  title: currentTier
+}
+
+
+
+
+

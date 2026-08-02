@@ -1,15 +1,17 @@
+import { getTotalBalance } from "@/api/walletService.api";
 import ATM_Icon from "@/components/icons/ATM_Icon";
 import CalendarIcon from "@/components/icons/CalendarIcon";
 import EyeClosed from "@/components/icons/EyeClosed";
 import ReloadIcon from "@/components/icons/Reload";
 import TransactionChart from "@/components/TransactionChart";
 import { withdrawals } from "@/data/mock_withdrawal_tx";
-import { formatBalance, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { useWalletStore } from "@/stores/WalletStore";
+import { formatBalance, formatTransactionDate, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ChevronDown, Download, EyeIcon } from "lucide-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { MainStackParamList } from "../type";
 
@@ -18,16 +20,48 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 export default function Balance() {
     const navigation = useNavigation<OverviewNavigationProp>()
-    const balance = 24740.5;
     const [showBalance, setShowBalance] = useState(true)
     const [isBreakdownOpen, setIsBreakdownOpen] = useState(true);
-
+    const { walletBalance, breakdown } = useWalletStore()
+    const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
 
     // Masking logic for balance
     const displayBalance = showBalance
-        ? `₦${formatBalance(balance)}`
-        : "₦ *******";
+        ? `₦ ${formatBalance(Number(walletBalance))}`
+        : `₦ ${"*".repeat(walletBalance.length)}`;
+
+
+    // this polls the backend constantly for balance & history updates
+    useEffect(() => {
+        const pollData = async () => {
+            try {
+                const [balanceResponse] = await Promise.all([
+                    getTotalBalance()
+                ]);
+
+                if (balanceResponse.ok) {
+                    useWalletStore.setState({
+                        walletBalance: balanceResponse.totalBalanceNgn,
+                        breakdown: balanceResponse.breakdown
+                    });
+
+                    setLastUpdated(new Date())
+                };
+
+            } catch (error) {
+                console.error(error)
+            }
+        };
+
+        pollData()
+
+        // Poll this data every 5 seconds
+        const interval = setInterval(pollData, 5000)
+
+        return () => clearInterval(interval)
+    }, [])
+
 
 
     return (
@@ -112,7 +146,9 @@ export default function Balance() {
                                 width: 4,
                                 height: 4,
                             }]} />
-                            <Text style={styles.date_text} >Last updated: Today 2:45 PM</Text>
+                            <Text style={styles.date_text} >Last updated: {" "}
+                                {formatTransactionDate(String(lastUpdated) ?? String(new Date()))}
+                            </Text>
 
                         </View>
 
@@ -159,7 +195,7 @@ export default function Balance() {
                                             <Text style={styles.row_subtitle}>Available now</Text>
                                         </View>
                                     </View>
-                                    <Text style={styles.right_side_text}>₦247,850</Text>
+                                    <Text style={styles.right_side_text}>{"jfhfdjhfjh"} </Text>
                                 </View>
 
                                 <View style={[

@@ -1,5 +1,5 @@
-import { transactions } from "@/data/mock_tx";
-import { transaction_detail_type } from "@/types/types";
+import { useSaleStore } from "@/stores/saleStore";
+import { SaleRecord } from "@/types/types";
 import { copyItem, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
@@ -21,10 +21,11 @@ export default function TransactionDetails() {
     const route = useRoute<TransactionRouteProp>()
     const { id } = route.params
     const navigation = useNavigation<NavigationProp>();
-    const [currentTransaction, setCurrentTransaction] = useState<transaction_detail_type>()
+    const [currentTransaction, setCurrentTransaction] = useState<SaleRecord>()
+    const { salesHistory } = useSaleStore()
 
     useEffect(() => {
-        const currentTx = transactions.find((tx) => tx.id === id)
+        const currentTx = salesHistory.find((tx) => tx.id === id)
 
         setCurrentTransaction(currentTx)
     }, [id])
@@ -32,11 +33,11 @@ export default function TransactionDetails() {
 
 
     const statusColor =
-        currentTransaction?.status === "Completed"
+        currentTransaction?.status === "completed"
             ? "#009A49"
-            : currentTransaction?.status === "Pending"
+            : currentTransaction?.status === "pending"
                 ? "#F7AA1A"
-                : currentTransaction?.status === "Failed"
+                : currentTransaction?.status === "failed"
                     ? "#FF0707"
                     : "#B3B3B3";
 
@@ -77,7 +78,7 @@ export default function TransactionDetails() {
                 <View style={[styles.label, {
                     backgroundColor: statusColor
                 }]} >
-                    <Ionicons name="checkmark-circle" size={40} color={"#FFFFFF"} />
+                    <Ionicons name="checkmark-circle" size={30} color={"#FFFFFF"} />
                     <Text style={styles.label_text} > {currentTransaction?.status} </Text>
                 </View>
 
@@ -143,7 +144,14 @@ export default function TransactionDetails() {
                             alignItems: "center",
                             gap: 10
                         }}>
-                            <Text style={styles.details_value} >{currentTransaction?.method} </Text>
+                            <Text style={styles.details_value} >
+                                {currentTransaction?.currency}
+                                {" "}
+                                on
+                                {" "}
+                                {currentTransaction && currentTransaction?.network[0].toUpperCase() + currentTransaction?.network?.slice(1)}
+                                {" "}
+                                Network </Text>
                         </View>
                     </View>
 
@@ -236,7 +244,7 @@ export default function TransactionDetails() {
                                     style={{
                                         fontFamily: "Sora_600SemiBold",
                                     }}
-                                >₦ {currentTransaction?.amount && (0.2 * currentTransaction?.amount)}</Text>
+                                >₦ {currentTransaction?.amount && (0.2 * Number(currentTransaction?.amount))}</Text>
 
                                 <Text
                                     style={{
@@ -465,8 +473,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-        gap: 10,
-        paddingVertical: scaleVerticalPadding(18),
+        gap: 4,
+        paddingVertical: scaleVerticalPadding(10),
     },
 
     label_text: {

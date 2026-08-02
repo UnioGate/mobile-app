@@ -1,20 +1,25 @@
-export const tierData = [
+import { tierShape } from "@/types/types";
+
+export const tierData: tierShape[] = [
     {
-        tier: "Tier 1",
-        transaction: "₦5,000,000",
-        dailyWithdrawal: "₦100,000",
-        monthlyWithdrawal: "₦100,000,000",
+        title: "Tier 1",
+        dailySalesLimit: 5000000,
+        dailyWithdrawalLimit: 100000,
+        monthlyWithdrawalLimit: 100000000,
+        resetTime: 24
     },
     {
-        tier: "Tier 2",
-        transaction: "₦20,000,000",
-        dailyWithdrawal: "₦500,000",
-        monthlyWithdrawal: "₦400,000,000",
+        title: "Tier 2",
+        dailySalesLimit: 20000000,
+        dailyWithdrawalLimit: 500000,
+        monthlyWithdrawalLimit: 400000000,
+        resetTime: 24
     },
     {
-        tier: "Tier 3",
-        transaction: "₦100,000,000",
-        dailyWithdrawal: "₦5,000,000",
-        monthlyWithdrawal: "Unlimited",
+        title: "Tier 3",
+        dailySalesLimit: 100000000,
+        dailyWithdrawalLimit: 5000000,
+        monthlyWithdrawalLimit: "Unlimited",
+        resetTime: 30
     },
 ];

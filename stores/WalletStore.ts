@@ -1,5 +1,5 @@
 import { getRates, getTotalBalance } from "@/api/walletService.api";
-import { RatesResponse } from "@/types/types";
+import { Breakdown, RatesResponse } from "@/types/types";
 import axios from "axios";
 import { create } from "zustand";
 
@@ -9,8 +9,9 @@ import { create } from "zustand";
 interface WalletStore {
     // data
     walletBalance: string;
-    isLoadingBalance: boolean
-    rate: RatesResponse
+    isLoadingBalance: boolean;
+    rate: RatesResponse;
+    breakdown: Breakdown[]
 
 
     // actions
@@ -91,7 +92,10 @@ export const useWalletStore = create<WalletStore>((set, get) => ({
             }
             return { ok: false, error: "Something went wrong" };
         }
-    }
+    },
+
+
+    breakdown: []
 
 
 }))

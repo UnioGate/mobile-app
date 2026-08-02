@@ -1,9 +1,10 @@
 import CustomInput from "@/components/ui/ReusableInput";
 import { payment_method } from "@/data/payment_methods";
 import { useSaleStore } from "@/stores/saleStore";
+import { useTierStore } from "@/stores/tierStore";
 import { methodKey } from "@/types/types";
 import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
-import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { calcSalesLeft, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -25,9 +26,14 @@ export default function Sales() {
     const navigation = useNavigation<NavigationProp>();
     const [addCustomer, setAddCustomer] = useState(false);
     const [showRecipientModal, setShowRecipientModal] = useState(false);
-    const { setSalesData, sale, resetSale } = useSaleStore();
+    const { setSalesData, sale, resetSale, sumTodayTX } = useSaleStore();
     const amount = sale.amount;
     const selectedMethod = sale.paymentType
+
+    const { tierDetails }
+        = useTierStore()
+
+    const salesLeft = calcSalesLeft(Number(tierDetails?.dailySalesLimit), sumTodayTX)
 
     const [recipient, setRecipient] = useState({
         customer_Name: "",
@@ -129,14 +135,24 @@ export default function Sales() {
 
     // This function handles the submission
     const submit = async () => {
-        if (amount.length < 1) {
-            showErrorToast("Please enter an amount!")
+        if (Number(amount) < 100) {
+            showErrorToast("Input amount",
+                "Amount must exceed ₦ 100"
+            )
             return;
         }
 
         if (!selectedMethod || selectedMethod.trim() === "") {
-            showErrorToast("Select a payment method",
-                "Select a payment method from the options")
+            showErrorToast("Incomplete Action",
+                "Select payment method")
+            return;
+        }
+
+
+        if (Number(amount) > salesLeft) {
+            showErrorToast("Payment Failed",
+                "Amount  exceeds transaction limit"
+            )
             return;
         }
 

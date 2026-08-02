@@ -46,7 +46,7 @@ export const getSalesById = async (id: string) => {
     } catch (error) {
         return {
             ok: false as const,
-            error: "Something went wrong"
+            error: error
         }
     }
 

@@ -1,6 +1,8 @@
 import CustomProgressBar from "@/components/ui/CustomProgressBar";
 import { tierData } from "@/data/tier_data";
-import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { useSaleStore } from "@/stores/saleStore";
+import { useTierStore } from "@/stores/tierStore";
+import { formatCompactNumbers, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -12,6 +14,8 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 export default function TransactionLimitScreen() {
     const navigation = useNavigation<OverviewNavigationProp>()
+    const { currentTier, tierDetails } = useTierStore()
+    const { sumTodayTX } = useSaleStore()
 
 
     return (
@@ -84,7 +88,7 @@ export default function TransactionLimitScreen() {
                                 fontSize: scaleFont(14),
                                 fontFamily: "PlusJakartaSans_600SemiBold"
                             }} >
-                                Tier 2: Personal Verified
+                                {tierDetails?.title}: Personal Verified
                             </Text>
                         </View>
 
@@ -110,7 +114,7 @@ export default function TransactionLimitScreen() {
                                         fontSize: scaleFont(14),
                                         fontFamily: "Sora_400Regular"
                                     }}
-                                >Daily transaction limit: ₦20M   </Text>
+                                >Daily transaction limit: {formatCompactNumbers(Number(tierDetails?.dailySalesLimit))}  </Text>
                             </View>
 
                             <View style={{
@@ -129,7 +133,7 @@ export default function TransactionLimitScreen() {
                                         fontSize: scaleFont(14),
                                         fontFamily: "Sora_400Regular"
                                     }}
-                                >Daily withdrawal limit: ₦500K  </Text>
+                                >Daily withdrawal limit: {formatCompactNumbers(Number(tierDetails?.dailyWithdrawalLimit))}   </Text>
                             </View>
 
                         </View>
@@ -150,7 +154,7 @@ export default function TransactionLimitScreen() {
                             color: "#000000",
                             fontFamily: "Sora_300Light",
                             fontSize: scaleFont(12)
-                        }}>Upgrade to Tier 3 for higher limits</Text>
+                        }}>Upgrade to Tier 2 for higher limits</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -197,8 +201,8 @@ export default function TransactionLimitScreen() {
                                 }} >
 
                                     <CustomProgressBar
-                                        total={20000000}
-                                        amount={4000000}
+                                        amount={sumTodayTX}
+                                        total={Number(tierDetails?.dailySalesLimit)}
                                         textColor="#ffffff"
                                     />
 
@@ -208,8 +212,8 @@ export default function TransactionLimitScreen() {
                                         alignItems: "center",
                                         justifyContent: "space-between"
                                     }}>
-                                        <Text style={styles.p_element} > ₦3.2M </Text>
-                                        <Text style={styles.p_element}> ₦20M </Text>
+                                        <Text style={styles.p_element} >{formatCompactNumbers(sumTodayTX)} </Text>
+                                        <Text style={styles.p_element}> {formatCompactNumbers(Number(tierDetails?.dailySalesLimit))}  </Text>
                                     </View>
 
                                 </View>
@@ -253,8 +257,8 @@ export default function TransactionLimitScreen() {
                                 }} >
 
                                     <CustomProgressBar
-                                        total={20000000}
-                                        amount={4000000} />
+                                        total={Number(tierDetails?.dailyWithdrawalLimit)}
+                                        amount={Number(tierDetails?.dailyWithdrawalLimit)} />
 
                                     <View style={{
                                         width: "100%",
@@ -263,7 +267,7 @@ export default function TransactionLimitScreen() {
                                         justifyContent: "space-between"
                                     }}>
                                         <Text style={styles.p_element} > 50k </Text>
-                                        <Text style={styles.p_element}> ₦500k </Text>
+                                        <Text style={styles.p_element}> {formatCompactNumbers(Number(tierDetails?.dailyWithdrawalLimit))} </Text>
                                     </View>
 
                                 </View>
@@ -307,8 +311,8 @@ export default function TransactionLimitScreen() {
                                 }} >
 
                                     <CustomProgressBar
-                                        total={20000000}
-                                        amount={4000000} />
+                                        total={Number(tierDetails?.monthlyWithdrawalLimit)}
+                                        amount={Number(tierDetails?.monthlyWithdrawalLimit)} />
 
                                     <View style={{
                                         width: "100%",
@@ -317,7 +321,7 @@ export default function TransactionLimitScreen() {
                                         justifyContent: "space-between"
                                     }}>
                                         <Text style={styles.p_element} > ₦3.2M </Text>
-                                        <Text style={styles.p_element}>  ₦400M  </Text>
+                                        <Text style={styles.p_element}>  {formatCompactNumbers(Number(tierDetails?.monthlyWithdrawalLimit))}  </Text>
                                     </View>
 
                                 </View>
@@ -373,10 +377,10 @@ export default function TransactionLimitScreen() {
                                     fontSize: scaleFont(11),
                                     flex: 1,
                                     textAlign: "left",
-                                }]}>{item.tier}</Text>
-                                <Text style={styles.cell}>{item.transaction}</Text>
-                                <Text style={styles.cell}>{item.dailyWithdrawal}</Text>
-                                <Text style={styles.cell}>{item.monthlyWithdrawal}</Text>
+                                }]}>{item.title}</Text>
+                                <Text style={styles.cell}>{item.dailySalesLimit}</Text>
+                                <Text style={styles.cell}>{item.dailyWithdrawalLimit}</Text>
+                                <Text style={styles.cell}>{item.monthlyWithdrawalLimit}</Text>
                             </View>
                         ))}
 
