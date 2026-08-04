@@ -27,18 +27,17 @@ type NavigationProp = NativeStackNavigationProp<
 >;
 
 
-const {
-    saleResponse,
-    sale,
-    isTimeOut,
-    setIsTimeOut,
-    pollResponse,
-    resetSale } = useSaleStore()
-
-
 export default function CryptoStepTwo() {
     const navigation = useNavigation<NavigationProp>();
     const { width } = useWindowDimensions();
+
+    const {
+        saleResponse,
+        sale,
+        isTimeOut,
+        setIsTimeOut,
+        pollResponse,
+        resetSale } = useSaleStore();
 
     const selectedCoin = sale.currency;
     const { rate, fetchRates } = useWalletStore()
