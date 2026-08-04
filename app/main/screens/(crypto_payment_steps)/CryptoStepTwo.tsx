@@ -1,16 +1,20 @@
 
-import { getSalesById } from "@/api/sales.api";
+import { getSalesById, setSaleToConfirm } from "@/api/sales.api";
 import LogoReveal from "@/components/LogoReveal";
+import { useSaleCountdown } from "@/hooks/useCountdown";
 import { useSaleStore } from "@/stores/saleStore";
 import { useWalletStore } from "@/stores/WalletStore";
-import { showSuccessToast } from "@/utils/toastConfig";
+import { updateSaleStatus } from "@/types/types";
+import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { maskAddress, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import axios from "axios";
 import * as Clipboard from "expo-clipboard";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import { MainStackParamList } from "../../type";
 
 
@@ -22,30 +26,25 @@ type NavigationProp = NativeStackNavigationProp<
 >;
 
 
+const {
+    saleResponse,
+    sale,
+    isTimeOut,
+    setIsTimeOut,
+    pollResponse,
+    resetSale } = useSaleStore()
+
 
 export default function CryptoStepTwo() {
     const navigation = useNavigation<NavigationProp>();
     const { width } = useWindowDimensions();
-    const { saleResponse, sale, isTimeOut, setIsTimeOut } = useSaleStore()
+
     const selectedCoin = sale.currency;
     const { rate, fetchRates } = useWalletStore()
-
-    if (sale.currency !== "USDT" && sale.currency !== "USDC") {
-        return;
-    }
-
-    const currentRateInNGN = rate.rates[sale?.currency ?? "USDT"].NGN
-
-
-
-
-
-    // this handles the copy functionality
-    const copyAddress = async () => {
-        await Clipboard.setStringAsync(saleResponse?.walletAddress ?? "");
-        showSuccessToast("Wallet address copied!")
-    };
-
+    const [confirming, setConfirming] = useState(false)
+    const timeLeft = useSaleStore((s) => s.timeLeft);
+    const isFocused = useIsFocused()
+    useSaleCountdown()
 
     // this useEffect fetches the current exchange rate
     useEffect(() => {
@@ -68,15 +67,17 @@ export default function CryptoStepTwo() {
                 return;
             }
 
-            const updatedSale = response.sale;
+            const pollResponse = response.sale;
 
             // re-renders with the fresh data.
-            useSaleStore.getState().setSaleResponse(updatedSale);
+            useSaleStore.getState().setPollResponse(pollResponse); // update this line, instead of using the saleResponse, create another state for the poll response
+            console.log("updated sales data:", pollResponse)
 
-            if (updatedSale.status === "confirmed") {
+            if (pollResponse.status === "confirmed") {
                 clearInterval(pollInterval);
+                resetSale()
                 navigation.navigate("CryptoSuccess");
-            } else if (updatedSale.status === "expired") {
+            } else if (pollResponse.status === "expired") {
                 clearInterval(pollInterval);
                 setIsTimeOut(true);
             }
@@ -85,10 +86,84 @@ export default function CryptoStepTwo() {
         // Cleanup: stop polling if the user navigates away from this screen
         // before the sale resolves.
         return () => clearInterval(pollInterval);
-    }, [saleResponse?.id]);
+    }, [saleResponse?.id, isFocused]);
 
 
 
+    // this handles the copy functionality
+    const copyAddress = async () => {
+        await Clipboard.setStringAsync(saleResponse?.walletAddress ?? "");
+        showSuccessToast("Wallet address copied!")
+    };
+
+
+
+    // this function cancels a sale and navigates to the home screen
+    const cancelSale = () => {
+
+        resetSale()
+        navigation.navigate("overview")
+    }
+
+
+    // this function updates a transaction status to completed
+    const updateStatus = async () => {
+
+        setConfirming(true)
+
+        try {
+
+            if (!pollResponse) {
+                showErrorToast("No poll data available")
+                return;
+            }
+
+            const payload: updateSaleStatus = {
+                amountPaid: pollResponse && (Number(pollResponse?.amount) + 50).toString(),
+                txHash: pollResponse?.cryptoTxHash ?? "nohashwasavailbale"
+            }
+
+            const response = await setSaleToConfirm(pollResponse?.id, payload)
+
+            if (!response.ok || !response.sale) {
+                showErrorToast("failed to update status", response.error)
+                return
+            }
+
+            showSuccessToast("Status updated successfully!")
+            useSaleStore.getState().setPollResponse(response.sale)
+            resetSale()
+            navigation.replace("CryptoSuccess")
+
+
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                showErrorToast(
+                    error.response?.data?.message ??
+                    error.message
+                );
+                console.log("Status:", error.response?.status);
+                console.log("Response Data:", error.response?.data);
+                console.log("Response Headers:", error.response?.headers);
+                console.log("Request Config:", error.config);
+            }
+            showErrorToast("Something went wrong");
+            console.error(error)
+        }
+
+        finally {
+            setConfirming(false)
+        }
+    }
+
+
+
+
+    if (sale.currency !== "USDT" && sale.currency !== "USDC") {
+        return null;
+    }
+
+    const currentRateInNGN = rate.rates[sale?.currency ?? "USDT"].NGN
 
 
 
@@ -103,7 +178,9 @@ export default function CryptoStepTwo() {
 
                     <Pressable
                         aria-label="back-button"
-                        onPress={() => navigation.goBack()}
+                        onPress={() => {
+                            isTimeOut ? navigation.replace("sales") : navigation.goBack()
+                        }}
                     >
                         <Ionicons name="chevron-back" size={22} color="#10182A" />
                     </Pressable>
@@ -116,8 +193,9 @@ export default function CryptoStepTwo() {
 
 
                     <Text
+                        style={styles.timeLeft}
                     >
-                        10:00
+                        {timeLeft.minutes}:{timeLeft.seconds}
                     </Text>
                 </View>
 
@@ -213,7 +291,8 @@ export default function CryptoStepTwo() {
 
 
                                 {/* The network display  */}
-                                <Text style={styles.network_text} >{sale.network} </Text>
+                                <Text style={styles.network_text} >
+                                    {sale.network && sale.network[0].toUpperCase() + sale.network.slice(1)} </Text>
 
 
                                 {/* amount display  */}
@@ -223,6 +302,7 @@ export default function CryptoStepTwo() {
                                     <View style={styles.exchange_rate} >
                                         <Text style={styles.equivalent} >
                                             {(Number(sale.amount) / currentRateInNGN).toFixed(2)}
+                                            {" "}
                                             {sale.currency}</Text>
                                         <Text style={styles.rate} >1 {sale.currency} = ₦{currentRateInNGN}</Text>
                                     </View>
@@ -242,9 +322,8 @@ export default function CryptoStepTwo() {
                                         }]}
                                     />
 
-
-
-                                    <Text style={styles.qr_text} >Scan to Pay</Text>
+                                    <Text style={styles.qr_text} >Scan to Pay
+                                    </Text>
                                 </View>
 
 
@@ -272,12 +351,12 @@ export default function CryptoStepTwo() {
                                 <View style={styles.status} >
 
                                     <Ionicons
-                                        name="alert-circle"
+                                        name={pollResponse?.status === "confirmed" ? "checkmark-circle" : "alert-circle"}
                                         size={23}
-                                        color={"#253E86"}
+                                        color={pollResponse?.status === "confirmed" ? "#009A49" : pollResponse?.status === "expired" ? "#FF0707" : "#253E86"}
                                     />
 
-                                    {saleResponse?.status === "pending" ? (
+                                    {pollResponse?.status === "pending" ? (
                                         <View style={{
                                             flexDirection: "row",
                                             alignItems: "center",
@@ -286,7 +365,7 @@ export default function CryptoStepTwo() {
                                             <Text style={styles.status_text} >Waiting for payment...</Text>
                                             <LogoReveal />
                                         </View>)
-                                        : (
+                                        : pollResponse?.status === "confirmed" ? (
                                             <View style={{
                                                 flexDirection: "row",
                                                 alignItems: "center",
@@ -296,6 +375,17 @@ export default function CryptoStepTwo() {
                                                 <LogoReveal />
                                             </View>
                                         )
+                                            :
+                                            (
+                                                <View style={{
+                                                    flexDirection: "row",
+                                                    alignItems: "center",
+                                                    gap: 10
+                                                }} >
+                                                    <Text style={styles.status_text} >Payment detected, Confirming...</Text>
+                                                    <LogoReveal />
+                                                </View>
+                                            )
                                     }
                                 </View>
 
@@ -303,11 +393,27 @@ export default function CryptoStepTwo() {
                             </ScrollView>
 
                             <TouchableOpacity
-                                onPress={() => navigation.navigate("CryptoSuccess")}
+                                onPress={cancelSale}
                                 style={styles.button}
                                 activeOpacity={0.7}
                             >
                                 <Text style={styles.buttonText} > Cancel Payment</Text>
+                            </TouchableOpacity>
+
+
+                            <TouchableOpacity
+                                onPress={updateStatus}
+                                style={styles.button}
+                                activeOpacity={0.7}
+                                disabled={confirming}
+                            >
+                                {confirming ? (
+                                    <ActivityIndicator />
+                                )
+                                    : (
+                                        <Text style={styles.buttonText} > Confirm payment</Text>
+                                    )
+                                }
                             </TouchableOpacity>
                         </>
                     )
@@ -352,6 +458,12 @@ const styles = StyleSheet.create({
         color: "#10182A",
         fontFamily: "PlusJakartaSans_500Medium",
         fontSize: scaleFont(22)
+    },
+
+    timeLeft: {
+        color: isTimeOut ? "#FF0707" : "#253E86",
+        fontSize: scaleFont(14),
+        fontFamily: "PlusJakartaSans_500Medium"
     },
 
     mainContent: {
@@ -432,12 +544,12 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         backgroundColor: "#ffffff",
         alignItems: "center",
-        gap: 15
+        gap: 10
 
     },
 
     qr_box: {
-        height: 240,
+        height: 200,
         backgroundColor: "#E9ECF3",
         objectFit: "cover"
     },

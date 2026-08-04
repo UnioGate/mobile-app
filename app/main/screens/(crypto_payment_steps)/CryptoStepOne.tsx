@@ -109,7 +109,7 @@ export default function CryptoStepOne() {
             console.log("The payload", payload)
 
             const response = await createSale(payload)
-            console.log(payload)
+
 
             if (!response.ok || !response.createSalesResponse) {
                 showErrorToast(response.error)
@@ -120,7 +120,6 @@ export default function CryptoStepOne() {
             showSuccessToast(response.message);
             setSaleResponse(response.createSalesResponse)
             navigation.navigate("cryptoStepTwo")
-
 
         } catch (error) {
             if (axios.isAxiosError(error)) {

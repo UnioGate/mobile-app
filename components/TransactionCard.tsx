@@ -14,7 +14,7 @@ import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from "r
 // This function gives the status color
 const getStatusStyle = (status: string) => {
     switch (status.toLowerCase()) {
-        case "completed":
+        case "confirmed":
             return styles.successful;
         case "pending":
             return styles.pending;

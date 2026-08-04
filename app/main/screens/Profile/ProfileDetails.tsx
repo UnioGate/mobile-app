@@ -9,7 +9,9 @@ import SupportIcon from "@/components/icons/SupportIcon";
 import TeamIcon from "@/components/icons/Team";
 import WalletIcon from "@/components/icons/WalletIcon";
 import { useCurrentUser } from "@/stores/authStore";
-import { handleLogOut, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { useSaleStore } from "@/stores/saleStore";
+import { useTierStore } from "@/stores/tierStore";
+import { formatCompactNumbers, handleLogOut, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -23,6 +25,8 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 export default function ProfileDetails() {
     const navigation = useNavigation<OverviewNavigationProp>()
     const user = useCurrentUser()
+    const { currentTier, tierDetails } = useTierStore()
+    const { sumTodayTX } = useSaleStore()
 
 
     return (
@@ -159,7 +163,9 @@ export default function ProfileDetails() {
 
                             {/* Right side  */}
                             <View style={styles.right_side} >
-                                <Text style={styles.right_side_text} >Tier 2: ₦10M / ₦15M</Text>
+                                <Text style={styles.right_side_text} >
+                                    {tierDetails?.title}: {formatCompactNumbers(sumTodayTX)}
+                                    / {formatCompactNumbers(Number(tierDetails?.dailySalesLimit))}</Text>
                                 <Ionicons name="chevron-forward" size={15} color={"#4B4848"} />
                             </View>
 

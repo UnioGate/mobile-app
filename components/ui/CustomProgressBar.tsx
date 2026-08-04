@@ -12,13 +12,18 @@ interface CustomProgressBarProps {
 
 
 
-export default function CustomProgressBar({ trackColor = "#D3D8E7", thumbColor = "#253E86", total, amount, textColor }: CustomProgressBarProps) {
+export default function CustomProgressBar({
+    trackColor = "#D3D8E7",
+    thumbColor = "#253E86",
+    total,
+    amount,
+    textColor }: CustomProgressBarProps) {
 
     const calcProgress = (): DimensionValue => {
         if (total <= 0) return "0%";
 
         const percentage = Math.min(
-            Math.round((amount / total) * 100),
+            Math.round(((amount / total) * 100) * 100) / 100,
             100
         );
 

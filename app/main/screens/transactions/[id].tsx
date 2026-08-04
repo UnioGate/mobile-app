@@ -33,11 +33,11 @@ export default function TransactionDetails() {
 
 
     const statusColor =
-        currentTransaction?.status === "completed"
+        currentTransaction?.status.toLowerCase() === "confirmed"
             ? "#009A49"
-            : currentTransaction?.status === "pending"
+            : currentTransaction?.status.toLowerCase() === "pending"
                 ? "#F7AA1A"
-                : currentTransaction?.status === "failed"
+                : currentTransaction?.status.toLowerCase() === "expired"
                     ? "#FF0707"
                     : "#B3B3B3";
 
@@ -79,7 +79,10 @@ export default function TransactionDetails() {
                     backgroundColor: statusColor
                 }]} >
                     <Ionicons name="checkmark-circle" size={30} color={"#FFFFFF"} />
-                    <Text style={styles.label_text} > {currentTransaction?.status} </Text>
+                    <Text style={styles.label_text} >
+                        {currentTransaction?.status &&
+                            currentTransaction?.status[0].toUpperCase() +
+                            currentTransaction?.status.slice(1)} </Text>
                 </View>
 
 

@@ -11,7 +11,8 @@ interface WalletStore {
     walletBalance: string;
     isLoadingBalance: boolean;
     rate: RatesResponse;
-    breakdown: Breakdown[]
+    breakdown: Breakdown[];
+    lastFetched: number | null
 
 
     // actions
@@ -21,9 +22,13 @@ interface WalletStore {
 }
 
 
+const CACHE_DURATION = 25 * 60 * 1000; // 25 minutes
+
 export const useWalletStore = create<WalletStore>((set, get) => ({
     walletBalance: "",
     isLoadingBalance: false,
+    lastFetched: null,
+
     rate: {
         rates: {
             USDC: {
@@ -35,7 +40,7 @@ export const useWalletStore = create<WalletStore>((set, get) => ({
                 USD: 0
             }
         },
-        timestamp: ""
+        timestamp: 0
     },
 
     fetchBalance: async () => {
@@ -71,16 +76,29 @@ export const useWalletStore = create<WalletStore>((set, get) => ({
 
 
     fetchRates: async () => {
+        const { rate, lastFetched } = get()
+
+        // If we already have data and it's less than 25 minutes old,
+        // return it instead of hitting the API.
+
+        if (rate &&
+            lastFetched &&
+            Date.now() - lastFetched < CACHE_DURATION
+        ) {
+            return;
+        }
+
         try {
             const response = await getRates()
 
             if (!response.ok || !response.rates) {
                 console.error(response)
-                return
+                return;
             }
 
             set({
-                rate: response
+                rate: response,
+                lastFetched: response.timestamp
             })
 
         } catch (error) {

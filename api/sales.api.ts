@@ -1,4 +1,4 @@
-import { CreateSalesResponse, SaleRecord, SalesBody } from "@/types/types";
+import { CreateSalesResponse, pollResponse, SaleRecord, SalesBody, updateSaleStatus } from "@/types/types";
 import axios from "axios";
 import { api } from "./axios";
 
@@ -80,3 +80,37 @@ export const fetchSales = async () => {
         }
     }
 }
+
+
+
+
+
+// this endpoint is just an override for the confirmation state,
+// it gets called on a pending transaction to change the status to confirm
+export const setSaleToConfirm = async (id: string, data: updateSaleStatus) => {
+
+    try {
+        const response = await api.put(`/sales/${id}/confirm`, data)
+        const result = response.data;
+
+        return {
+            ok: true,
+            message: result.message,
+            sale: result.sale as pollResponse
+        }
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            return {
+                ok: false,
+                error: error.response?.data.error ?? error.message
+            }
+        }
+
+        return {
+            ok: false,
+            error: "Something went wrong"
+        }
+    }
+
+}
+

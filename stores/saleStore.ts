@@ -1,5 +1,5 @@
 import { fetchSales } from "@/api/sales.api";
-import { CreateSalesResponse, SaleRecord, SalesBody } from "@/types/types";
+import { CreateSalesResponse, pollResponse, SaleRecord, SalesBody } from "@/types/types";
 import axios from "axios";
 import { create } from "zustand";
 
@@ -14,6 +14,14 @@ interface SalesStore {
     // Response data
     saleResponse: CreateSalesResponse | null;
 
+    // poll data
+    pollResponse: pollResponse | null;
+
+
+    timeLeft: {
+        minutes: string,
+        seconds: string
+    }
 
     // sales history
     salesHistory: SaleRecord[]
@@ -25,10 +33,12 @@ interface SalesStore {
     // actions
     setSalesData: (data: Partial<SalesBody>) => void;
     setSaleResponse: (response: CreateSalesResponse) => void;
+    setPollResponse: (response: pollResponse) => void;
     resetSale: () => void;
     fetchSalesHistory: () => void;
     filterTodaySales: () => void;
     sumDailyTx: () => void;
+    setTimeLeft: (timeLeft: { minutes: string; seconds: string }) => void;
 
 
     // timer
@@ -58,6 +68,13 @@ export const useSaleStore = create<SalesStore>((set, get) => ({
 
     saleResponse: null,
 
+    pollResponse: null,
+
+    timeLeft: {
+        minutes: "00",
+        seconds: "00"
+    },
+
     setSalesData: (data) =>
         set((state) => ({
             sale: {
@@ -67,15 +84,37 @@ export const useSaleStore = create<SalesStore>((set, get) => ({
         })),
 
 
+
+    // the sales response setter function
     setSaleResponse: (response) =>
         set({
             saleResponse: response,
         }),
 
+
+
+    // the reset setter function
     resetSale: () =>
         set({
             sale: initialState,
-            saleResponse: null
+            saleResponse: null,
+            pollResponse: null,
+            timeLeft: { minutes: "00", seconds: "00" },
+            isTimeOut: false,
+        }),
+
+
+
+    // the poll response setter function
+    setPollResponse: (response) =>
+        set({
+            pollResponse: response
+        }),
+
+
+    setTimeLeft: (timeLeft) =>
+        set({
+            timeLeft
         }),
 
 
@@ -119,7 +158,11 @@ export const useSaleStore = create<SalesStore>((set, get) => ({
 
         const today = new Date();
 
-        const todaySales = salesHistory.filter((sale) => {
+        const confirmedSales = salesHistory.filter((sales) => {
+            sales.status === "completed"
+        })
+
+        const todaySales = confirmedSales.filter((sale) => {
             const saleDate = new Date(sale.createdAt);
 
             return saleDate.toDateString() === today.toDateString();

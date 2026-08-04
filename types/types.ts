@@ -286,7 +286,7 @@ export interface RatesResponse {
     USDT: { NGN: number; USD: number };
     USDC: { NGN: number; USD: number };
   };
-  timestamp: string;
+  timestamp: number;
 }
 
 
@@ -356,7 +356,7 @@ export interface SaleRecord {
   currency: "USDT" | "USDC" | "NGN";
   network: "base" | "tron" | "nomba";
 
-  status: "pending" | "completed" | "failed" | "expired";
+  status: "pending" | "completed" | "failed" | "expired" | "confirmed";
 
   description: string | null;
 
@@ -412,4 +412,25 @@ export interface tierShape {
 
 
 
+export interface pollResponse {
+  id: string;
+  amount: string;
+  amountPaid: string | null;
+  businessId: string;
+  createdAt: string;
+  cryptoTxHash: string | null;
+  currency: "USDT" | "USDC" | "NGN";
+  description: string | null;
+  expiresAt: string;
+  initiatorId: string;
+  network: "base" | "tron" | "nomba";
+  paymentType: "crypto" | "bank_transfer";
+  status: "pending" | "confirmed" | "expired"
+  walletAddress: string;
+}
 
+
+export interface updateSaleStatus {
+  txHash: string;
+  amountPaid: string;
+}

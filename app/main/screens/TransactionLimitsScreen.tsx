@@ -14,7 +14,7 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 export default function TransactionLimitScreen() {
     const navigation = useNavigation<OverviewNavigationProp>()
-    const { currentTier, tierDetails } = useTierStore()
+    const { tierDetails } = useTierStore()
     const { sumTodayTX } = useSaleStore()
 
 

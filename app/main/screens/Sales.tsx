@@ -10,7 +10,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Delete } from "lucide-react-native";
 import { useMemo, useState } from "react";
-import { Image, Modal, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { MainStackParamList } from '../type';
 
 
@@ -126,7 +126,8 @@ export default function Sales() {
         }
 
         if (selectedMethod === "nfc") {
-            navigation.navigate("tap_to_pay")
+            // navigation.navigate("tap_to_pay")
+            showErrorToast("This feature is unavailable")
             return;
         }
     }
@@ -290,7 +291,7 @@ export default function Sales() {
 
 
                 {/* Save customer info  */}
-                <View style={styles.save_customer_section} >
+                {/* <View style={styles.save_customer_section} >
                     <Text
                         style={styles.save_customer_text}
                     >
@@ -307,7 +308,7 @@ export default function Sales() {
                         thumbColor={"#ffffff"}
                         ios_backgroundColor={'#d1d5db'}
                     />
-                </View>
+                </View> */}
 
 
                 {/* keypad  */}
@@ -425,7 +426,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#E9ECF3',
         display: "flex",
         flexDirection: "column",
-        gap: 17,
+        gap: 10,
         paddingHorizontal: scaleHorizontalPadding(19),
         paddingTop: scaleVerticalPadding(10),
     },

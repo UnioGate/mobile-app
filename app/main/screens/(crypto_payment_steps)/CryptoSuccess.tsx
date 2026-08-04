@@ -13,7 +13,7 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList, "Cry
 
 export default function CryptoSuccess() {
     const navigation = useNavigation<OverviewNavigationProp>()
-    const { saleResponse, sale } = useSaleStore()
+    const { pollResponse } = useSaleStore()
 
 
     return (
@@ -28,12 +28,7 @@ export default function CryptoSuccess() {
 
                 <View style={styles.heading} >
                     <SuccessSVG width={110} height={110} />
-                    {saleResponse?.status === "expired" ? (
-                        <Text style={styles.heading_text} >Payment Successful</Text>
-                    )
-                        : (
-                            <Text style={styles.heading_text} >Payment Failed</Text>
-                        )}
+                    <Text style={styles.heading_text} >Payment Successful</Text>
                 </View>
 
 
@@ -53,13 +48,13 @@ export default function CryptoSuccess() {
                                 resizeMode="contain"
                             />
 
-                            <Text style={styles.payment_summary_top_text} >{sale.currency} {(sale.network)}</Text>
+                            <Text style={styles.payment_summary_top_text} >{pollResponse?.currency} {pollResponse?.network[0].toUpperCase()}</Text>
                         </View>
 
 
                         {/* the center  */}
                         <View style={styles.payment_summary_center}  >
-                            <Text style={styles.payment_summary_center_amount}  >₦ {saleResponse?.amount} </Text>
+                            <Text style={styles.payment_summary_center_amount}  >₦ {pollResponse?.amount} </Text>
 
                             <View
                                 style={{

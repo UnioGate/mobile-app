@@ -14,7 +14,7 @@ import { SaleRecord } from "@/types/types";
 import { showErrorToast } from "@/utils/toastConfig";
 import { formatBalance, formatCompactNumbers, getDateLabel, getTierDetails, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { EyeIcon } from "lucide-react-native";
 import { useEffect, useState } from "react";
@@ -27,6 +27,7 @@ export default function Overview() {
     const navigation = useNavigation<OverviewNavigationProp>()
     const [showBalance, setShowBalance] = useState(true)
     const [refreshing, setRefreshing] = useState(false)
+    const isFocused = useIsFocused()
     const user = useCurrentUser()
     const { salesHistory,
         fetchSalesHistory,
@@ -34,6 +35,7 @@ export default function Overview() {
         filterTodaySales,
         sumDailyTx,
         sumTodayTX,
+        resetSale
     }
         = useSaleStore()
 
@@ -102,6 +104,9 @@ export default function Overview() {
 
     // this polls the backend constantly for balance & history updates
     useEffect(() => {
+
+        if (!isFocused) return; // don't even start polling if the screen isn't focused
+
         const pollData = async () => {
             try {
                 const [balanceResponse, historyResponse] = await Promise.all([
@@ -232,7 +237,10 @@ export default function Overview() {
 
                         {/* New sale  */}
                         <Pressable
-                            onPress={() => navigation.navigate('sales')}
+                            onPress={() => {
+                                resetSale()
+                                navigation.navigate('sales')
+                            }}
                             style={styles.CTA_button} >
                             <View style={styles.circle} >
                                 <Ionicons name="add" size={25} color="#10182A" />
@@ -317,7 +325,7 @@ export default function Overview() {
                 <View style={styles.tx_limit} >
                     <View style={styles.tx_limit_tracker_heading} >
                         <Text style={styles.tx_limit_tracker_head_text} >Daily Transaction Limit  </Text>
-                        <Text style={styles.tx_limit_tracker_head_text} >Tier 1</Text>
+                        <Text style={styles.tx_limit_tracker_head_text} >{tierDetails?.title} </Text>
                     </View>
 
                     <View style={{
