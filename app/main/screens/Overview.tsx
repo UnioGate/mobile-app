@@ -136,7 +136,7 @@ export default function Overview() {
         getTierDetails("Tier 2")
 
         // Poll this data every 5 seconds
-        const interval = setInterval(pollData, 5000)
+        const interval = setInterval(pollData, 10000)
 
         return () => clearInterval(interval);
     }, [])
@@ -296,7 +296,7 @@ export default function Overview() {
 
                     <View style={styles.leftSide} >
                         <View style={styles.text_wrapper} >
-                            <Text style={styles.boldText} >{todaySales.length}</Text>
+                            <Text style={styles.boldText} >{todaySales?.length ?? "0"}</Text>
                             <Text style={styles.label} >Today&apos;s Transaction</Text>
                         </View>
                     </View>

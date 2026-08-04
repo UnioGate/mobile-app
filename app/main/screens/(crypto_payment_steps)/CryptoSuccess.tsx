@@ -28,8 +28,12 @@ export default function CryptoSuccess() {
 
                 <View style={styles.heading} >
                     <SuccessSVG width={110} height={110} />
-
-                    <Text style={styles.heading_text} >Payment Successful</Text>
+                    {saleResponse?.status === "expired" ? (
+                        <Text style={styles.heading_text} >Payment Successful</Text>
+                    )
+                        : (
+                            <Text style={styles.heading_text} >Payment Failed</Text>
+                        )}
                 </View>
 
 

@@ -119,7 +119,7 @@ export default function CryptoStepOne() {
 
             showSuccessToast(response.message);
             setSaleResponse(response.createSalesResponse)
-            navigation.navigate("cryptoStepTwo")
+            navigation.replace("cryptoStepTwo")
 
         } catch (error) {
             if (axios.isAxiosError(error)) {

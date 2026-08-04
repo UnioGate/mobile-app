@@ -19,6 +19,7 @@ import { MainStackParamList } from "../../type";
 
 
 
+
 type NavigationProp = NativeStackNavigationProp<
     MainStackParamList,
     'sales',
