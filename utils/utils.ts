@@ -157,19 +157,39 @@ export const getDateLabel = (dateString: string) => {
     const date = new Date(dateString);
     const today = new Date();
 
-    if (date.toDateString() === today.toDateString()) {
+    // Remove time portion
+    const current = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+    );
+
+    const target = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+    );
+
+    const diffInDays =
+        (current.getTime() - target.getTime()) / (1000 * 60 * 60 * 24);
+
+    if (diffInDays === 0) {
         return "Today";
     }
 
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
-
-    if (date.toDateString() === yesterday.toDateString()) {
+    if (diffInDays === 1) {
         return "Yesterday";
     }
 
-    return date.toLocaleDateString([], {
-        weekday: "long",
+    if (diffInDays < 7) {
+        return date.toLocaleDateString("en-US", {
+            weekday: "long",
+        });
+    }
+
+    return date.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
     });
 };
 
@@ -222,4 +242,14 @@ export const formatCompactNumbers = (value: number): string => {
     }
 
     return value.toString()
+}
+
+
+
+
+// this function capitalizes the a word
+export const capitalizeWord = (word: string) => {
+
+    const capitalized = word[0].toUpperCase() + word.slice(1)
+    return capitalized;
 }

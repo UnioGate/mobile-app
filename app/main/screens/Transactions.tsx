@@ -1,11 +1,14 @@
 import FilterIcon from "@/components/icons/FilterIcon";
 import TransactionsComponent from "@/components/TransactionsComponent";
+import { useSaleStore } from "@/stores/saleStore";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useState } from "react";
 import {
     Pressable,
+    RefreshControl,
     ScrollView,
     StyleSheet,
     Text,
@@ -19,7 +22,21 @@ type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 export default function Transactions() {
     const navigation = useNavigation<NavigationProp>();
+    const [refreshing, setRefreshing] = useState(false)
+    const { fetchSalesHistory } = useSaleStore()
 
+
+
+
+    // This handles the screen refresh function
+    const onRefresh = () => {
+
+        setRefreshing(true)
+
+        fetchSalesHistory();
+
+        setRefreshing(false)
+    }
 
     return (
         <View style={styles.container}>
@@ -71,12 +88,19 @@ export default function Transactions() {
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={[styles.scrollContent]}
+
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
             >
 
                 <TransactionsComponent />
 
             </ScrollView>
-        </View>
+        </View >
     );
 }
 

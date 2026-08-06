@@ -193,7 +193,9 @@ export default function CryptoStepTwo() {
 
 
                     <Text
-                        style={styles.timeLeft}
+                        style={[styles.timeLeft, {
+                            color: isTimeOut ? "#FF0707" : "#253E86",
+                        }]}
                     >
                         {timeLeft.minutes}:{timeLeft.seconds}
                     </Text>
@@ -461,7 +463,6 @@ const styles = StyleSheet.create({
     },
 
     timeLeft: {
-        color: isTimeOut ? "#FF0707" : "#253E86",
         fontSize: scaleFont(14),
         fontFamily: "PlusJakartaSans_500Medium"
     },

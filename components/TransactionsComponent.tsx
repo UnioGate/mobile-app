@@ -1,11 +1,12 @@
 import { MainStackParamList } from "@/app/main/type";
-import { GroupedTx, LogoKey } from "@/types/types";
-import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { useSaleStore } from "@/stores/saleStore";
+import { GroupedTx, SaleRecord } from "@/types/types";
+import { capitalizeWord, getDateLabel, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useMemo } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from "react-native";
 
 
 
@@ -13,48 +14,53 @@ type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 export default function TransactionsComponent() {
     const navigation = useNavigation<NavigationProp>()
+    const { salesHistory } = useSaleStore()
 
     // This groups the transaction according to the transaction date
     const groupedTransactions = useMemo(() => {
 
         const groups: Record<string, GroupedTx> = {}
 
-        transactions.forEach((tx) => {
 
-            const date = new Date(tx.tx_time)
+        // sorting the array according to the latest before grouping them
+        const sortedSales = [...(salesHistory ?? [])].sort(
+            (a, b) =>
+                new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
 
-            const formattedDate = date.toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-            })
+        sortedSales.forEach((tx) => {
 
-            if (!groups[formattedDate]) {
-                groups[formattedDate] = {
-                    date: formattedDate,
+            const date = new Date(tx.createdAt)
+
+            const label = getDateLabel(tx.createdAt);
+
+            if (!groups[label]) {
+                groups[label] = {
+                    date: label,
                     transactions: [],
                     totalAmount: 0,
-                    totalCount: 0
-                }
+                    totalCount: 0,
+                };
             }
 
-            groups[formattedDate].transactions.push(tx)
-            groups[formattedDate].totalAmount += tx.amount
-            groups[formattedDate].totalCount += 1
+            groups[label].transactions.push(tx);
+            groups[label].totalAmount += Number(tx.amount);
+            groups[label].totalCount += 1;
         })
 
-        return Object.values(groups)
+        return Object.values(groups);
 
-    }, [])
+    }, [salesHistory])
 
     // This handles the display of the different logos
-    const logos: Record<LogoKey, any> = {
-        eth: require("../assets/logos/eth_icon.png"),
-        btc: require("../assets/logos/logos_bitcoin.png"),
-        card: require("../assets/logos/card.png"),
-        cngn: require("../assets/logos/card.png"),
-        usdc: require("../assets/logos/card.png"),
-        usdt: require("../assets/logos/card.png")
+    const logos: Record<Lowercase<NonNullable<SaleRecord["currency"]>>, ImageSourcePropType> = {
+        cngn: require("../assets/logos/CNGN.png"),
+        usdc: require("../assets/logos/USDC.png"),
+        usdt: require("../assets/logos/USDT.png"),
+        ngn: require("../assets/logos/card.png"),
+        "": require("../assets/logos/card.png")
     };
+
 
     return (
         <View style={styles.container} >
@@ -98,7 +104,7 @@ export default function TransactionsComponent() {
 
                                 <View style={styles.name}>
                                     <Image
-                                        source={logos[tx.image]}
+                                        source={logos[tx.currency.toLowerCase() as keyof typeof logos]}
                                         style={{
                                             width: 23.75,
                                             height: 20,
@@ -115,18 +121,23 @@ export default function TransactionsComponent() {
                                         <Text
                                             adjustsFontSizeToFit
                                             numberOfLines={1}
-                                            style={styles.method_text}>{tx.method}</Text>
+                                            style={styles.method_text}>
+
+                                            {tx.paymentType === "crypto" ? (tx.currency.toUpperCase() + " " + `(${capitalizeWord(tx.network)})`)
+                                                : "bank details here"}
+
+                                        </Text>
 
 
                                         <Text
                                             adjustsFontSizeToFit
                                             numberOfLines={1}
-                                            style={styles.recipient}>{tx.recipient}</Text>
+                                            style={styles.recipient}>{tx.walletAddress.slice(0, 4) + "****" + tx.walletAddress.slice(-4)}</Text>
                                     </View>
                                 </View>
 
                                 <Text style={styles.the_amount}>
-                                    ₦ {tx.amount.toLocaleString()}
+                                    ₦ {Number(tx.amount).toLocaleString()}
                                 </Text>
 
                                 <Text
@@ -134,19 +145,19 @@ export default function TransactionsComponent() {
                                         styles.status,
                                         {
                                             color:
-                                                tx.status === "Completed"
+                                                tx.status.toLowerCase() === "confirmed"
                                                     ? "#009A49"
-                                                    : tx.status === "Pending"
+                                                    : tx.status.toLowerCase() === "pending"
                                                         ? "#E8A317"
                                                         : "#D92D20"
                                         }
                                     ]}
                                 >
-                                    {tx.status}
+                                    {capitalizeWord(tx.status)}
                                 </Text>
 
                                 <Text style={styles.time}>
-                                    {new Date(tx.tx_time).toLocaleTimeString([], {
+                                    {new Date(tx.createdAt).toLocaleTimeString([], {
                                         hour: "2-digit",
                                         minute: "2-digit",
                                         hour12: true,

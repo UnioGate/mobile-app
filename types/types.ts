@@ -35,7 +35,7 @@ export type transaction_detail_type = {
 
 export type GroupedTx = {
   date: string
-  transactions: transaction_detail_type[]
+  transactions: SaleRecord[]
   totalAmount: number
   totalCount: number
 }
@@ -353,7 +353,7 @@ export interface SaleRecord {
   amountPaid: string | null;
 
   paymentType: "crypto" | "bank_transfer";
-  currency: "USDT" | "USDC" | "NGN";
+  currency: "USDT" | "USDC" | "NGN" | "CNGN" | "",
   network: "base" | "tron" | "nomba";
 
   status: "pending" | "completed" | "failed" | "expired" | "confirmed";

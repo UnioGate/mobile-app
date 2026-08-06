@@ -154,24 +154,22 @@ export const useSaleStore = create<SalesStore>((set, get) => ({
 
 
     filterTodaySales: () => {
-        const { salesHistory } = get()
+        const { salesHistory } = get();
 
         const today = new Date();
 
-        const confirmedSales = salesHistory.filter((sales) => {
-            sales.status === "confirmed"
-        })
-
-        const todaySales = confirmedSales.filter((sale) => {
+        const todaySales = salesHistory.filter((sale) => {
             const saleDate = new Date(sale.createdAt);
 
-            return saleDate.toDateString() === today.toDateString();
+            return (
+                saleDate.toDateString() === today.toDateString() &&
+                sale.status === "confirmed"
+            );
         });
 
-
         set({
-            todaySales
-        })
+            todaySales,
+        });
     },
 
 
