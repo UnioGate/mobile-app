@@ -75,7 +75,6 @@ export default function CryptoStepTwo() {
 
             if (pollResponse.status === "confirmed") {
                 clearInterval(pollInterval);
-                resetSale()
                 navigation.navigate("CryptoSuccess");
             } else if (pollResponse.status === "expired") {
                 clearInterval(pollInterval);
@@ -132,7 +131,6 @@ export default function CryptoStepTwo() {
 
             showSuccessToast("Status updated successfully!")
             useSaleStore.getState().setPollResponse(response.sale)
-            resetSale()
             navigation.replace("CryptoSuccess")
 
 
@@ -232,9 +230,7 @@ export default function CryptoStepTwo() {
 
 
                     <Text
-                        style={[styles.timeLeft, {
-                            color: isTimeOut ? "#FF0707" : "#253E86",
-                        }]}
+                        style={[styles.timeLeft, { color: isTimeOut ? "#FF0707" : "#253E86" }]}
                     >
                         {timeLeft.minutes}:{timeLeft.seconds}
                     </Text>
