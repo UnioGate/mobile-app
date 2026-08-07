@@ -140,7 +140,10 @@ export default function CryptoSuccess() {
                             marginVertical: 20
                         }]}
                         activeOpacity={0.7}
-                        onPress={() => navigation.replace("sales")}
+                        onPress={() => {
+                            resetSale();
+                            navigation.replace("sales");
+                        }}
                     >
                         <Text style={[styles.buttonText, {
                             color: "#ffffff"
@@ -175,7 +178,10 @@ export default function CryptoSuccess() {
 
 
                     <TouchableOpacity
-                        onPress={() => navigation.replace("overview")}
+                        onPress={() => {
+                            resetSale();
+                            navigation.replace("overview");
+                        }}
                         style={[styles.button, {
                             marginVertical: 12
                         }]}
