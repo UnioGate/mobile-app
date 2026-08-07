@@ -1,35 +1,78 @@
-import { MainStackParamList } from "@/app/main/type";
 import { useSaleStore } from "@/stores/saleStore";
-import { GroupedTx, SaleRecord } from "@/types/types";
-import { capitalizeWord, getDateLabel, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { SaleRecord } from "@/types/types";
+import { getDateLabel, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from "react-native";
-
-
+import { MainStackParamList } from "@/app/main/type";
 
 type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
+interface GroupedSales {
+    date: string;
+    transactions: SaleRecord[];
+    totalAmount: number;
+    totalCount: number;
+}
+
+const logos: Record<string, ImageSourcePropType> = {
+    cngn: require("../assets/logos/CNGN.png"),
+    usdc: require("../assets/logos/USDC.png"),
+    usdt: require("../assets/logos/USDT.png"),
+    ngn: require("../assets/logos/card.png"),
+    card: require("../assets/logos/card.png"),
+    btc: require("../assets/logos/logos_bitcoin.png"),
+    eth: require("../assets/logos/eth_icon.png"),
+    tron: require("../assets/logos/tron.png"),
+    base: require("../assets/logos/base.png"),
+    "": require("../assets/logos/card.png")
+};
+
+const getLogoSource = (tx: SaleRecord): ImageSourcePropType => {
+    const defaultLogo = require("../assets/logos/card.png");
+    if (!tx) return defaultLogo;
+
+    const currencyKey = tx.currency ? tx.currency.toLowerCase() : "";
+    if (currencyKey && logos[currencyKey]) {
+        return logos[currencyKey];
+    }
+
+    const networkKey = tx.network ? tx.network.toLowerCase() : "";
+    if (networkKey && logos[networkKey]) {
+        return logos[networkKey];
+    }
+
+    const paymentTypeKey = tx.paymentType ? tx.paymentType.toLowerCase() : "";
+    if (paymentTypeKey && logos[paymentTypeKey]) {
+        return logos[paymentTypeKey];
+    }
+
+    return defaultLogo;
+};
+
 export default function TransactionsComponent() {
-    const navigation = useNavigation<NavigationProp>()
-    const { salesHistory } = useSaleStore()
+    const navigation = useNavigation<NavigationProp>();
+    const { salesHistory, fetchSalesHistory, isLoadingHistory } = useSaleStore();
 
-    // This groups the transaction according to the transaction date
+    useEffect(() => {
+        if (!salesHistory || salesHistory.length === 0) {
+            fetchSalesHistory();
+        }
+    }, []);
+
+    // This groups the transactions according to the transaction date
     const groupedTransactions = useMemo(() => {
+        if (!salesHistory || salesHistory.length === 0) return [];
 
-        const groups: Record<string, GroupedTx> = {}
+        const sorted = [...salesHistory].sort(
+            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
 
+        const groups: Record<string, GroupedSales> = {};
 
-        // sorting the array according to the latest before grouping them
-        const sortedSales = [...(salesHistory ?? [])].sort(
-            (a, b) =>
-                new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )
-
-        sortedSales.forEach((tx) => {
-
+        sorted.forEach((tx) => {
             const label = getDateLabel(tx.createdAt);
 
             if (!groups[label]) {
@@ -37,46 +80,43 @@ export default function TransactionsComponent() {
                     date: label,
                     transactions: [],
                     totalAmount: 0,
-                    totalCount: 0,
+                    totalCount: 0
                 };
             }
 
             groups[label].transactions.push(tx);
-            groups[label].totalAmount += Number(tx.amount);
+            groups[label].totalAmount += Number(tx.amount || 0);
             groups[label].totalCount += 1;
-        })
+        });
 
         return Object.values(groups);
+    }, [salesHistory]);
 
-    }, [salesHistory])
-
-    // This handles the display of the different logos
-    const logos: Record<Lowercase<NonNullable<SaleRecord["currency"]>>, ImageSourcePropType> = {
-        cngn: require("../assets/logos/CNGN.png"),
-        usdc: require("../assets/logos/USDC.png"),
-        usdt: require("../assets/logos/USDT.png"),
-        ngn: require("../assets/logos/card.png"),
-        "": require("../assets/logos/card.png")
-    };
-
-
-
-    if (!salesHistory || salesHistory.length < 1) {
-        return null;
+    if (isLoadingHistory && (!salesHistory || salesHistory.length === 0)) {
+        return (
+            <View style={styles.container}>
+                <Text style={{ fontSize: scaleFont(14), color: "#797676", fontFamily: "Sora_400Regular" }}>
+                    Loading transactions...
+                </Text>
+            </View>
+        );
     }
 
-
-
+    if (!salesHistory || salesHistory.length === 0) {
+        return (
+            <View style={styles.container}>
+                <Text style={{ fontSize: scaleFont(14), color: "#797676", fontFamily: "Sora_400Regular", marginTop: 20 }}>
+                    No transactions found
+                </Text>
+            </View>
+        );
+    }
 
     return (
-        <View style={styles.container} >
-
-            <View style={styles.main_content} >
-
+        <View style={styles.container}>
+            <View style={styles.main_content}>
                 {groupedTransactions.map((group) => (
-
                     <View key={group.date} style={{ width: "100%", gap: 10 }}>
-
                         {/* Header */}
                         <View style={styles.header}>
                             <Text style={styles.date_text}>{group.date}</Text>
@@ -93,102 +133,104 @@ export default function TransactionsComponent() {
                                     adjustsFontSizeToFit
                                     numberOfLines={1}
                                     style={styles.summary_text}>
-                                    Total Sales ₦ {group.totalAmount.toLocaleString()}
+                                    Total Sales ₦ {group.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </Text>
                             </View>
                         </View>
 
                         {/* Transactions */}
-                        {group.transactions.map((tx, index) => (
-                            <Pressable
-                                key={index}
-                                onPress={() => navigation.navigate("transaction_details", {
-                                    id: tx.id
-                                })}
+                        {group.transactions.map((tx) => {
+                            const methodText = tx.currency
+                                ? tx.currency.toUpperCase()
+                                : tx.paymentType
+                                    ? tx.paymentType.toUpperCase()
+                                    : "Transaction";
 
-                                style={styles.tx_row}>
+                            const statusLower = tx.status ? tx.status.toLowerCase() : "";
+                            const statusColor =
+                                statusLower === "confirmed" || statusLower === "completed" || statusLower === "successful"
+                                    ? "#009A49"
+                                    : statusLower === "pending"
+                                        ? "#E8A317"
+                                        : "#D92D20";
 
-                                <View style={styles.name}>
-                                    <Image
-                                        source={logos[tx.currency.toLowerCase() as keyof typeof logos]}
-                                        style={{
-                                            width: 23.75,
-                                            height: 20,
-                                            marginTop: 7,
-                                            alignSelf: "flex-start",
-                                            objectFit: "contain"
-                                        }}
-                                    />
+                            const statusFormatted = tx.status
+                                ? tx.status.charAt(0).toUpperCase() + tx.status.slice(1)
+                                : "Pending";
 
-                                    <View style={{
-                                        gap: 8,
-                                        alignItems: "flex-start"
-                                    }} >
-                                        <Text
-                                            adjustsFontSizeToFit
-                                            numberOfLines={1}
-                                            style={styles.method_text}>
+                            const timeFormatted = tx.createdAt
+                                ? new Date(tx.createdAt).toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hour12: true
+                                }).toUpperCase()
+                                : "";
 
-                                            {tx.paymentType === "crypto" ? (tx.currency.toUpperCase() + " " + `(${capitalizeWord(tx.network)})`)
-                                                : "bank details here"}
+                            return (
+                                <Pressable
+                                    key={tx.id}
+                                    onPress={() => navigation.navigate("transaction_details", {
+                                        id: tx.id
+                                    })}
+                                    style={styles.tx_row}>
 
-                                        </Text>
+                                    <View style={styles.name}>
+                                        <Image
+                                            source={getLogoSource(tx)}
+                                            style={{
+                                                width: 23.75,
+                                                height: 20,
+                                                marginTop: 7,
+                                                alignSelf: "flex-start",
+                                                objectFit: "contain"
+                                            }}
+                                        />
 
+                                        <View style={{
+                                            gap: 8,
+                                            alignItems: "flex-start"
+                                        }}>
+                                            <Text
+                                                adjustsFontSizeToFit
+                                                numberOfLines={1}
+                                                style={styles.method_text}>{methodText}</Text>
 
-                                        <Text
-                                            adjustsFontSizeToFit
-                                            numberOfLines={1}
-                                            style={styles.recipient}>{tx.walletAddress.slice(0, 4) + "****" + tx.walletAddress.slice(-4)}</Text>
+                                            <Text
+                                                adjustsFontSizeToFit
+                                                numberOfLines={1}
+                                                style={styles.recipient}>
+                                                {tx.network ? `${tx.network.toUpperCase()} Network` : tx.id.slice(0, 8)}
+                                            </Text>
+                                        </View>
                                     </View>
-                                </View>
 
-                                <Text style={styles.the_amount}>
-                                    ₦ {Number(tx.amount).toLocaleString()}
-                                </Text>
+                                    <Text style={styles.the_amount}>
+                                        ₦ {Number(tx.amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    </Text>
 
-                                <Text
-                                    style={[
-                                        styles.status,
-                                        {
-                                            color:
-                                                tx.status.toLowerCase() === "confirmed"
-                                                    ? "#009A49"
-                                                    : tx.status.toLowerCase() === "pending"
-                                                        ? "#E8A317"
-                                                        : "#D92D20"
-                                        }
-                                    ]}
-                                >
-                                    {capitalizeWord(tx.status)}
-                                </Text>
+                                    <Text style={[styles.status, { color: statusColor }]}>
+                                        {statusFormatted}
+                                    </Text>
 
-                                <Text style={styles.time}>
-                                    {new Date(tx.createdAt).toLocaleTimeString([], {
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                        hour12: true,
-                                    }).toUpperCase()}
-                                </Text>
+                                    <Text style={styles.time}>
+                                        {timeFormatted}
+                                    </Text>
 
-                                <Pressable style={styles.view_button}>
-                                    <Ionicons
-                                        name="chevron-forward"
-                                        size={23}
-                                        color="#10182AB2" />
+                                    <View style={styles.view_button}>
+                                        <Ionicons
+                                            name="chevron-forward"
+                                            size={23}
+                                            color="#10182AB2" />
+                                    </View>
                                 </Pressable>
-                            </Pressable>
-                        ))}
-
+                            );
+                        })}
                     </View>
                 ))}
-
-
             </View>
-
-
-
         </View>
-    )
+    );
+}  );
 }
 
 

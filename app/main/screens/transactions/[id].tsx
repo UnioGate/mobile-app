@@ -19,28 +19,38 @@ type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 export default function TransactionDetails() {
     const route = useRoute<TransactionRouteProp>()
-    const { id } = route.params
+    const id = route.params?.id
     const navigation = useNavigation<NavigationProp>();
     const [currentTransaction, setCurrentTransaction] = useState<SaleRecord>()
-    const { salesHistory } = useSaleStore()
+    const { salesHistory, fetchSalesHistory } = useSaleStore()
 
     useEffect(() => {
-        const currentTx = salesHistory.find((tx) => tx.id === id)
+        if (salesHistory.length === 0) {
+            fetchSalesHistory()
+        }
+    }, [])
 
-        setCurrentTransaction(currentTx)
-    }, [id])
+    useEffect(() => {
+        if (id && salesHistory.length > 0) {
+            const currentTx = salesHistory.find((tx) => tx.id === id)
+            setCurrentTransaction(currentTx)
+        }
+    }, [id, salesHistory])
 
-
+    const statusLower = currentTransaction?.status?.toLowerCase() || "";
 
     const statusColor =
-        currentTransaction?.status.toLowerCase() === "confirmed"
+        statusLower === "confirmed" || statusLower === "successful" || statusLower === "completed"
             ? "#009A49"
-            : currentTransaction?.status.toLowerCase() === "pending"
+            : statusLower === "pending"
                 ? "#F7AA1A"
-                : currentTransaction?.status.toLowerCase() === "expired"
+                : statusLower === "expired" || statusLower === "failed" || statusLower === "unsuccessful"
                     ? "#FF0707"
                     : "#B3B3B3";
 
+    const amountNum = Number(currentTransaction?.amount || 0);
+    const feeNum = 0.02 * amountNum;
+    const netAmountNum = amountNum - feeNum;
 
     return (
         <View style={styles.container} >
@@ -68,8 +78,6 @@ export default function TransactionDetails() {
 
             </View>
 
-
-
             <ScrollView
                 style={{ flex: 1 }}
                 contentContainerStyle={styles.main_content}
@@ -80,16 +88,14 @@ export default function TransactionDetails() {
                 }]} >
                     <Ionicons name="checkmark-circle" size={30} color={"#FFFFFF"} />
                     <Text style={styles.label_text} >
-                        {currentTransaction?.status &&
-                            currentTransaction?.status[0].toUpperCase() +
-                            currentTransaction?.status.slice(1)} </Text>
+                        {currentTransaction?.status
+                            ? currentTransaction.status.charAt(0).toUpperCase() + currentTransaction.status.slice(1)
+                            : "Pending"}
+                    </Text>
                 </View>
-
-
 
                 {/* The details  */}
                 <View style={styles.details_wrapper} >
-
 
                     {/* Transaction ID */}
                     <View style={styles.details_row} >
@@ -106,7 +112,7 @@ export default function TransactionDetails() {
                                 alignItems: "center",
                                 gap: 10
                             }}>
-                            <Text style={styles.details_value} > {currentTransaction?.id.slice(0, 10)} </Text>
+                            <Text style={styles.details_value} > {currentTransaction?.id ? `${currentTransaction.id.slice(0, 10)}...` : "N/A"} </Text>
 
                             <Text
                             >
@@ -130,10 +136,20 @@ export default function TransactionDetails() {
                             alignItems: "center",
                             gap: 10
                         }}>
-                            <Text style={styles.details_value} >March 6, 2026 at 2:45 PM</Text>
+                            <Text style={styles.details_value} >
+                                {currentTransaction?.createdAt
+                                    ? new Date(currentTransaction.createdAt).toLocaleString("en-US", {
+                                        month: "long",
+                                        day: "numeric",
+                                        year: "numeric",
+                                        hour: "numeric",
+                                        minute: "2-digit",
+                                        hour12: true
+                                    })
+                                    : "N/A"}
+                            </Text>
                         </View>
                     </View>
-
 
                     {/* payment method */}
                     <View style={styles.details_row} >
@@ -148,17 +164,13 @@ export default function TransactionDetails() {
                             gap: 10
                         }}>
                             <Text style={styles.details_value} >
-                                {currentTransaction?.currency}
-                                {" "}
-                                on
-                                {" "}
-                                {currentTransaction && currentTransaction?.network[0].toUpperCase() + currentTransaction?.network?.slice(1)}
-                                {" "}
-                                Network </Text>
+                                {currentTransaction?.currency || "NGN"}
+                                {currentTransaction?.network
+                                    ? ` on ${currentTransaction.network.charAt(0).toUpperCase() + currentTransaction.network.slice(1)} Network`
+                                    : ""}
+                            </Text>
                         </View>
                     </View>
-
-
 
                     {/* customer */}
                     <View style={[styles.details_row, {
@@ -186,8 +198,6 @@ export default function TransactionDetails() {
                         </View>
                     </View>
 
-
-
                     {/* Processed By */}
                     <View style={styles.details_row} >
 
@@ -204,7 +214,6 @@ export default function TransactionDetails() {
                         </View>
                     </View>
 
-
                     {/* Amount paid */}
                     <View style={styles.details_row} >
 
@@ -220,11 +229,9 @@ export default function TransactionDetails() {
                             <Text style={[styles.details_value, {
                                 fontFamily: "Sora_600SemiBold",
                                 fontSize: scaleFont(20)
-                            }]} >₦ {Number(currentTransaction?.amount).toLocaleString()}</Text>
+                            }]} >₦ {amountNum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
                         </View>
                     </View>
-
-
 
                     {/* Our Fee */}
                     <View style={styles.details_row} >
@@ -247,7 +254,7 @@ export default function TransactionDetails() {
                                     style={{
                                         fontFamily: "Sora_600SemiBold",
                                     }}
-                                >₦ {currentTransaction?.amount && (Number(currentTransaction?.amount))}</Text>
+                                >₦ {feeNum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
 
                                 <Text
                                     style={{
@@ -258,7 +265,6 @@ export default function TransactionDetails() {
                             </Text>
                         </View>
                     </View>
-
 
                     {/* Gas fee  */}
                     <View style={[styles.details_row, {
@@ -283,7 +289,7 @@ export default function TransactionDetails() {
                                     style={{
                                         fontFamily: "Sora_600SemiBold",
                                     }}
-                                >₦ 0</Text>
+                                >₦ 0.00</Text>
 
                                 <Text
                                     style={{
@@ -295,18 +301,14 @@ export default function TransactionDetails() {
                         </View>
                     </View>
 
-
                 </View>
-
-
 
                 {/* Net amount  */}
                 <View style={styles.net_amount_wrapper} >
                     <Text style={styles.net_amount_label} >Net Amount</Text>
 
-                    <Text style={styles.net_amount_value} >₦ 8330</Text>
+                    <Text style={styles.net_amount_value} >₦ {netAmountNum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
                 </View>
-
 
                 {/* blockchain details */}
                 <View style={styles.blockchain_wrapper} >
@@ -317,9 +319,8 @@ export default function TransactionDetails() {
                         <Text style={styles.blockchain_wrapper_label} >
                             Blockchain Network: </Text>
 
-
                         <Text style={styles.blockchain_wrapper_value} >
-                            Tron
+                            {currentTransaction?.network ? currentTransaction.network.toUpperCase() : "N/A"}
                         </Text>
 
                     </View>
@@ -330,15 +331,20 @@ export default function TransactionDetails() {
                         <Text style={styles.blockchain_wrapper_label} >
                             Transaction Hash: </Text>
 
-
                         <View style={{
                             flexDirection: "row",
                             alignItems: "center",
                             gap: 10
                         }} >
-                            <Text style={styles.blockchain_wrapper_value} > 0×1234....5678 </Text>
+                            <Text style={styles.blockchain_wrapper_value} >
+                                {currentTransaction?.cryptoTxHash
+                                    ? `${currentTransaction.cryptoTxHash.slice(0, 6)}....${currentTransaction.cryptoTxHash.slice(-4)}`
+                                    : currentTransaction?.walletAddress
+                                        ? `${currentTransaction.walletAddress.slice(0, 6)}....${currentTransaction.walletAddress.slice(-4)}`
+                                        : "N/A"}
+                            </Text>
 
-                            <Pressable>
+                            <Pressable onPress={() => copyItem(currentTransaction?.cryptoTxHash || currentTransaction?.walletAddress || "")}>
                                 <Ionicons
                                     name="copy-outline"
                                     size={14.4}
@@ -349,13 +355,11 @@ export default function TransactionDetails() {
 
                     </View>
 
-
                     {/* Confirmations */}
                     <View style={styles.blockchain_wrapper_row} >
 
                         <Text style={styles.blockchain_wrapper_label} >
                             Confirmations: </Text>
-
 
                         <Text style={styles.blockchain_wrapper_value} >
                             12 Confirmations
@@ -363,13 +367,11 @@ export default function TransactionDetails() {
 
                     </View>
 
-
                     {/*Block number   */}
                     <View style={styles.blockchain_wrapper_row} >
 
                         <Text style={styles.blockchain_wrapper_label} >
                             Block Number: </Text>
-
 
                         <Text style={styles.blockchain_wrapper_value} >
                             4567801
@@ -379,11 +381,9 @@ export default function TransactionDetails() {
 
                 </View>
 
-
-
                 {/* View on TronScan button  */}
                 <Pressable style={styles.tronscan_btn} >
-                    <Text style={styles.tronscan_text} >View on TronScan</Text>
+                    <Text style={styles.tronscan_text} >View Explorer</Text>
                 </Pressable>
 
 

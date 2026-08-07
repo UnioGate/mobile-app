@@ -12,43 +12,77 @@ import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from "r
 
 
 // This function gives the status color
-const getStatusStyle = (status: string) => {
+const getStatusStyle = (status?: string) => {
+    if (!status) return {};
     switch (status.toLowerCase()) {
         case "confirmed":
+        case "successful":
+        case "completed":
             return styles.successful;
         case "pending":
             return styles.pending;
         case "failed":
-            return styles.unsuccessful;
         case "expired":
+        case "unsuccessful":
             return styles.unsuccessful;
         default:
             return {};
     }
 };
 
-
 interface txProps {
     tx: SaleRecord
 }
 
-
 type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList, "overview">;
 
+const logos: Record<string, ImageSourcePropType> = {
+    cngn: require("../assets/logos/CNGN.png"),
+    usdc: require("../assets/logos/USDC.png"),
+    usdt: require("../assets/logos/USDT.png"),
+    ngn: require("../assets/logos/card.png"),
+    card: require("../assets/logos/card.png"),
+    btc: require("../assets/logos/logos_bitcoin.png"),
+    eth: require("../assets/logos/eth_icon.png"),
+    tron: require("../assets/logos/tron.png"),
+    base: require("../assets/logos/base.png"),
+    "": require("../assets/logos/card.png")
+};
+
+const getLogoSource = (tx?: SaleRecord): ImageSourcePropType => {
+    const defaultLogo = require("../assets/logos/card.png");
+    if (!tx) return defaultLogo;
+
+    const currencyKey = tx.currency ? tx.currency.toLowerCase() : "";
+    if (currencyKey && logos[currencyKey]) {
+        return logos[currencyKey];
+    }
+
+    const networkKey = tx.network ? tx.network.toLowerCase() : "";
+    if (networkKey && logos[networkKey]) {
+        return logos[networkKey];
+    }
+
+    const paymentTypeKey = tx.paymentType ? tx.paymentType.toLowerCase() : "";
+    if (paymentTypeKey && logos[paymentTypeKey]) {
+        return logos[paymentTypeKey];
+    }
+
+    return defaultLogo;
+};
 
 export default function TransactionCard({ tx }: txProps) {
-    const navigation = useNavigation<OverviewNavigationProp>()
+    const navigation = useNavigation<OverviewNavigationProp>();
 
+    const currencyText = tx?.currency
+        ? tx.currency.toUpperCase()
+        : tx?.paymentType
+            ? tx.paymentType.toUpperCase()
+            : "TRANSACTION";
 
-    const logos: Record<Lowercase<NonNullable<SalesBody["currency"]>>, ImageSourcePropType> = {
-        cngn: require("../assets/logos/CNGN.png"),
-        usdc: require("../assets/logos/USDC.png"),
-        usdt: require("../assets/logos/USDT.png"),
-        ngn: require("../assets/logos/card.png"),
-        "": require("../assets/logos/card.png")
-    };
-
-
+    const statusText = tx?.status
+        ? tx.status[0].toUpperCase() + tx.status.slice(1)
+        : "Pending";
 
     if (!tx) {
         return null;
@@ -57,15 +91,18 @@ export default function TransactionCard({ tx }: txProps) {
 
     return (
         <Pressable
-            onPress={() => navigation.navigate("transaction_details", {
-                id: tx.id
-            })}
-            style={styles.history_card} >
-
-            <View style={styles.history_card_left_side} >
-
+            onPress={() => {
+                if (tx?.id) {
+                    navigation.navigate("transaction_details", {
+                        id: tx.id
+                    });
+                }
+            }}
+            style={styles.history_card}
+        >
+            <View style={styles.history_card_left_side}>
                 <Image
-                    source={logos[tx.currency && tx.currency?.toLowerCase() as keyof typeof logos]}
+                    source={getLogoSource(tx)}
                     style={{ width: 30, height: 30, marginTop: 7, objectFit: "contain" }}
                 />
 
@@ -77,32 +114,33 @@ export default function TransactionCard({ tx }: txProps) {
                         justifyContent: "center"
                     }}
                 >
-                    <Text style={styles.curreny}  >{tx.currency && tx.currency.toUpperCase()} </Text>
-                    <Text style={styles.time} >
-                        {formatTransactionDate(tx.createdAt)}
+                    <Text style={styles.curreny}>{currencyText}</Text>
+                    <Text style={styles.time}>
+                        {tx?.createdAt ? formatTransactionDate(tx.createdAt) : ""}
                     </Text>
                 </View>
             </View>
 
-
-
-            <View style={styles.history_card_right_side} >
+            <View style={styles.history_card_right_side}>
                 <Text
                     adjustsFontSizeToFit
                     numberOfLines={1}
-                    style={styles.history_amount} >
-                    ₦{Number(tx.amount).toLocaleString(
+                    style={styles.history_amount}
+                >
+                    ₦{Number(tx?.amount || 0).toLocaleString(
                         undefined, {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     }
-                    )} </Text>
+                    )}
+                </Text>
 
-                <Text style={[styles.history_status, getStatusStyle(tx.status)]} >{tx.status[0].toUpperCase() + tx.status.slice(1)} </Text>
+                <Text style={[styles.history_status, getStatusStyle(tx?.status)]}>
+                    {statusText}
+                </Text>
             </View>
-
         </Pressable>
-    )
+    );
 }
 
 
