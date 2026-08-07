@@ -13,8 +13,12 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList, "Cry
 
 export default function CryptoSuccess() {
     const navigation = useNavigation<OverviewNavigationProp>()
-    const { saleResponse, sale, resetSale } = useSaleStore()
+    const { pollResponse, resetSale } = useSaleStore()
 
+
+    if (!pollResponse) {
+        return
+    }
 
     return (
         <View style={styles.container} >
@@ -28,12 +32,7 @@ export default function CryptoSuccess() {
 
                 <View style={styles.heading} >
                     <SuccessSVG width={110} height={110} />
-                    {saleResponse?.status === "expired" ? (
-                        <Text style={styles.heading_text} >Payment Successful</Text>
-                    )
-                        : (
-                            <Text style={styles.heading_text} >Payment Failed</Text>
-                        )}
+                    <Text style={styles.heading_text} >Payment Successful</Text>
                 </View>
 
 
@@ -48,35 +47,55 @@ export default function CryptoSuccess() {
                         <View style={styles.payment_summary_top} >
 
                             <Image
-                                source={require("../../../../assets/logos/USDT.png")}
+                                source={pollResponse?.paymentType === "crypto" ?
+                                    (require("../../../../assets/logos/USDT.png"))
+                                    :
+                                    require("../../../../assets/logos/CNGN.png")
+                                }
                                 style={{ width: 20, height: 20, }}
                                 resizeMode="contain"
                             />
 
-                            <Text style={styles.payment_summary_top_text} >{sale.currency} {(sale.network)}</Text>
+                            <Text style={styles.payment_summary_top_text} >
+
+                                {pollResponse && pollResponse.paymentType === "crypto" ? (
+                                    <>
+                                        {pollResponse.currency}
+                                        {(pollResponse.network)}
+                                    </>
+                                ) : (
+                                    "NGN"
+                                )}
+
+                            </Text>
                         </View>
 
 
                         {/* the center  */}
                         <View style={styles.payment_summary_center}  >
-                            <Text style={styles.payment_summary_center_amount}  >₦ {saleResponse?.amount} </Text>
+                            <Text style={styles.payment_summary_center_amount}  >₦{Number(pollResponse?.amountPaid).toLocaleString()} </Text>
 
-                            <View
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    gap: 8
-                                }}
-                            >
-                                <Ionicons name="checkmark-circle" color={"#009A49"} size={20} />
-                                <Text style={styles.payment_summary_center_subtext} >Received 5.15 USDT</Text>
-                            </View>
+                            {pollResponse.paymentType === "crypto" ? (
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        gap: 8
+                                    }}
+                                >
+                                    <Ionicons name="checkmark-circle" color={"#009A49"} size={20} />
+                                    <Text style={styles.payment_summary_center_subtext} >Received 5.15 USDT</Text>
+                                </View>
+                            ) :
+                                (
+                                    null
+                                )}
                         </View>
 
 
                         <View style={styles.payment_summary_bottom} >
-                            <Text style={styles.payment_summary_bottom_text} >Fee: ₦170 </Text>
-                            <Text style={styles.payment_summary_bottom_text}>Net: ₦8330</Text>
+                            <Text style={styles.payment_summary_bottom_text} >Fee: ₦{Number(pollResponse.amountPaid) - Number(pollResponse.amount)} </Text>
+                            <Text style={styles.payment_summary_bottom_text}>Net: ₦{Number(pollResponse.amount).toLocaleString()} </Text>
                         </View>
 
 
@@ -87,11 +106,26 @@ export default function CryptoSuccess() {
                     <View style={styles.transaction_block} >
                         <View style={styles.transaction_block_flex} >
                             <Text style={styles.transaction_details_text} >Transaction ID:</Text>
-                            <Text style={styles.transaction_details_bold} >KON-202606-1234</Text>
+                            <Text
+                                numberOfLines={1}
+                                adjustsFontSizeToFit
+                                style={styles.transaction_details_bold} >{pollResponse.initiatorId}</Text>
                         </View>
 
 
-                        <Text style={styles.transaction_details_bold} >Mar 6, 2026 at 2:45 PM</Text>
+                        <Text style={styles.transaction_details_bold} >
+                            {new Date(pollResponse.createdAt).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                            })}{" "}
+                            at{" "}
+                            {new Date(pollResponse.createdAt).toLocaleTimeString("en-US", {
+                                hour: "numeric",
+                                minute: "2-digit",
+                                hour12: true,
+                            })}
+                        </Text>
 
                         <View style={styles.transaction_block_flex}>
                             <Ionicons name="person" color={"#10182AB2"} size={16} />
@@ -113,26 +147,6 @@ export default function CryptoSuccess() {
                     </View>
 
 
-
-
-                    {/* Payment status */}
-                    <View
-                        style={styles.status} >
-
-                        <Ionicons
-                            name="time-outline"
-                            size={23}
-                            color={"#10182AB2"}
-                        />
-
-                        <View style={styles.status_text_wrapper}>
-                            <Text style={styles.status_text}>
-                                Settling to your account:
-                                <Text style={styles.status_text_bold}> Today at 5 PM</Text>
-                            </Text>
-                        </View>
-                    </View>
-
                     {/* New sale button */}
                     <TouchableOpacity
                         style={[styles.button, {
@@ -141,8 +155,8 @@ export default function CryptoSuccess() {
                         }]}
                         activeOpacity={0.7}
                         onPress={() => {
-                            resetSale();
-                            navigation.replace("sales");
+                            resetSale()
+                            navigation.replace("sales")
                         }}
                     >
                         <Text style={[styles.buttonText, {
@@ -179,8 +193,8 @@ export default function CryptoSuccess() {
 
                     <TouchableOpacity
                         onPress={() => {
-                            resetSale();
-                            navigation.replace("overview");
+                            resetSale()
+                            navigation.replace("overview")
                         }}
                         style={[styles.button, {
                             marginVertical: 12
@@ -372,35 +386,5 @@ const styles = StyleSheet.create({
         fontSize: scaleFont(14),
         fontFamily: "Sora_400Regular"
     },
-
-    status: {
-        backgroundColor: "#FFFFFF",
-        width: "100%",
-        paddingVertical: scaleVerticalPadding(16),
-        paddingHorizontal: scaleHorizontalPadding(16),
-        borderRadius: 15,
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 8,
-    },
-
-    status_text_wrapper: {
-        flex: 1,
-        flexShrink: 1,
-    },
-
-    status_text: {
-        color: "#000000",
-        fontSize: scaleFont(14),
-        fontFamily: "Sora_400Regular",
-        flexShrink: 1,
-        flexWrap: "wrap",
-    },
-    status_text_bold: {
-        color: "#000000",
-        fontFamily: "Sora_600SemiBold"
-    },
-
-
 
 })

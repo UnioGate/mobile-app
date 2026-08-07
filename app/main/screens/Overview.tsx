@@ -35,12 +35,14 @@ export default function Overview() {
         filterTodaySales,
         sumDailyTx,
         sumTodayTX,
-        resetSale
+        resetSale,
+        isLoadingHistory,
     }
         = useSaleStore()
 
     const { fetchBalance,
         walletBalance,
+        isLoadingBalance
     } = useWalletStore()
 
     const { tierDetails }
@@ -139,7 +141,7 @@ export default function Overview() {
         const interval = setInterval(pollData, 10000)
 
         return () => clearInterval(interval);
-    }, [])
+    }, [isFocused])
 
     return (
         <View style={styles.container} >
@@ -207,7 +209,9 @@ export default function Overview() {
                             <Text
                                 numberOfLines={1}
                                 adjustsFontSizeToFit
-                                style={styles.amount}
+                                style={[styles.amount, {
+                                    filter: isLoadingBalance ? "blur(10px)" : "blur(0)"
+                                }]}
                             >{displayBalance} </Text>
 
                             <Pressable
@@ -296,7 +300,9 @@ export default function Overview() {
 
                     <View style={styles.leftSide} >
                         <View style={styles.text_wrapper} >
-                            <Text style={styles.boldText} >{todaySales?.length ?? "0"}</Text>
+                            <Text style={[styles.boldText, {
+                                filter: isLoadingHistory && isLoadingBalance ? "blur(10px)" : "blur(0)"
+                            }]} >{todaySales?.length ?? "0"}</Text>
                             <Text style={styles.label} >Today&apos;s Transaction</Text>
                         </View>
                     </View>
@@ -307,7 +313,9 @@ export default function Overview() {
                             <Text
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
-                                style={styles.boldText} >₦{sumTodayTX.toLocaleString()} </Text>
+                                style={[styles.boldText, {
+                                    filter: isLoadingHistory && isLoadingBalance ? "blur(10px)" : "blur(0)"
+                                }]} >₦{sumTodayTX.toLocaleString()} </Text>
 
 
                             <Text

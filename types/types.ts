@@ -1,4 +1,3 @@
-import { MainStackParamList } from "@/app/main/type";
 import { InternalAxiosRequestConfig } from "axios";
 import { ReactNode } from "react";
 
@@ -35,7 +34,7 @@ export type transaction_detail_type = {
 
 export type GroupedTx = {
   date: string
-  transactions: transaction_detail_type[]
+  transactions: SaleRecord[]
   totalAmount: number
   totalCount: number
 }
@@ -69,7 +68,6 @@ export type networkOptionData = {
   img: networkKey;
 }
 
-type RouteName = keyof MainStackParamList & string;
 
 export type transfer_method_option_type = {
   title: string;
@@ -77,7 +75,6 @@ export type transfer_method_option_type = {
   icon: ReactNode;
   textColor: string;
   background_color: string;
-  route: RouteName
 }
 
 
@@ -353,7 +350,7 @@ export interface SaleRecord {
   amountPaid: string | null;
 
   paymentType: "crypto" | "bank_transfer";
-  currency: "USDT" | "USDC" | "NGN";
+  currency: "USDT" | "USDC" | "NGN" | "CNGN" | "",
   network: "base" | "tron" | "nomba";
 
   status: "pending" | "completed" | "failed" | "expired" | "confirmed";

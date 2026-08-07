@@ -1,4 +1,3 @@
-// useCountdown.ts
 import { useSaleStore } from "@/stores/saleStore";
 import { useEffect, useRef } from "react";
 
