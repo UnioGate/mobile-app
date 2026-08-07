@@ -1,6 +1,6 @@
 import { useSaleStore } from "@/stores/saleStore";
 import { SaleRecord } from "@/types/types";
-import { copyItem, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { capitalizeWord, copyItem, maskAddress, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -49,7 +49,7 @@ export default function TransactionDetails() {
                     : "#B3B3B3";
 
     const amountNum = Number(currentTransaction?.amount || 0);
-    const feeNum = 0.02 * amountNum;
+    const feeNum = Number(currentTransaction?.amountPaid) - amountNum;
     const netAmountNum = amountNum - feeNum;
 
     return (
@@ -112,7 +112,7 @@ export default function TransactionDetails() {
                                 alignItems: "center",
                                 gap: 10
                             }}>
-                            <Text style={styles.details_value} > {currentTransaction?.id ? `${currentTransaction.id.slice(0, 10)}...` : "N/A"} </Text>
+                            <Text style={styles.details_value} > {currentTransaction?.initiatorId ? `${currentTransaction.initiatorId.slice(0, 10)}...` : "N/A"} </Text>
 
                             <Text
                             >
@@ -164,53 +164,11 @@ export default function TransactionDetails() {
                             gap: 10
                         }}>
                             <Text style={styles.details_value} >
-                                {currentTransaction?.currency || "NGN"}
+                                {currentTransaction?.currency || ""}
                                 {currentTransaction?.network
                                     ? ` on ${currentTransaction.network.charAt(0).toUpperCase() + currentTransaction.network.slice(1)} Network`
-                                    : ""}
+                                    : "Bank Transfer"}
                             </Text>
-                        </View>
-                    </View>
-
-                    {/* customer */}
-                    <View style={[styles.details_row, {
-                        alignItems: "flex-start"
-                    }]} >
-
-                        <Text
-                            style={styles.details_heading}
-                        >Customer:</Text>
-
-                        <View style={{
-                            flexDirection: "column",
-                            alignItems: "flex-end",
-                            gap: 10
-                        }}>
-                            <Text style={styles.details_value} >John Doe </Text>
-
-                            <Text style={[styles.details_value, {
-                                fontFamily: "Sora_300Light"
-                            }]} >johndoe@gmail.com</Text>
-
-                            <Text style={[styles.details_value, {
-                                fontFamily: "Sora_300Light"
-                            }]} >0812 345 6789</Text>
-                        </View>
-                    </View>
-
-                    {/* Processed By */}
-                    <View style={styles.details_row} >
-
-                        <Text
-                            style={styles.details_heading}
-                        >Processed By:</Text>
-
-                        <View style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            gap: 10
-                        }}>
-                            <Text style={styles.details_value} >Alex Smith</Text>
                         </View>
                     </View>
 
@@ -320,7 +278,7 @@ export default function TransactionDetails() {
                             Blockchain Network: </Text>
 
                         <Text style={styles.blockchain_wrapper_value} >
-                            {currentTransaction?.network ? currentTransaction.network.toUpperCase() : "N/A"}
+                            {currentTransaction?.network ? capitalizeWord(currentTransaction.network) : "N/A"}
                         </Text>
 
                     </View>
@@ -338,13 +296,11 @@ export default function TransactionDetails() {
                         }} >
                             <Text style={styles.blockchain_wrapper_value} >
                                 {currentTransaction?.cryptoTxHash
-                                    ? `${currentTransaction.cryptoTxHash.slice(0, 6)}....${currentTransaction.cryptoTxHash.slice(-4)}`
-                                    : currentTransaction?.walletAddress
-                                        ? `${currentTransaction.walletAddress.slice(0, 6)}....${currentTransaction.walletAddress.slice(-4)}`
-                                        : "N/A"}
+                                    ? `${maskAddress(currentTransaction.cryptoTxHash)}`
+                                    : "N/A"}
                             </Text>
 
-                            <Pressable onPress={() => copyItem(currentTransaction?.cryptoTxHash || currentTransaction?.walletAddress || "")}>
+                            <Pressable onPress={() => copyItem(currentTransaction?.cryptoTxHash ?? "")}>
                                 <Ionicons
                                     name="copy-outline"
                                     size={14.4}

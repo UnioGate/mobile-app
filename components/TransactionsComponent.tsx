@@ -1,12 +1,12 @@
+import { MainStackParamList } from "@/app/main/type";
 import { useSaleStore } from "@/stores/saleStore";
 import { SaleRecord } from "@/types/types";
-import { getDateLabel, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { capitalizeWord, getDateLabel, parseBankTransferAddress, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useEffect, useMemo } from "react";
 import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from "react-native";
-import { MainStackParamList } from "@/app/main/type";
 
 type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
@@ -21,17 +21,17 @@ const logos: Record<string, ImageSourcePropType> = {
     cngn: require("../assets/logos/CNGN.png"),
     usdc: require("../assets/logos/USDC.png"),
     usdt: require("../assets/logos/USDT.png"),
-    ngn: require("../assets/logos/card.png"),
-    card: require("../assets/logos/card.png"),
+    ngn: require("../assets/logos/CNGN.png"),
+    card: require("../assets/logos/CNGN.png"),
     btc: require("../assets/logos/logos_bitcoin.png"),
     eth: require("../assets/logos/eth_icon.png"),
     tron: require("../assets/logos/tron.png"),
     base: require("../assets/logos/base.png"),
-    "": require("../assets/logos/card.png")
+    "": require("../assets/logos/CNGN.png")
 };
 
 const getLogoSource = (tx: SaleRecord): ImageSourcePropType => {
-    const defaultLogo = require("../assets/logos/card.png");
+    const defaultLogo = require("../assets/logos/CNGN.png");
     if (!tx) return defaultLogo;
 
     const currencyKey = tx.currency ? tx.currency.toLowerCase() : "";
@@ -126,25 +126,23 @@ export default function TransactionsComponent() {
                                     adjustsFontSizeToFit
                                     numberOfLines={1}
                                     style={styles.summary_text}>
-                                    Total Transactions {group.totalCount}
+                                    Transactions: {group.totalCount}
                                 </Text>
 
                                 <Text
                                     adjustsFontSizeToFit
                                     numberOfLines={1}
                                     style={styles.summary_text}>
-                                    Total Sales ₦ {group.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    Total Sales: ₦ {group.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </Text>
                             </View>
                         </View>
 
                         {/* Transactions */}
                         {group.transactions.map((tx) => {
-                            const methodText = tx.currency
+                            const methodText = tx.paymentType === "crypto"
                                 ? tx.currency.toUpperCase()
-                                : tx.paymentType
-                                    ? tx.paymentType.toUpperCase()
-                                    : "Transaction";
+                                : "Transfer";
 
                             const statusLower = tx.status ? tx.status.toLowerCase() : "";
                             const statusColor =
@@ -165,6 +163,9 @@ export default function TransactionsComponent() {
                                     hour12: true
                                 }).toUpperCase()
                                 : "";
+
+
+                            const parsed = parseBankTransferAddress(tx.walletAddress)
 
                             return (
                                 <Pressable
@@ -199,7 +200,7 @@ export default function TransactionsComponent() {
                                                 adjustsFontSizeToFit
                                                 numberOfLines={1}
                                                 style={styles.recipient}>
-                                                {tx.network ? `${tx.network.toUpperCase()} Network` : tx.id.slice(0, 8)}
+                                                {tx.paymentType === "crypto" ? `${capitalizeWord(tx.network)} Network` : (`${parsed?.accountNumber}: ${" "}  ${parsed?.bankName}`)}
                                             </Text>
                                         </View>
                                     </View>
@@ -230,7 +231,6 @@ export default function TransactionsComponent() {
             </View>
         </View>
     );
-}  );
 }
 
 

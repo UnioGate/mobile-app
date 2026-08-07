@@ -1,5 +1,5 @@
 import { MainStackParamList } from "@/app/main/type";
-import { SaleRecord, SalesBody } from "@/types/types";
+import { SaleRecord } from "@/types/types";
 import { formatTransactionDate, scaleFont, scaleVerticalPadding } from "@/utils/utils";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "expo-router";
@@ -40,17 +40,17 @@ const logos: Record<string, ImageSourcePropType> = {
     cngn: require("../assets/logos/CNGN.png"),
     usdc: require("../assets/logos/USDC.png"),
     usdt: require("../assets/logos/USDT.png"),
-    ngn: require("../assets/logos/card.png"),
-    card: require("../assets/logos/card.png"),
+    ngn: require("../assets/logos/CNGN.png"),
+    card: require("../assets/logos/CNGN.png"),
     btc: require("../assets/logos/logos_bitcoin.png"),
     eth: require("../assets/logos/eth_icon.png"),
     tron: require("../assets/logos/tron.png"),
     base: require("../assets/logos/base.png"),
-    "": require("../assets/logos/card.png")
+    "": require("../assets/logos/CNGN.png")
 };
 
 const getLogoSource = (tx?: SaleRecord): ImageSourcePropType => {
-    const defaultLogo = require("../assets/logos/card.png");
+    const defaultLogo = require("../assets/logos/CNGN.png");
     if (!tx) return defaultLogo;
 
     const currencyKey = tx.currency ? tx.currency.toLowerCase() : "";
