@@ -1,7 +1,8 @@
 
 import SuccessSVG from "@/components/ui/success";
 import { useSaleStore } from "@/stores/saleStore";
-import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { useWalletStore } from "@/stores/WalletStore";
+import { capitalizeWord, maskAddress, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -13,7 +14,23 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList, "Cry
 
 export default function CryptoSuccess() {
     const navigation = useNavigation<OverviewNavigationProp>()
-    const { pollResponse, resetSale } = useSaleStore()
+    const { pollResponse, resetSale, accountDetails } = useSaleStore()
+    const { rate } = useWalletStore()
+
+
+
+
+
+
+    const currency = pollResponse?.currency;
+
+    const currentRate =
+        currency && currency in rate.rates
+            ? rate.rates[currency as keyof typeof rate.rates].NGN
+            : null;
+
+
+
 
 
     if (!pollResponse) {
@@ -60,8 +77,8 @@ export default function CryptoSuccess() {
 
                                 {pollResponse && pollResponse.paymentType === "crypto" ? (
                                     <>
-                                        {pollResponse.currency}
-                                        {(pollResponse.network)}
+                                        {pollResponse.currency} {" "}
+                                        {capitalizeWord(pollResponse.network)}
                                     </>
                                 ) : (
                                     "NGN"
@@ -84,7 +101,7 @@ export default function CryptoSuccess() {
                                     }}
                                 >
                                     <Ionicons name="checkmark-circle" color={"#009A49"} size={20} />
-                                    <Text style={styles.payment_summary_center_subtext} >Received 5.15 USDT</Text>
+                                    <Text style={styles.payment_summary_center_subtext} >Received {(currentRate && Number(pollResponse.amountPaid) / currentRate)?.toFixed(2)} {currency}</Text>
                                 </View>
                             ) :
                                 (
@@ -109,7 +126,9 @@ export default function CryptoSuccess() {
                             <Text
                                 numberOfLines={1}
                                 adjustsFontSizeToFit
-                                style={styles.transaction_details_bold} >{pollResponse.initiatorId}</Text>
+                                style={[styles.transaction_details_bold, {
+                                    fontSize: scaleFont(10)
+                                }]} >{pollResponse.initiatorId}</Text>
                         </View>
 
 
@@ -127,22 +146,34 @@ export default function CryptoSuccess() {
                             })}
                         </Text>
 
-                        <View style={styles.transaction_block_flex}>
-                            <Ionicons name="person" color={"#10182AB2"} size={16} />
-                            <Text style={styles.transaction_details_text}>John Doe </Text>
+                        {pollResponse.paymentType === "bank_transfer" ? (
+                            <View style={[styles.transaction_block_flex, {
+                                alignItems: "flex-start",
+                                flexDirection: "column",
+                            }]}>
 
-                            {/* The dot  */}
-                            <View
-                                style={{
-                                    width: 3,
-                                    height: 3,
-                                    borderRadius: 3,
-                                    backgroundColor: '#1E1E1E',
-                                }}
-                            />
+                                <Text style={styles.transaction_details_text}> {accountDetails?.bank} :</Text>
 
-                            <Text style={styles.transaction_details_phoneNumber} >0812 345 6789</Text>
-                        </View>
+
+
+
+                                <View style={{
+                                    width: "auto",
+                                    display: "flex",
+                                    alignItems: "flex-start",
+                                    flexDirection: "column",
+                                    gap: 10
+                                }} >
+                                    <Text style={styles.transaction_details_text}> {accountDetails?.accountName} </Text>
+
+                                    <Text style={styles.transaction_details_phoneNumber} > {accountDetails?.accountNumber} </Text>
+                                </View>
+                            </View>
+                        ) :
+                            (
+                                <Text style={styles.transaction_details_text}> {maskAddress(pollResponse.walletAddress)} </Text>
+
+                            )}
 
                     </View>
 
@@ -316,7 +347,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         alignItems: "flex-start",
         paddingVertical: scaleVerticalPadding(18),
-        paddingHorizontal: scaleHorizontalPadding(25),
+        paddingHorizontal: scaleHorizontalPadding(15),
         gap: 13,
     },
 

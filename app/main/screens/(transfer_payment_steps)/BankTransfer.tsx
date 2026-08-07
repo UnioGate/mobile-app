@@ -18,7 +18,7 @@ import Timer from "@/components/icons/Timer";
 import LogoReveal from "@/components/LogoReveal";
 import { useSaleCountdown } from "@/hooks/useCountdown";
 import { useSaleStore } from "@/stores/saleStore";
-import { bankAccountResolveBody, myAccount, updateSaleStatus } from "@/types/types";
+import { bankAccountResolveBody, updateSaleStatus } from "@/types/types";
 import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -31,8 +31,17 @@ export default function BankTransfer() {
     const navigation = useNavigation<NavigationProp>();
     const bankTimeLeft = useSaleStore((s) => s.timeLeft);
     useSaleCountdown()
-    const [accountDetails, setAccountDetails] = useState<myAccount | null>(null)
-    const { saleResponse, resetSale, pollResponse, setIsTimeOut, bankFee } = useSaleStore();
+
+    const {
+        saleResponse,
+        resetSale,
+        pollResponse,
+        setIsTimeOut,
+        bankFee,
+        accountDetails,
+        setAccountDetail }
+        = useSaleStore();
+
     const [loading, setLoading] = useState(false);
     const [confirming, setConfirming] = useState(false);
     const isFocused = useIsFocused()
@@ -69,7 +78,7 @@ export default function BankTransfer() {
                     return;
                 }
 
-                setAccountDetails({
+                useSaleStore.getState().setAccountDetail({
                     accountName: response.accountName,
                     accountNumber: response.accountNumber,
                     bank: parsed.bankName,

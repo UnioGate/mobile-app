@@ -1,5 +1,5 @@
 import { fetchSales } from "@/api/sales.api";
-import { CreateSalesResponse, pollResponse, SaleRecord, SalesBody } from "@/types/types";
+import { CreateSalesResponse, myAccount, pollResponse, SaleRecord, SalesBody } from "@/types/types";
 import axios from "axios";
 import { create } from "zustand";
 
@@ -19,6 +19,10 @@ interface SalesStore {
 
     // bank fee
     bankFee: number
+
+
+    // account detail for transfer
+    accountDetails: myAccount | null
 
 
     timeLeft: {
@@ -42,6 +46,7 @@ interface SalesStore {
     filterTodaySales: () => void;
     sumDailyTx: () => void;
     setTimeLeft: (timeLeft: { minutes: string; seconds: string }) => void;
+    setAccountDetail: (data: myAccount | null) => void;
 
 
     // timer
@@ -72,6 +77,8 @@ export const useSaleStore = create<SalesStore>((set, get) => ({
     saleResponse: null,
 
     pollResponse: null,
+
+    accountDetails: null,
 
     timeLeft: {
         minutes: "00",
@@ -189,5 +196,12 @@ export const useSaleStore = create<SalesStore>((set, get) => ({
             sumTodayTX: sum
         })
     },
+
+
+    setAccountDetail: (data) => {
+        set({
+            accountDetails: data
+        })
+    }
 
 }))

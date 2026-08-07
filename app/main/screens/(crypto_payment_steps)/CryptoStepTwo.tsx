@@ -119,7 +119,7 @@ export default function CryptoStepTwo() {
 
             const payload: updateSaleStatus = {
                 amountPaid: pollResponse && (Number(pollResponse?.amount) + 50).toString(),
-                txHash: pollResponse?.cryptoTxHash ?? "nohashwasavailbale"
+                txHash: pollResponse?.cryptoTxHash ?? ""
             }
 
             const response = await setSaleToConfirm(pollResponse?.id, payload)
@@ -338,7 +338,7 @@ export default function CryptoStepTwo() {
 
                                     <View style={styles.exchange_rate} >
                                         <Text style={styles.equivalent} >
-                                            {(Number(sale.amount) / currentRateInNGN).toFixed(2)}
+                                            {rate ? (Number(sale.amount) / currentRateInNGN).toFixed(2) : "0.0"}
                                             {" "}
                                             {sale.currency}</Text>
                                         <Text style={styles.rate} >1 {sale.currency} = ₦{currentRateInNGN}</Text>
