@@ -13,7 +13,7 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList, "Cry
 
 export default function CryptoSuccess() {
     const navigation = useNavigation<OverviewNavigationProp>()
-    const { saleResponse, sale } = useSaleStore()
+    const { saleResponse, sale, resetSale } = useSaleStore()
 
 
     return (
