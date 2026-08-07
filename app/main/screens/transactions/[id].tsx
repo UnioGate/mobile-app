@@ -220,7 +220,7 @@ export default function TransactionDetails() {
                             <Text style={[styles.details_value, {
                                 fontFamily: "Sora_600SemiBold",
                                 fontSize: scaleFont(20)
-                            }]} >₦ {currentTransaction?.amount}</Text>
+                            }]} >₦ {Number(currentTransaction?.amount).toLocaleString()}</Text>
                         </View>
                     </View>
 
@@ -247,7 +247,7 @@ export default function TransactionDetails() {
                                     style={{
                                         fontFamily: "Sora_600SemiBold",
                                     }}
-                                >₦ {currentTransaction?.amount && (0.2 * Number(currentTransaction?.amount))}</Text>
+                                >₦ {currentTransaction?.amount && (Number(currentTransaction?.amount))}</Text>
 
                                 <Text
                                     style={{

@@ -17,6 +17,9 @@ interface SalesStore {
     // poll data
     pollResponse: pollResponse | null;
 
+    // bank fee
+    bankFee: number
+
 
     timeLeft: {
         minutes: string,
@@ -74,6 +77,10 @@ export const useSaleStore = create<SalesStore>((set, get) => ({
         minutes: "00",
         seconds: "00"
     },
+
+
+    bankFee: 50,
+
 
     setSalesData: (data) =>
         set((state) => ({

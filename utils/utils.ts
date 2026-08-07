@@ -91,7 +91,7 @@ export const updateFormField = <T extends object, K extends keyof T>(
 
 
 
-// This function handles log out all round the app
+// This function handles log out on the app
 export const handleLogOut = async () => {
     await logout()
     router.replace("/auth/screens/SignIn")
@@ -252,4 +252,19 @@ export const capitalizeWord = (word: string) => {
 
     const capitalized = word[0].toUpperCase() + word.slice(1)
     return capitalized;
+}
+
+
+
+
+// This function parses the wallet address string returned from the bank transfer payment type
+export const parseBankTransferAddress = (walletAddress: string) => {
+
+    const match = walletAddress.match(/^(\d+)\s*-\s*(\d+)\s*\(([^)]+)\)$/);
+
+
+    if (!match) return null;
+
+    const [, bankCode, accountNumber, bankName] = match;
+    return { bankCode, accountNumber, bankName };
 }

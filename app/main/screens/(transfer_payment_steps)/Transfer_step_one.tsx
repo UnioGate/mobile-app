@@ -1,10 +1,16 @@
+import { createSale } from "@/api/sales.api";
 import { transfer_payment_method } from "@/data/transfer_payment_methods";
+import { useSaleStore } from "@/stores/saleStore";
+import { SalesBody } from "@/types/types";
+import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import { MainStackParamList } from "../../type";
 
 
@@ -16,6 +22,78 @@ type NavigationProp = NativeStackNavigationProp<
 
 export default function TransferStepOne() {
     const navigation = useNavigation<NavigationProp>();
+    const [loading, setLoading] = useState(false)
+    const { sale, setSaleResponse } = useSaleStore()
+
+
+
+    const handleSubmit = async () => {
+
+        setLoading(true)
+
+
+        try {
+            const payload: SalesBody = {
+                amount: sale.amount,
+                description: sale.description,
+                paymentType: sale.paymentType,
+            }
+
+            console.log("The payload", payload)
+
+            const response = await createSale(payload)
+
+
+            if (!response.ok || !response.createSalesResponse) {
+                showErrorToast(response.error)
+                console.error(response.error)
+                return;
+            }
+
+            showSuccessToast(response.message);
+            setSaleResponse(response.createSalesResponse)
+            console.log("The transfer response:", response.createSalesResponse)
+            navigation.replace("bank_transfer")
+
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                showErrorToast(
+                    error.response?.data?.message ??
+                    error.message
+                );
+                console.log("Status:", error.response?.status);
+                console.log("Response Data:", error.response?.data);
+                console.log("Response Headers:", error.response?.headers);
+                console.log("Request Config:", error.config);
+            }
+            showErrorToast("Something went wrong");
+            console.error(error)
+        }
+
+        finally {
+            setLoading(false)
+        }
+
+    }
+
+
+
+    // This function routes to the next step based on the current option
+    const nextStep = (option: string) => {
+        if (option === "Pay with Card") {
+            showErrorToast("The 'Pay with Card' feature is not available!")
+        }
+
+        else if (option === "Direct transfer") {
+            handleSubmit()
+        }
+        else if (option === "USSD") {
+            showErrorToast("The 'USSD' feature is not available!")
+        }
+
+    }
+
+
 
 
 
@@ -54,7 +132,7 @@ export default function TransferStepOne() {
                     <Pressable
                         key={i}
                         style={styles.option_wrapper}
-                        onPress={() => navigation.navigate(option.route)}
+                        onPress={() => nextStep(option.title)}
                     >
                         {/* left side  */}
                         <View style={styles.leftside_wrapper} >
@@ -94,9 +172,12 @@ export default function TransferStepOne() {
             <TouchableOpacity
                 style={styles.button}
                 activeOpacity={0.7}
+                disabled={loading}
                 onPress={() => navigation.navigate("sales")}
             >
-                <Text style={styles.buttonText} >Back to Sale</Text>
+                {loading ? (<ActivityIndicator color="#253E86" />)
+                    : <Text style={styles.buttonText} >Back to Sale</Text>
+                }
             </TouchableOpacity>
 
         </View>

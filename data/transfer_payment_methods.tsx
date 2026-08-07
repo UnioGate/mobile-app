@@ -11,7 +11,6 @@ export const transfer_payment_method: transfer_method_option_type[] = [
         icon: <CardIcon />,
         background_color: "#FF070733",
         textColor: "#FF0707",
-        route: "pay_with_card"
     },
 
     {
@@ -20,7 +19,6 @@ export const transfer_payment_method: transfer_method_option_type[] = [
         icon: <BankIcon2 />,
         background_color: "#14AE5C33",
         textColor: "#14AE5C",
-        route: "bank_transfer"
     },
 
 
@@ -30,7 +28,6 @@ export const transfer_payment_method: transfer_method_option_type[] = [
         icon: <UssdPhone />,
         background_color: "#253E861A",
         textColor: "#253E86",
-        route: "ussd_payments"
     },
 
 ]

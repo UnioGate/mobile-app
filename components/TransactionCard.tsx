@@ -50,6 +50,11 @@ export default function TransactionCard({ tx }: txProps) {
 
 
 
+    if (!tx) {
+        return null;
+    }
+
+
     return (
         <Pressable
             onPress={() => navigation.navigate("transaction_details", {
@@ -60,7 +65,7 @@ export default function TransactionCard({ tx }: txProps) {
             <View style={styles.history_card_left_side} >
 
                 <Image
-                    source={logos[tx.currency.toLowerCase() as keyof typeof logos]}
+                    source={logos[tx.currency && tx.currency?.toLowerCase() as keyof typeof logos]}
                     style={{ width: 30, height: 30, marginTop: 7, objectFit: "contain" }}
                 />
 
@@ -72,7 +77,7 @@ export default function TransactionCard({ tx }: txProps) {
                         justifyContent: "center"
                     }}
                 >
-                    <Text style={styles.curreny}  >{tx.currency.toUpperCase()} </Text>
+                    <Text style={styles.curreny}  >{tx.currency && tx.currency.toUpperCase()} </Text>
                     <Text style={styles.time} >
                         {formatTransactionDate(tx.createdAt)}
                     </Text>

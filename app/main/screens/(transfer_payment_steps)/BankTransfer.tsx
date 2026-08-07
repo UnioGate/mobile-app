@@ -1,6 +1,6 @@
-import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { parseBankTransferAddress, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
     Image,
@@ -12,14 +12,202 @@ import {
     View
 } from "react-native";
 
+import { resolveBankAcct } from "@/api/bank-accounts.api";
+import { getSalesById, setSaleToConfirm } from "@/api/sales.api";
 import Timer from "@/components/icons/Timer";
 import LogoReveal from "@/components/LogoReveal";
+import { useSaleCountdown } from "@/hooks/useCountdown";
+import { useSaleStore } from "@/stores/saleStore";
+import { bankAccountResolveBody, myAccount, updateSaleStatus } from "@/types/types";
+import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { ActivityIndicator } from "react-native-paper";
 import { MainStackParamList } from "../../type";
 
 type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 export default function BankTransfer() {
     const navigation = useNavigation<NavigationProp>();
+    const bankTimeLeft = useSaleStore((s) => s.timeLeft);
+    useSaleCountdown()
+    const [accountDetails, setAccountDetails] = useState<myAccount | null>(null)
+    const { saleResponse, resetSale, pollResponse, setIsTimeOut, bankFee } = useSaleStore();
+    const [loading, setLoading] = useState(false);
+    const [confirming, setConfirming] = useState(false);
+    const isFocused = useIsFocused()
+
+
+    const fee = bankFee;
+    const total = (fee && fee + Number(saleResponse?.amount))
+
+
+    // Filter the parsed bank details from the response
+    const parsed = parseBankTransferAddress(saleResponse?.walletAddress ?? "");
+
+
+
+    // with the parsed details available, we can then resolve to get the account name and bank name
+    useEffect(() => {
+
+        const getBankDetails = async () => {
+            if (!parsed) return;
+
+            setLoading(true)
+
+            try {
+
+                const payload: bankAccountResolveBody = {
+                    accountNumber: "0000000000", // parsed.accountNumber,
+                    bankCode: "001" // parsed.bankCode
+                }
+
+                const response = await resolveBankAcct(payload);
+
+                if (!response.ok) {
+                    console.error("Failed to fetch bank account details:")
+                    return;
+                }
+
+                setAccountDetails({
+                    accountName: response.accountName,
+                    accountNumber: response.accountNumber,
+                    bank: parsed.bankName,
+                    id: response.accountNumber
+                })
+
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    showErrorToast(
+                        error.response?.data?.message ??
+                        error.message
+                    );
+                    console.log("Status:", error.response?.status);
+                    console.log("Response Data:", error.response?.data);
+                    console.log("Response Headers:", error.response?.headers);
+                    console.log("Request Config:", error.config);
+                }
+                showErrorToast("Something went wrong");
+                console.error(error)
+            }
+
+            finally {
+                setLoading(false)
+            }
+        }
+
+        getBankDetails()
+
+    }, [parsed?.bankCode])
+
+
+
+
+    // this function cancels a sale and navigates to the home screen
+    const cancelSale = () => {
+
+        resetSale()
+        navigation.navigate("overview")
+    }
+
+
+
+    // this handles the polling functionality on the frontend
+    useEffect(() => {
+        const saleId = saleResponse?.id;
+        if (!saleId) return;
+
+        const pollInterval = setInterval(async () => {
+            const response = await getSalesById(saleId);
+
+            if (!response.ok) {
+                // Don't stop polling on a transient network error - just skip this tick.
+                console.error(response.error);
+                return;
+            }
+
+            const pollResponse = response.sale;
+
+            // re-renders with the fresh data.
+            useSaleStore.getState().setPollResponse(pollResponse);
+            console.log("updated sales data:", pollResponse)
+
+            if (pollResponse.status === "confirmed") {
+                clearInterval(pollInterval);
+                resetSale()
+                navigation.navigate("CryptoSuccess");
+            } else if (pollResponse.status === "expired") {
+                clearInterval(pollInterval);
+                setIsTimeOut(true);
+            }
+        }, 4000); // every 4s - the sale window is 10 minutes, no need to hammer the API
+
+        // Cleanup: stop polling if the user navigates away from this screen
+        // before the sale resolves.
+        return () => clearInterval(pollInterval);
+    }, [saleResponse?.id, isFocused]);
+
+
+
+
+    // this function updates a transaction status to completed
+    const updateStatus = async () => {
+
+        setConfirming(true)
+
+        try {
+
+            if (!pollResponse) {
+                showErrorToast("No poll data available")
+                return;
+            }
+
+            const payload: updateSaleStatus = {
+                amountPaid: pollResponse && (Number(pollResponse?.amount) + 50).toString(),
+                txHash: pollResponse?.cryptoTxHash ?? ""
+            }
+
+            const response = await setSaleToConfirm(pollResponse?.id, payload)
+
+            if (!response.ok || !response.sale) {
+                showErrorToast("failed to update status", response.error)
+                return
+            }
+
+            showSuccessToast("Status updated successfully!")
+            useSaleStore.getState().setPollResponse(response.sale)
+            navigation.replace("CryptoSuccess")
+
+
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                showErrorToast(
+                    error.response?.data?.message ??
+                    error.message
+                );
+                console.log("Status:", error.response?.status);
+                console.log("Response Data:", error.response?.data);
+                console.log("Response Headers:", error.response?.headers);
+                console.log("Request Config:", error.config);
+            }
+            showErrorToast("Something went wrong");
+            console.error(error)
+        }
+
+        finally {
+            setConfirming(false)
+        }
+    }
+
+
+
+
+
+    if (!saleResponse) {
+        return null;
+    }
+
+
 
     return (
         <View style={styles.container}>
@@ -44,7 +232,7 @@ export default function BankTransfer() {
 
                 <Text
                 >
-                    10:00
+                    {bankTimeLeft.minutes}:{bankTimeLeft.seconds}
                 </Text>
             </View>
 
@@ -59,12 +247,12 @@ export default function BankTransfer() {
                 <View style={styles.amountDisplay}>
 
                     <Text style={styles.amountText}>
-                        ₦ 8,500
+                        ₦ {(Number(saleResponse?.amount) + 50).toLocaleString()}
                     </Text>
 
                     <View style={styles.feeBreakdownWrapper}>
                         <Text style={styles.feeBreakdownText}>
-                            ₦ 8500 + ₦ 152 fee = ₦ 8652 total
+                            ₦ {Number(saleResponse?.amount).toLocaleString()} + ₦{fee} fee = ₦ {total?.toLocaleString()} total
                         </Text>
                     </View>
 
@@ -92,8 +280,9 @@ export default function BankTransfer() {
                             />
 
                             <Text style={[styles.detail_category_value, {
-                                fontSize: scaleFont(16)
-                            }]} >Zenith Bank</Text>
+                                fontSize: scaleFont(16),
+                                filter: loading ? "blur(5px)" : "blur(0)"
+                            }]} > {accountDetails?.bank ?? "Bank name"} </Text>
                         </View>
 
                     </View>
@@ -102,16 +291,18 @@ export default function BankTransfer() {
                     <View style={styles.detail_category} >
                         <Text style={styles.detail_category_title}>Account Number</Text>
                         <Text style={[styles.detail_category_value, {
-                            fontSize: scaleFont(24)
-                        }]}>1234567890</Text>
+                            fontSize: scaleFont(24),
+                            filter: loading ? "blur(5px)" : "blur(0)"
+                        }]}>{accountDetails?.accountNumber ?? "000000000"} </Text>
                     </View>
 
 
                     <View style={styles.detail_category} >
                         <Text style={styles.detail_category_title}>Account Name</Text>
                         <Text style={[styles.detail_category_value, {
-                            fontSize: scaleFont(20)
-                        }]}>Konfam</Text>
+                            fontSize: scaleFont(20),
+                            filter: loading ? "blur(5px)" : "blur(0)"
+                        }]}> {accountDetails?.accountName ?? "Account Name"} </Text>
                     </View>
 
 
@@ -124,7 +315,7 @@ export default function BankTransfer() {
                     }]} >
                         <Text style={[styles.detail_category_value, {
                             fontSize: scaleFont(12)
-                        }]} >Valid for 30 minutes</Text>
+                        }]} >Valid for 10 minutes</Text>
                         <Timer />
                     </View>
 
@@ -133,7 +324,7 @@ export default function BankTransfer() {
 
 
                 <Text style={styles.info_text} >
-                    Transfer exactly ₦ 8652 to the account above.
+                    Transfer exactly ₦ {total?.toLocaleString()} to the account above.
                     Payment will be confirmed automatically.
                 </Text>
 
@@ -162,11 +353,29 @@ export default function BankTransfer() {
                 <TouchableOpacity
                     activeOpacity={0.7}
                     style={styles.button}
-                    onPress={() => navigation.replace("transferStepOne")}
+                    onPress={cancelSale}
                 >
                     <Text style={styles.buttonText}>
                         Cancel
                     </Text>
+                </TouchableOpacity>
+
+
+
+
+                <TouchableOpacity
+                    onPress={updateStatus}
+                    style={styles.button}
+                    activeOpacity={0.7}
+                    disabled={confirming}
+                >
+                    {confirming ? (
+                        <ActivityIndicator />
+                    )
+                        : (
+                            <Text style={styles.buttonText} > Confirm payment</Text>
+                        )
+                    }
                 </TouchableOpacity>
 
             </ScrollView>

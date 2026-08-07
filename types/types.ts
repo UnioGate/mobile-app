@@ -1,4 +1,3 @@
-import { MainStackParamList } from "@/app/main/type";
 import { InternalAxiosRequestConfig } from "axios";
 import { ReactNode } from "react";
 
@@ -69,7 +68,6 @@ export type networkOptionData = {
   img: networkKey;
 }
 
-type RouteName = keyof MainStackParamList & string;
 
 export type transfer_method_option_type = {
   title: string;
@@ -77,7 +75,6 @@ export type transfer_method_option_type = {
   icon: ReactNode;
   textColor: string;
   background_color: string;
-  route: RouteName
 }
 
 

@@ -70,7 +70,7 @@ export default function CryptoStepTwo() {
             const pollResponse = response.sale;
 
             // re-renders with the fresh data.
-            useSaleStore.getState().setPollResponse(pollResponse); // update this line, instead of using the saleResponse, create another state for the poll response
+            useSaleStore.getState().setPollResponse(pollResponse);
             console.log("updated sales data:", pollResponse)
 
             if (pollResponse.status === "confirmed") {
@@ -155,6 +155,45 @@ export default function CryptoStepTwo() {
             setConfirming(false)
         }
     }
+
+
+
+
+
+    // this handles the polling functionality on the frontend
+    useEffect(() => {
+        const saleId = saleResponse?.id;
+        if (!saleId) return;
+
+        const pollInterval = setInterval(async () => {
+            const response = await getSalesById(saleId);
+
+            if (!response.ok) {
+                // Don't stop polling on a transient network error - just skip this tick.
+                console.error(response.error);
+                return;
+            }
+
+            const pollResponse = response.sale;
+
+            // re-renders with the fresh data.
+            useSaleStore.getState().setPollResponse(pollResponse);
+            console.log("updated sales data:", pollResponse)
+
+            if (pollResponse.status === "confirmed") {
+                clearInterval(pollInterval);
+                resetSale()
+                navigation.navigate("CryptoSuccess");
+            } else if (pollResponse.status === "expired") {
+                clearInterval(pollInterval);
+                setIsTimeOut(true);
+            }
+        }, 4000); // every 4s - the sale window is 10 minutes, no need to hammer the API
+
+        // Cleanup: stop polling if the user navigates away from this screen
+        // before the sale resolves.
+        return () => clearInterval(pollInterval);
+    }, [saleResponse?.id, isFocused]);
 
 
 

@@ -30,8 +30,6 @@ export default function TransactionsComponent() {
 
         sortedSales.forEach((tx) => {
 
-            const date = new Date(tx.createdAt)
-
             const label = getDateLabel(tx.createdAt);
 
             if (!groups[label]) {
@@ -60,6 +58,14 @@ export default function TransactionsComponent() {
         ngn: require("../assets/logos/card.png"),
         "": require("../assets/logos/card.png")
     };
+
+
+
+    if (!salesHistory || salesHistory.length < 1) {
+        return null;
+    }
+
+
 
 
     return (
