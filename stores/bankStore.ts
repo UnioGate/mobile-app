@@ -11,10 +11,11 @@ interface BankAccountStoreProps {
     accounts: myAccount[];
     isLoading: boolean;
     error: string | null;
-    banks: Bank[]
-    isLoadingBanks: false,
+    banks: Bank[];
+    isLoadingBanks: boolean;
     fetchAccounts: () => Promise<void>;
-    fetchBanks: () => Promise<void>
+    fetchBanks: () => Promise<void>;
+    getBankName: (code: string) => string;
 }
 
 
