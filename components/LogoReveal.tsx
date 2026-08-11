@@ -1,7 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, Easing, Image, StyleSheet, View } from "react-native";
 
-export default function LogoReveal() {
+
+interface LogoRevealProps {
+    backgroundColor?: string;
+}
+
+
+export default function LogoReveal({ backgroundColor = "#ffffff" }: LogoRevealProps) {
     const revealAnim = useRef(new Animated.Value(1)).current;
 
     useEffect(() => {
@@ -36,7 +42,10 @@ export default function LogoReveal() {
             <Animated.View
                 style={[
                     styles.overlay,
-                    { width: overlayWidth }
+                    {
+                        width: overlayWidth,
+                        backgroundColor
+                    }
                 ]}
             />
         </View>
@@ -59,7 +68,6 @@ const styles = StyleSheet.create({
     },
 
     overlay: {
-        backgroundColor: "#ffffff",
         position: "absolute",
         left: 0,
         top: 0,

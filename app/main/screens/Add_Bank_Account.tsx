@@ -28,7 +28,13 @@ export default function AddBankAccount() {
         accountNumber: "",
         bankName: "",
         bankCode: ""
-    })
+    });
+    const [errors, setErrors] = useState({
+        bank: "",
+        accountNumber: "",
+        accountName: "",
+        confirmation: "",
+    });
 
 
 
@@ -54,11 +60,48 @@ export default function AddBankAccount() {
 
 
 
+    // validation function
+    const validateForm = () => {
+        const newErrors = {
+            bank: "",
+            accountNumber: "",
+            accountName: "",
+            confirmation: "",
+        };
+
+        if (!formValues.bankCode) {
+            newErrors.bank = "Please select a bank.";
+        }
+
+        if (!formValues.accountNumber) {
+            newErrors.accountNumber = "Please enter your account number.";
+        } else if (!/^\d{10}$/.test(formValues.accountNumber)) {
+            newErrors.accountNumber = "Account number must be exactly 10 digits.";
+        }
+
+        if (!resolvedName) {
+            newErrors.accountName = "Please verify your account number.";
+        }
+
+        if (!confirmation) {
+            newErrors.confirmation = "Please confirm that the information is accurate.";
+        }
+
+        setErrors(newErrors);
+
+        return !Object.values(newErrors).some(Boolean);
+    };
+
+
 
     // This handles the form submission
     const handleSubmit = async () => {
 
 
+        if (!validateForm()) {
+            showErrorToast("Please complete all required fields.");
+            return;
+        }
 
         setLoading(true);
 
@@ -112,12 +155,18 @@ export default function AddBankAccount() {
     // This function finds the an account number if it exists
     const findBankAcct = async (data: bankAccountResolveBody) => {
 
-        if (data.accountNumber.length < 10 || !data.bankCode) {
-            setIncompleteNumber(true)
+        if (!data.bankCode) {
+            showErrorToast("Please select a bank.");
             return;
         }
 
-        setIncompleteNumber(false)
+        if (!/^\d{10}$/.test(data.accountNumber)) {
+            setIncompleteNumber(true);
+            setResolvedName("");
+            return;
+        }
+
+        setIncompleteNumber(false);
         setResolving(true)
 
         try {
@@ -274,6 +323,12 @@ export default function AddBankAccount() {
                                 bankCode: formValues.bankCode
                             })}
                         />
+
+                        {errors.accountNumber && (
+                            <Text style={styles.errorText}>
+                                {errors.accountNumber}
+                            </Text>
+                        )}
 
                     </View>
 
@@ -437,6 +492,12 @@ const styles = StyleSheet.create({
         backgroundColor: "#D3D8E7"
     },
 
+
+    errorText: {
+        color: "#FF070B",
+        fontSize: scaleFont(10),
+        fontFamily: "Sora_400Regular",
+    },
 
 
 })

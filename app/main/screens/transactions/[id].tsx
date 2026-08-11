@@ -311,18 +311,6 @@ export default function TransactionDetails() {
 
                     </View>
 
-                    {/* Confirmations */}
-                    <View style={styles.blockchain_wrapper_row} >
-
-                        <Text style={styles.blockchain_wrapper_label} >
-                            Confirmations: </Text>
-
-                        <Text style={styles.blockchain_wrapper_value} >
-                            12 Confirmations
-                        </Text>
-
-                    </View>
-
                     {/*Block number   */}
                     <View style={styles.blockchain_wrapper_row} >
 

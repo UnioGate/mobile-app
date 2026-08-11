@@ -74,11 +74,9 @@ const getLogoSource = (tx?: SaleRecord): ImageSourcePropType => {
 export default function TransactionCard({ tx }: txProps) {
     const navigation = useNavigation<OverviewNavigationProp>();
 
-    const currencyText = tx?.currency
+    const methodText = tx.paymentType === "crypto"
         ? tx.currency.toUpperCase()
-        : tx?.paymentType
-            ? tx.paymentType.toUpperCase()
-            : "TRANSACTION";
+        : "Transfer";
 
     const statusText = tx?.status
         ? tx.status[0].toUpperCase() + tx.status.slice(1)
@@ -114,7 +112,7 @@ export default function TransactionCard({ tx }: txProps) {
                         justifyContent: "center"
                     }}
                 >
-                    <Text style={styles.curreny}>{currencyText}</Text>
+                    <Text style={styles.curreny}>{methodText}</Text>
                     <Text style={styles.time}>
                         {tx?.createdAt ? formatTransactionDate(tx.createdAt) : ""}
                     </Text>

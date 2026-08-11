@@ -12,7 +12,8 @@ interface WalletStore {
     isLoadingBalance: boolean;
     rate: RatesResponse;
     breakdown: Breakdown[];
-    lastFetched: number | null
+    lastFetched: number | null;
+    firstDisplay: boolean;
 
 
     // actions
@@ -28,6 +29,7 @@ export const useWalletStore = create<WalletStore>((set, get) => ({
     walletBalance: "",
     isLoadingBalance: false,
     lastFetched: null,
+    firstDisplay: false,
 
     rate: {
         rates: {
@@ -44,6 +46,10 @@ export const useWalletStore = create<WalletStore>((set, get) => ({
     },
 
     fetchBalance: async () => {
+
+        const { firstDisplay } = get();
+
+
         set({
             isLoadingBalance: true
         })
@@ -58,7 +64,8 @@ export const useWalletStore = create<WalletStore>((set, get) => ({
 
 
             set({
-                walletBalance: response.totalBalanceNgn
+                walletBalance: response.totalBalanceNgn,
+                firstDisplay: false
             });
 
         } catch (error) {

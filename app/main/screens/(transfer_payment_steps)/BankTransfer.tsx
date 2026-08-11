@@ -16,6 +16,7 @@ import { resolveBankAcct } from "@/api/bank-accounts.api";
 import { getSalesById, setSaleToConfirm } from "@/api/sales.api";
 import Timer from "@/components/icons/Timer";
 import LogoReveal from "@/components/LogoReveal";
+import TimeOutScreen from "@/components/TimeOutScreen";
 import { useSaleCountdown } from "@/hooks/useCountdown";
 import { useSaleStore } from "@/stores/saleStore";
 import { bankAccountResolveBody, updateSaleStatus } from "@/types/types";
@@ -37,9 +38,10 @@ export default function BankTransfer() {
         resetSale,
         pollResponse,
         setIsTimeOut,
+        isTimeOut,
         bankFee,
         accountDetails,
-        setAccountDetail }
+    }
         = useSaleStore();
 
     const [loading, setLoading] = useState(false);
@@ -67,8 +69,8 @@ export default function BankTransfer() {
             try {
 
                 const payload: bankAccountResolveBody = {
-                    accountNumber: "0000000000", // parsed.accountNumber,
-                    bankCode: "001" // parsed.bankCode
+                    accountNumber: parsed.accountNumber,
+                    bankCode: parsed.bankCode
                 }
 
                 const response = await resolveBankAcct(payload);
@@ -246,148 +248,157 @@ export default function BankTransfer() {
             </View>
 
 
-            {/* Scrollable Content */}
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={[styles.scrollContent]}
-            >
+            {isTimeOut ? (
+                <TimeOutScreen />
+            ) :
+                (
+                    <>
 
-                {/* Amount Display */}
-                <View style={styles.amountDisplay}>
+                        {/* Scrollable Content */}
+                        <ScrollView
+                            showsVerticalScrollIndicator={false}
+                            contentContainerStyle={[styles.scrollContent]}
+                        >
 
-                    <Text style={styles.amountText}>
-                        ₦ {(Number(saleResponse?.amount) + 50).toLocaleString()}
-                    </Text>
+                            {/* Amount Display */}
+                            <View style={styles.amountDisplay}>
 
-                    <View style={styles.feeBreakdownWrapper}>
-                        <Text style={styles.feeBreakdownText}>
-                            ₦ {Number(saleResponse?.amount).toLocaleString()} + ₦{fee} fee = ₦ {total?.toLocaleString()} total
-                        </Text>
-                    </View>
+                                <Text style={styles.amountText}>
+                                    ₦ {(Number(saleResponse?.amount) + 50).toLocaleString()}
+                                </Text>
 
-                </View>
+                                <View style={styles.feeBreakdownWrapper}>
+                                    <Text style={styles.feeBreakdownText}>
+                                        ₦ {Number(saleResponse?.amount).toLocaleString()} + ₦{fee} fee = ₦ {total?.toLocaleString()} total
+                                    </Text>
+                                </View>
 
-
-                {/* Bank details  */}
-                <View style={styles.bank_details_wrapper} >
-
-                    <View style={styles.detail_category}  >
-                        <Text style={styles.detail_category_title} >Bank Name</Text>
-
-                        <View style={{
-                            width: "auto",
-                            alignItems: "center",
-                            gap: 10,
-                            flexDirection: "row"
-                        }} >
-                            <Image
-                                source={require("../../../../assets/logos/zenith_bank_logo.png")}
-                                style={{
-                                    width: 32,
-                                    height: 36
-                                }}
-                            />
-
-                            <Text style={[styles.detail_category_value, {
-                                fontSize: scaleFont(16),
-                                filter: loading ? "blur(5px)" : "blur(0)"
-                            }]} > {accountDetails?.bank ?? "Bank name"} </Text>
-                        </View>
-
-                    </View>
+                            </View>
 
 
-                    <View style={styles.detail_category} >
-                        <Text style={styles.detail_category_title}>Account Number</Text>
-                        <Text style={[styles.detail_category_value, {
-                            fontSize: scaleFont(24),
-                            filter: loading ? "blur(5px)" : "blur(0)"
-                        }]}>{accountDetails?.accountNumber ?? "000000000"} </Text>
-                    </View>
+                            {/* Bank details  */}
+                            <View style={styles.bank_details_wrapper} >
+
+                                <View style={styles.detail_category}  >
+                                    <Text style={styles.detail_category_title} >Bank Name</Text>
+
+                                    <View style={{
+                                        width: "auto",
+                                        alignItems: "center",
+                                        gap: 10,
+                                        flexDirection: "row"
+                                    }} >
+                                        <Image
+                                            source={require("../../../../assets/logos/zenith_bank_logo.png")}
+                                            style={{
+                                                width: 32,
+                                                height: 36
+                                            }}
+                                        />
+
+                                        <Text style={[styles.detail_category_value, {
+                                            fontSize: scaleFont(16),
+                                            filter: loading ? "blur(5px)" : "blur(0)"
+                                        }]} > {accountDetails?.bank ?? "Bank name"} </Text>
+                                    </View>
+
+                                </View>
 
 
-                    <View style={styles.detail_category} >
-                        <Text style={styles.detail_category_title}>Account Name</Text>
-                        <Text style={[styles.detail_category_value, {
-                            fontSize: scaleFont(20),
-                            filter: loading ? "blur(5px)" : "blur(0)"
-                        }]}> {accountDetails?.accountName ?? "Account Name"} </Text>
-                    </View>
+                                <View style={styles.detail_category} >
+                                    <Text style={styles.detail_category_title}>Account Number</Text>
+                                    <Text style={[styles.detail_category_value, {
+                                        fontSize: scaleFont(24),
+                                        filter: loading ? "blur(5px)" : "blur(0)"
+                                    }]}>{accountDetails?.accountNumber ?? "000000000"} </Text>
+                                </View>
 
 
-                    <View style={[styles.detail_category, {
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        borderBottomWidth: 0,
-                        paddingVertical: scaleVerticalPadding(5)
-                    }]} >
-                        <Text style={[styles.detail_category_value, {
-                            fontSize: scaleFont(12)
-                        }]} >Valid for 10 minutes</Text>
-                        <Timer />
-                    </View>
-
-                </View>
+                                <View style={styles.detail_category} >
+                                    <Text style={styles.detail_category_title}>Account Name</Text>
+                                    <Text style={[styles.detail_category_value, {
+                                        fontSize: scaleFont(20),
+                                        filter: loading ? "blur(5px)" : "blur(0)"
+                                    }]}> {accountDetails?.accountName ?? "Account Name"} </Text>
+                                </View>
 
 
+                                <View style={[styles.detail_category, {
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    borderBottomWidth: 0,
+                                    paddingVertical: scaleVerticalPadding(5)
+                                }]} >
+                                    <Text style={[styles.detail_category_value, {
+                                        fontSize: scaleFont(12)
+                                    }]} >Valid for 10 minutes</Text>
+                                    <Timer />
+                                </View>
 
-                <Text style={styles.info_text} >
-                    Transfer exactly ₦ {total?.toLocaleString()} to the account above.
-                    Payment will be confirmed automatically.
-                </Text>
-
-
-                {/* Status */}
-                <View style={styles.status} >
-
-                    <Ionicons
-                        name="alert-circle"
-                        size={23}
-                        color={"#253E86"}
-                    />
-
-                    <View style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 10
-                    }} >
-                        <Text style={styles.statusText} >Waiting for transfer...</Text>
-                        <LogoReveal />
-                    </View>
-                </View>
-
-
-                {/* Cancel Button */}
-                <TouchableOpacity
-                    activeOpacity={0.7}
-                    style={styles.button}
-                    onPress={cancelSale}
-                >
-                    <Text style={styles.buttonText}>
-                        Cancel
-                    </Text>
-                </TouchableOpacity>
+                            </View>
 
 
 
+                            <Text style={styles.info_text} >
+                                Transfer exactly ₦ {total?.toLocaleString()} to the account above.
+                                Payment will be confirmed automatically.
+                            </Text>
 
-                <TouchableOpacity
-                    onPress={updateStatus}
-                    style={styles.button}
-                    activeOpacity={0.7}
-                    disabled={confirming}
-                >
-                    {confirming ? (
-                        <ActivityIndicator />
-                    )
-                        : (
-                            <Text style={styles.buttonText} > Confirm payment</Text>
-                        )
-                    }
-                </TouchableOpacity>
 
-            </ScrollView>
+                            {/* Status */}
+                            <View style={styles.status} >
+
+                                <Ionicons
+                                    name="alert-circle"
+                                    size={23}
+                                    color={"#253E86"}
+                                />
+
+                                <View style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    gap: 10
+                                }} >
+                                    <Text style={styles.statusText} >Waiting for transfer...</Text>
+                                    <LogoReveal />
+                                </View>
+                            </View>
+
+
+                            {/* Cancel Button */}
+                            <TouchableOpacity
+                                activeOpacity={0.7}
+                                style={styles.button}
+                                onPress={cancelSale}
+                            >
+                                <Text style={styles.buttonText}>
+                                    Cancel
+                                </Text>
+                            </TouchableOpacity>
+
+
+
+
+                            <TouchableOpacity
+                                onPress={updateStatus}
+                                style={styles.button}
+                                activeOpacity={0.7}
+                                disabled={confirming}
+                            >
+                                {confirming ? (
+                                    <ActivityIndicator />
+                                )
+                                    : (
+                                        <Text style={styles.buttonText} > Confirm payment</Text>
+                                    )
+                                }
+                            </TouchableOpacity>
+
+                        </ScrollView>
+
+                    </>
+                )}
         </View>
     );
 }
@@ -537,5 +548,6 @@ const styles = StyleSheet.create({
         fontSize: scaleFont(18),
         fontFamily: "Sora_400Regular",
     },
+
 
 });

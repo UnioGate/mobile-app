@@ -123,3 +123,37 @@ export const fetchMyAccounts = async () => {
         }
     }
 }
+
+
+
+
+
+
+
+// This endpoint deletes a bank account
+export const deleteAccount = async (id: string) => {
+
+    try {
+        const response = await api.delete(`/bank-accounts/${id}`)
+        const result = response.data;
+
+        return {
+            ok: true as const,
+            message: result.message
+        }
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            return {
+                ok: false,
+                error: error.response?.data.error ?? error.message
+            }
+        }
+
+        return {
+            ok: false,
+            error: "Something went wrong"
+        }
+    }
+
+}

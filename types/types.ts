@@ -383,16 +383,30 @@ export interface BankWithdrawRequest {
 
 
 
+export interface CryptoWithdrawRequest {
+  walletId: string;
+  toAddress: string;
+  amount: string
+}
+
+
+
+export interface OfframpResponse {
+  id: string;
+  cryptoAmount: string;
+  nairaAmount: string;
+  rate: string;
+  cryptoTxHash: string;
+  status: "crypto_sent" | "naira_paid";
+}
+
+
 export interface BankWithdrawResponse {
   reference: string,
   transactionId: string;
   amount: string;
   status: "Success" | "Pending";
-  bankAccount: {
-    accountNumber: string,
-    accountName: string,
-    bank: string
-  }
+  bankAccount: myAccount
 }
 
 

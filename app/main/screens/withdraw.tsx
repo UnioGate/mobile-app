@@ -1,7 +1,9 @@
-import { fetchMyAccounts } from "@/api/bank-accounts.api";
+import { fetchMyAccounts, resolveBankAcct } from "@/api/bank-accounts.api";
 import { withdrawBank } from "@/api/withdraw.api";
+import { useSaleStore } from "@/stores/saleStore";
+import { useTierStore } from "@/stores/tierStore";
 import { useWalletStore } from "@/stores/WalletStore";
-import { BankWithdrawRequest, myAccount } from "@/types/types";
+import { bankAccountResolveBody, BankWithdrawRequest, myAccount } from "@/types/types";
 import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { formatBalance, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
@@ -24,7 +26,10 @@ export default function Withdraw() {
     const [withdrawalAmount, setWithdrawalAmount] = useState("")
     const [accounts, setAccounts] = useState<myAccount[]>([])
     const [processing, setProcessing] = useState(false)
-
+    const { tierDetails } = useTierStore()
+    const [selectedAccount, setSelectedAccount] = useState<myAccount | null>(null)
+    const [fetchingName, setFetchingName] = useState(false)
+    const { accountDetails } = useSaleStore()
 
     // fetch bank accounts
     useEffect(() => {
@@ -37,10 +42,72 @@ export default function Withdraw() {
                 return;
             }
             setAccounts(response.accounts)
+            console.log(response)
+            setSelectedAccount(response.accounts[0])
         }
 
         fetchAccounts()
     }, [])
+
+
+
+
+
+    // with the parsed details available, we can then resolve to get the account name and bank name
+    useEffect(() => {
+
+        const getBankDetails = async () => {
+            if (!accounts || !selectedAccount) return;
+
+            setFetchingName(true)
+
+            try {
+
+                const payload: bankAccountResolveBody = {
+                    accountNumber: selectedAccount.accountNumber,
+                    bankCode: selectedAccount.bank
+                }
+
+
+                console.log("Resolving account:", payload);
+
+                const response = await resolveBankAcct(payload);
+
+                if (!response.ok) {
+                    console.error("Failed to fetch bank account details:", response.error)
+                    return;
+                }
+
+                useSaleStore.getState().setAccountDetail({
+                    accountName: response.accountName,
+                    accountNumber: response.accountNumber,
+                    bank: selectedAccount.accountName,
+                    id: response.accountNumber
+                })
+
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    showErrorToast(
+                        error.response?.data?.message ??
+                        error.message
+                    );
+                    console.log("Status:", error.response?.status);
+                    console.log("Response Data:", error.response?.data);
+                    console.log("Response Headers:", error.response?.headers);
+                    console.log("Request Config:", error.config);
+                }
+                showErrorToast("Something went wrong");
+                console.error(error)
+            }
+
+            finally {
+                setFetchingName(false)
+            }
+        }
+
+        getBankDetails()
+
+    }, [selectedAccount?.bank])
 
 
 
@@ -51,11 +118,23 @@ export default function Withdraw() {
             return;
         }
 
-        // if (withdrawalAmount > walletBalance) {
-        //     showErrorToast("Insufficient funds");
-        //     return;
-        // }
+        if (Number(withdrawalAmount) > Number(walletBalance)) {
+            showErrorToast("Insufficient balance. Please enter a lower amount.");
+            return;
+        }
 
+
+        if (Number(withdrawalAmount) > Number(tierDetails?.dailyWithdrawalLimit)) {
+            showErrorToast("Withdrawal amount exceeds your daily withdrawal limit.");
+            return;
+        }
+
+        if (Number(withdrawalAmount) > Number(tierDetails?.monthlyWithdrawalLimit)) {
+            showErrorToast("Withdrawal amount exceeds your monthly withdrawal limit.");
+            return;
+        }
+
+        // then add validation for the amount left
 
 
         setProcessing(true)
@@ -64,7 +143,7 @@ export default function Withdraw() {
 
             const payload: BankWithdrawRequest = {
                 amount: withdrawalAmount,
-                bankAccountId: "",
+                bankAccountId: accounts[0].id,
                 walletId: ""
             }
 
@@ -173,6 +252,7 @@ export default function Withdraw() {
                             <TouchableOpacity
                                 onPress={submit}
                                 disabled={processing}
+                                activeOpacity={0.7}
                                 style={styles.amount_wrapper_button} >
                                 {processing ? (
                                     <ActivityIndicator color="#ffffff" />
@@ -208,7 +288,7 @@ export default function Withdraw() {
                             <View
                                 style={{
                                     flexDirection: "row",
-                                    alignItems: "center",
+                                    alignItems: "flex-start",
                                     gap: 8
                                 }}
                             >
@@ -221,8 +301,9 @@ export default function Withdraw() {
                                 <View style={{
                                     gap: 8
                                 }}>
-                                    <Text style={styles.account_number} >GTBank - 0123456789 </Text>
-                                    <Text style={styles.account_name} >John Doe</Text>
+                                    <Text style={styles.account_number} >{accountDetails?.bank}  </Text>
+                                    <Text style={styles.account_number} >{accountDetails?.accountNumber} </Text>
+                                    <Text style={styles.account_name} > {accountDetails?.accountName} </Text>
                                 </View>
                             </View>
 
@@ -241,7 +322,7 @@ export default function Withdraw() {
 
 
                         {/* note input  */}
-                        <View style={styles.amount_input_wrapper} >
+                        {/* <View style={styles.amount_input_wrapper} >
 
                             <TextInput
                                 keyboardType="default"
@@ -254,7 +335,7 @@ export default function Withdraw() {
                             />
 
 
-                        </View>
+                        </View> */}
 
                     </View>
 
@@ -308,7 +389,7 @@ export default function Withdraw() {
 
 
                 {/* Limit error */}
-                <View style={styles.limit} >
+                {/* <View style={styles.limit} >
 
                     <Ionicons
                         name="alert-circle"
@@ -317,7 +398,7 @@ export default function Withdraw() {
                     />
 
                     <Text style={styles.limit_text} >You have ₦0 remaining in your daily limit</Text>
-                </View>
+                </View> */}
 
 
                 {/* note */}
@@ -527,7 +608,6 @@ const styles = StyleSheet.create({
     account_name: {
         color: "#514B4B",
         fontSize: scaleFont(10),
-        marginLeft: "auto"
     },
 
     amount_breakdown: {

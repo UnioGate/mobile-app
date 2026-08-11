@@ -42,7 +42,8 @@ export default function Overview() {
 
     const { fetchBalance,
         walletBalance,
-        isLoadingBalance
+        isLoadingBalance,
+        firstDisplay
     } = useWalletStore()
 
     const { tierDetails }
@@ -209,8 +210,9 @@ export default function Overview() {
                             <Text
                                 numberOfLines={1}
                                 adjustsFontSizeToFit
+                                minimumFontScale={0.5}
                                 style={[styles.amount, {
-                                    filter: isLoadingBalance ? "blur(10px)" : "blur(0)"
+                                    filter: isLoadingBalance && !firstDisplay ? "blur(10px)" : "blur(0)"
                                 }]}
                             >{displayBalance} </Text>
 
@@ -301,7 +303,7 @@ export default function Overview() {
                     <View style={styles.leftSide} >
                         <View style={styles.text_wrapper} >
                             <Text style={[styles.boldText, {
-                                filter: isLoadingHistory && isLoadingBalance ? "blur(10px)" : "blur(0)"
+                                filter: isLoadingHistory && !firstDisplay ? "blur(10px)" : "blur(0)"
                             }]} >{todaySales?.length ?? "0"}</Text>
                             <Text style={styles.label} >Today&apos;s Transaction</Text>
                         </View>
@@ -314,7 +316,7 @@ export default function Overview() {
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
                                 style={[styles.boldText, {
-                                    filter: isLoadingHistory && isLoadingBalance ? "blur(10px)" : "blur(0)"
+                                    filter: isLoadingHistory && !firstDisplay ? "blur(10px)" : "blur(0)"
                                 }]} >₦{sumTodayTX.toLocaleString()} </Text>
 
 
@@ -514,17 +516,19 @@ const styles = StyleSheet.create({
     },
 
     amount_wrapper: {
-        display: "flex",
+        width: "100%",
         alignItems: "center",
-        gap: 11,
         flexDirection: "row",
-        justifyContent: "center"
+        justifyContent: "space-between",
+        gap: 11,
     },
 
     amount: {
+        flex: 1,
+        flexShrink: 1,
         fontSize: scaleFont(40),
         color: "#FFFFFF",
-        fontFamily: "Sora_400Regular"
+        fontFamily: "Sora_400Regular",
     },
 
     tierStatus: {

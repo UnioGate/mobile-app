@@ -86,7 +86,7 @@ export const useSaleStore = create<SalesStore>((set, get) => ({
     },
 
 
-    bankFee: 50,
+    bankFee: 0,
 
 
     setSalesData: (data) =>

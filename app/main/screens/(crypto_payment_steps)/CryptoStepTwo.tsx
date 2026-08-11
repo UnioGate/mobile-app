@@ -1,6 +1,7 @@
 
 import { getSalesById, setSaleToConfirm } from "@/api/sales.api";
 import LogoReveal from "@/components/LogoReveal";
+import TimeOutScreen from "@/components/TimeOutScreen";
 import { useSaleCountdown } from "@/hooks/useCountdown";
 import { useSaleStore } from "@/stores/saleStore";
 import { useWalletStore } from "@/stores/WalletStore";
@@ -200,7 +201,10 @@ export default function CryptoStepTwo() {
         return null;
     }
 
-    const currentRateInNGN = rate.rates[sale?.currency ?? "USDT"].NGN
+    const currentRateInNGN =
+        sale?.currency && rate?.rates?.[sale.currency]?.NGN
+            ? rate.rates[sale.currency].NGN
+            : null;
 
 
 
@@ -238,29 +242,7 @@ export default function CryptoStepTwo() {
 
 
                 {isTimeOut ? (
-                    <View style={styles.timeout_wrapper} >
-
-                        <Ionicons name="warning" color={"#FF0707"} size={63} />
-
-                        <Text style={styles.timeout_heading} >TIMEOUT</Text>
-
-                        <TouchableOpacity
-                            onPress={() => navigation.replace("sales")}
-                            style={[styles.button, {
-                                width: "auto",
-                                padding: scaleHorizontalPadding(10),
-                                paddingVertical: scaleVerticalPadding(10),
-                                marginTop: 7,
-                                borderColor: "#253E86"
-                            }]}
-                            activeOpacity={0.7}
-                        >
-                            <Text style={[styles.buttonText, {
-                                color: "#000000",
-                                fontSize: scaleFont(20)
-                            }]} > Restart Payment</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <TimeOutScreen />
                 )
                     :
 
@@ -338,9 +320,12 @@ export default function CryptoStepTwo() {
 
                                     <View style={styles.exchange_rate} >
                                         <Text style={styles.equivalent} >
-                                            {rate ? (Number(sale.amount) / currentRateInNGN).toFixed(2) : "0.0"}
+                                            {currentRateInNGN
+                                                ? (Number(sale.amount) / currentRateInNGN).toFixed(2)
+                                                : "--"}
                                             {" "}
-                                            {sale.currency}</Text>
+                                            {sale.currency}
+                                        </Text>
                                         <Text style={styles.rate} >1 {sale.currency} = ₦{currentRateInNGN}</Text>
                                     </View>
                                 </View>
@@ -667,20 +652,7 @@ const styles = StyleSheet.create({
 
 
 
-    // --------------------- styles for the timeout banner  ----------------------------- //
-    timeout_wrapper: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 16
-    },
 
-    timeout_heading: {
-        color: "#FF0707",
-        fontSize: scaleFont(48),
-        fontFamily: "Sora_400Regular",
-        marginVertical: 7
-    }
 
 
 
