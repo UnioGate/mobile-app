@@ -9,9 +9,10 @@ import SupportIcon from "@/components/icons/SupportIcon";
 import TeamIcon from "@/components/icons/Team";
 import WalletIcon from "@/components/icons/WalletIcon";
 import { useCurrentUser } from "@/stores/authStore";
+import { UseBankAccountStore } from "@/stores/bankStore";
 import { useSaleStore } from "@/stores/saleStore";
 import { useTierStore } from "@/stores/tierStore";
-import { formatCompactNumbers, handleLogOut, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
+import { formatCompactNumbers, handleLogOut, maskPhone, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -25,8 +26,9 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 export default function ProfileDetails() {
     const navigation = useNavigation<OverviewNavigationProp>()
     const user = useCurrentUser()
-    const { currentTier, tierDetails } = useTierStore()
+    const { tierDetails } = useTierStore()
     const { sumTodayTX } = useSaleStore()
+    const { accounts } = UseBankAccountStore()
 
 
     return (
@@ -342,7 +344,10 @@ export default function ProfileDetails() {
 
                             {/* Right side  */}
                             <View style={styles.right_side} >
-                                <Text style={styles.right_side_text} >Zenith Bank : ****5678</Text>
+                                <Text style={styles.right_side_text} >
+                                    {accounts[0].accountName.split(" ")[0] + " " + accounts[0].accountName.split(" ")[2]}
+                                    {" "}
+                                    {maskPhone(accounts[0].accountNumber)}</Text>
                                 <Ionicons name="chevron-forward" size={15} color={"#4B4848"} />
                             </View>
 

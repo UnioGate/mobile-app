@@ -1,6 +1,7 @@
-import { getBanks, resolveBankAcct, saveBankAccount } from "@/api/bank-accounts.api";
+import { resolveBankAcct, saveBankAccount } from "@/api/bank-accounts.api";
 import CustomCheckbox from "@/components/ui/CustomCheckbox";
 import CustomDropdown from "@/components/ui/CustomDropdown";
+import { UseBankAccountStore } from "@/stores/bankStore";
 import { bankAccountBody, bankAccountResolveBody, DropdownOption } from "@/types/types";
 import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding, updateFormField } from "@/utils/utils";
@@ -21,14 +22,16 @@ export default function AddBankAccount() {
     const [confirmation, setConfirmation] = useState(false)
     const [loading, setLoading] = useState(false)
     const [resolving, setResolving] = useState(false)
-    const [bankOptions, setBankOptions] = useState<DropdownOption[]>([])
     const [incompleteNumber, setIncompleteNumber] = useState(false)
     const [resolvedName, setResolvedName] = useState("");
+    const { fetchAccounts, banks, fetchBanks } = UseBankAccountStore()
     const [formValues, setFormValues] = useState({
         accountNumber: "",
         bankName: "",
         bankCode: ""
     });
+
+
     const [errors, setErrors] = useState({
         bank: "",
         accountNumber: "",
@@ -37,23 +40,14 @@ export default function AddBankAccount() {
     });
 
 
+    // derive dropdown options from the store's banks — no local state, no separate fetch
+    const bankOptions: DropdownOption[] = banks.map((bank) => ({
+        label: bank.name,
+        value: bank.code,
+    }));
 
-    // this fetches the bank accts on page load
+
     useEffect(() => {
-        const fetchBanks = async () => {
-            const response = await getBanks();
-
-            if (response.ok) {
-                const options: DropdownOption[] = response.banks.map((bank) => ({
-                    label: bank.name,
-                    value: bank.code,
-                }));
-                setBankOptions(options);
-            } else {
-                showErrorToast(response.error ?? "Failed to fetch banks!");
-            }
-        };
-
         fetchBanks();
     }, []);
 
@@ -127,7 +121,19 @@ export default function AddBankAccount() {
                 accountNumber: "",
                 bankCode: "",
                 bankName: ""
-            })
+            });
+
+            setResolvedName("");
+            setConfirmation(false);
+            setIncompleteNumber(false);
+            fetchAccounts()
+
+            setErrors({
+                bank: "",
+                accountNumber: "",
+                accountName: "",
+                confirmation: "",
+            });
 
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -274,6 +280,7 @@ export default function AddBankAccount() {
                                 borderColor: "#808080",
                                 backgroundColor: "#ffffff"
                             }}
+                            placeholderText="Select Bank"
                             options={bankOptions}
                             onChange={(value: string) => {
                                 const selected = bankOptions.find((option) => option.value === value);
@@ -306,6 +313,7 @@ export default function AddBankAccount() {
                             placeholder="0123456789"
                             keyboardType="number-pad"
                             maxLength={10}
+                            value={formValues.accountNumber}
                             style={{
                                 width: "100%",
                                 borderWidth: 0.5,

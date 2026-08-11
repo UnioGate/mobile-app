@@ -1,11 +1,8 @@
-import SupportIcon from '@/components/icons/SupportIcon';
 import { scaleHorizontalPadding, scaleVerticalPadding } from '@/utils/utils';
-import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useNavigationState } from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { router } from 'expo-router';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CreateAccount from './screens/CreateAccount';
 import PersonalInformation from './screens/PersonalInformation';
@@ -53,8 +50,8 @@ export default function AuthLayout() {
             </View> */}
 
             <Stack.Navigator screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="CreateAccount" component={CreateAccount} />
                 <Stack.Screen name="SignIn" component={SignIn} />
+                <Stack.Screen name="CreateAccount" component={CreateAccount} />
                 <Stack.Screen name="PersonalInformation" component={PersonalInformation} />
             </Stack.Navigator>
 

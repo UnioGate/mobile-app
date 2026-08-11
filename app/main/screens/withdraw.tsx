@@ -143,7 +143,7 @@ export default function Withdraw() {
 
             const payload: BankWithdrawRequest = {
                 amount: withdrawalAmount,
-                bankAccountId: accounts[0].id,
+                bankAccountId: selectedAccount?.id ?? "",
                 walletId: ""
             }
 
@@ -152,7 +152,8 @@ export default function Withdraw() {
 
             if (!response?.ok) {
                 console.error("Failed to place withdrawal", response.error);
-                showErrorToast(response.message)
+                showErrorToast(response.error)
+                return;
             }
 
             console.log(response);

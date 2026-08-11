@@ -1,5 +1,6 @@
-import { deleteAccount, fetchMyAccounts } from "@/api/bank-accounts.api";
+import { deleteAccount } from "@/api/bank-accounts.api";
 import LogoReveal from "@/components/LogoReveal";
+import { UseBankAccountStore } from "@/stores/bankStore";
 import { myAccount } from "@/types/types";
 import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
@@ -8,7 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ActivityIndicator, Divider } from "react-native-paper";
 import { MainStackParamList } from "../type";
 
@@ -20,26 +21,14 @@ export default function BankAccount() {
     const [accounts, setAccounts] = useState<myAccount[]>([])
     const [deletingID, setDeletingID] = useState<string | null>(null)
     const [fetchingAccounts, setFetchingAccts] = useState(true)
+    const [refreshing, setRefreshing] = useState(false)
+    const { fetchAccounts, accounts: accountList } = UseBankAccountStore()
 
 
 
-    const fetchAccounts = async () => {
-        const response = await fetchMyAccounts()
 
-        if (!response.ok) {
-            showErrorToast("Failed to fetch accounts!")
-            setFetchingAccts(false)
-            return;
-        }
-
-        setAccounts(response.accounts)
-        setFetchingAccts(false)
-
-    }
-
-
+    // fetch all bank accts
     useEffect(() => {
-
         fetchAccounts()
 
     }, [])
@@ -47,8 +36,9 @@ export default function BankAccount() {
 
 
 
-    const deleteBankAccount = async (id: string) => {
 
+    // delete bank accts
+    const deleteBankAccount = async (id: string) => {
 
         if (!accounts) {
             return;
@@ -67,10 +57,7 @@ export default function BankAccount() {
 
 
             showSuccessToast(response.message)
-            // Remove deleted account from the UI
-            setAccounts((prevAccounts) =>
-                prevAccounts.filter((acct) => acct.id !== id)
-            );
+            fetchAccounts()
 
 
         } catch (error) {
@@ -92,6 +79,19 @@ export default function BankAccount() {
         }
     }
 
+
+
+
+    // refresh functionality
+    // This handles the screen refresh function
+    const onRefresh = () => {
+
+        setRefreshing(true)
+
+
+
+        setRefreshing(false)
+    }
 
 
 
@@ -151,7 +151,15 @@ export default function BankAccount() {
                             alignItems: "center",
                             justifyContent: "center",
                         }]}
-                        showsVerticalScrollIndicator={false} >
+                        showsVerticalScrollIndicator={false}
+
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                            />
+                        }
+                    >
                         <LogoReveal backgroundColor="#D3D8E7" />
                     </ScrollView>
                 </>
@@ -294,13 +302,7 @@ export default function BankAccount() {
                                                     color: "#000000",
                                                     fontFamily: "Sora_600SemiBold",
                                                     fontSize: scaleFont(14),
-                                                }} >Tech Haven Enterprises </Text>
-
-                                                <Text style={{
-                                                    color: "#10182AB2",
-                                                    fontSize: scaleFont(12),
-                                                    fontFamily: "Sora_300Light"
-                                                }} >0123456789</Text>
+                                                }} >{acct.accountName}</Text>
                                             </View>
                                         </View>
 
@@ -337,19 +339,20 @@ export default function BankAccount() {
 
                                     <View style={styles.button_wrapper} >
 
-                                        <TouchableOpacity style={[styles.button, {
+                                        {/* <TouchableOpacity style={[styles.button, {
                                             borderColor: "#808080"
                                         }]} >
                                             <Text style={[styles.button_text, {
                                                 color: "#000000",
                                             }]} >Change  Account</Text>
-                                        </TouchableOpacity>
+                                        </TouchableOpacity> */}
 
 
                                         <TouchableOpacity
                                             onPress={() => deleteBankAccount(acct.id)}
                                             style={[styles.button, {
-                                                borderColor: "#FF070B"
+                                                borderColor: "#FF070B",
+                                                marginLeft: "auto"
                                             }]} >
 
                                             {deletingID === acct.id ? (

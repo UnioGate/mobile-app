@@ -1,4 +1,5 @@
-import { useAuthStore } from "@/stores/authStore";
+import { useAuthStore, useIsOwner } from "@/stores/authStore";
+import { UseBankAccountStore } from "@/stores/bankStore";
 import { useBusinessStore } from "@/stores/businessStore";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useEffect } from "react";
@@ -51,11 +52,17 @@ const Stack = createNativeStackNavigator<MainStackParamList>();
 export default function Index() {
     const accessToken = useAuthStore((s) => s.accessToken);
     const fetchBusinesses = useBusinessStore((s) => s.fetchBusinesses)
-
+    const { fetchAccounts, fetchBanks } = UseBankAccountStore()
+    const isOwner = useIsOwner()
 
     useEffect(() => {
         if (accessToken) {
             fetchBusinesses();
+            fetchBanks()
+
+            if (isOwner) {
+                fetchAccounts()
+            }
         }
     }, [accessToken]);
 

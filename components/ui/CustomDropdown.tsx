@@ -15,6 +15,7 @@ interface DropdownOptionProps {
     options?: DropdownOption[]
     value?: string;
     onChange?: (value: string) => void;
+    placeholderText?: string
 }
 
 
@@ -29,7 +30,8 @@ export default function CustomDropdown({
     currentCountry,
     options,
     value,
-    onChange
+    onChange,
+    placeholderText = 'Select State'
 }: DropdownOptionProps) {
 
 
@@ -63,7 +65,7 @@ export default function CustomDropdown({
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
-                placeholder={!isFocus ? 'Select State' : '...'}
+                placeholder={!isFocus ? placeholderText : '...'}
                 searchPlaceholder="Search..."
                 value={value}
                 onFocus={() => setIsFocus(true)}
