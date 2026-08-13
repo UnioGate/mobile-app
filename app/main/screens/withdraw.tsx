@@ -1,17 +1,19 @@
 import { resolveBankAcct } from "@/api/bank-accounts.api";
 import { withdrawBank } from "@/api/withdraw.api";
+import { BankDetailSkeleton } from "@/components/ui/BankDetailSkeleton";
+import CustomDropdown from "@/components/ui/CustomDropdown";
 import { UseBankAccountStore } from "@/stores/bankStore";
 import { useSaleStore } from "@/stores/saleStore";
 import { useTierStore } from "@/stores/tierStore";
 import { useWalletStore } from "@/stores/WalletStore";
-import { bankAccountResolveBody, BankWithdrawRequest, myAccount } from "@/types/types";
+import { bankAccountResolveBody, BankWithdrawRequest, DropdownOption, myAccount } from "@/types/types";
 import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { formatBalance, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { MainStackParamList } from "../type";
@@ -28,20 +30,61 @@ export default function Withdraw() {
     const [processing, setProcessing] = useState(false)
     const { tierDetails } = useTierStore()
     const [selectedAccount, setSelectedAccount] = useState<myAccount | null>(null)
-    const [fetchingName, setFetchingName] = useState(false)
+    const [fetchingBankName, setFetchingBankName] = useState(false)
     const { accountDetails } = useSaleStore()
     const accounts = UseBankAccountStore((s) => s.accounts)
+    const bankLogos = UseBankAccountStore((s) => s.bankLogos)
+    const walletBalances = useWalletStore((s) => s.walletBalance)
+    const fetchWallets = useWalletStore((s) => s.fetchWallets)
+
+
+
+    // this finds the bank logos in the array of bank logos
+    const getBankLogo = (bankCode: string) => {
+        const bank = bankLogos.find(
+            (entry) =>
+                entry.bankCode === bankCode ||
+                entry.scCode === bankCode
+        );
+
+        return bank?.logos.png ?? null;
+    }
+
+
+    const accountOptions: DropdownOption[] = useMemo(
+        () =>
+            accounts.map((account) => ({
+                label: `${account.accountNumber}`,
+                value: account.id
+            })),
+        [accounts]
+    )
+
+    const totalToReceive = withdrawalAmount ? Number(withdrawalAmount) - 100 : 0
 
 
     console.log(accounts)
 
+
+    useEffect(() => {
+        if (accounts.length > 0 && !selectedAccount) {
+            setSelectedAccount(accounts[0]);
+        }
+
+        fetchWallets()
+    }, [accounts, selectedAccount]);
+
+
+
+
     // with the parsed details available, we can then resolve to get the account name and bank name
     useEffect(() => {
 
-        const getBankDetails = async () => {
-            if (!accounts || !selectedAccount) return;
+        if (!selectedAccount) return;
 
-            setFetchingName(true)
+        const getBankDetails = async () => {
+
+            setFetchingBankName(true)
 
             try {
 
@@ -68,28 +111,18 @@ export default function Withdraw() {
                 })
 
             } catch (error) {
-                if (axios.isAxiosError(error)) {
-                    showErrorToast(
-                        error.response?.data?.message ??
-                        error.message
-                    );
-                    console.log("Status:", error.response?.status);
-                    console.log("Response Data:", error.response?.data);
-                    console.log("Response Headers:", error.response?.headers);
-                    console.log("Request Config:", error.config);
-                }
+                console.error(error);
                 showErrorToast("Something went wrong");
-                console.error(error)
             }
 
             finally {
-                setFetchingName(false)
+                setFetchingBankName(false)
             }
         }
 
         getBankDetails()
 
-    }, [selectedAccount?.bank])
+    }, [selectedAccount])
 
 
 
@@ -143,6 +176,8 @@ export default function Withdraw() {
             useWalletStore.setState({
                 walletBalance: response.newBalance
             })
+
+            navigation.navigate("withdraw_initiated")
 
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -261,9 +296,32 @@ export default function Withdraw() {
 
 
                         {/* save account button */}
-                        <Pressable>
-                            <Text style={styles.save_button_text} >Saved bank account</Text>
-                        </Pressable>
+                        <View style={{ width: "100%", gap: 10 }}>
+
+                            <Text style={styles.save_button_text}>
+                                Saved bank account
+                            </Text>
+
+                            <CustomDropdown
+                                dropdownStyle={{
+                                    borderColor: "#808080",
+                                    backgroundColor: "#ffffff",
+                                }}
+                                placeholderText="Select bank account"
+                                options={accountOptions}
+                                value={selectedAccount?.id ?? ""}
+                                onChange={(value: string) => {
+                                    const selected = accounts.find(
+                                        (account) => account.id === value
+                                    );
+
+                                    if (!selected) return;
+
+                                    setSelectedAccount(selected);
+                                }}
+                            />
+
+                        </View>
 
                         {/* Account details  */}
                         <View style={styles.account_details_wrapper} >
@@ -276,18 +334,31 @@ export default function Withdraw() {
                                 }}
                             >
                                 <Image
-                                    source={{ uri: "https://res.cloudinary.com/dwedz2laa/image/upload/v1777704436/mtsddnvmqt1qlijnqvhh.png" }}
+                                    source={{
+                                        uri: getBankLogo(accountDetails?.bank ?? "") ??
+                                            "https://cdn.jsdelivr.net/gh/Nigerian-Bank-Logos/ng-bank-logos@main/logos/_default.png"
+                                    }}
                                     style={{ width: 20, height: 20 }}
                                     resizeMode="cover"
                                 />
 
-                                <View style={{
-                                    gap: 8
-                                }}>
-                                    <Text style={styles.account_number} >{accountDetails?.bank}  </Text>
-                                    <Text style={styles.account_number} >{accountDetails?.accountNumber} </Text>
-                                    <Text style={styles.account_name} > {accountDetails?.accountName} </Text>
-                                </View>
+                                {fetchingBankName ? (
+                                    <BankDetailSkeleton />
+                                ) : (
+                                    <View style={{ gap: 8 }}>
+                                        <Text style={styles.account_number}>
+                                            {accountDetails?.bank}
+                                        </Text>
+
+                                        <Text style={styles.account_number}>
+                                            {accountDetails?.accountNumber}
+                                        </Text>
+
+                                        <Text style={styles.account_name}>
+                                            {accountDetails?.accountName}
+                                        </Text>
+                                    </View>
+                                )}
                             </View>
 
 
@@ -302,23 +373,6 @@ export default function Withdraw() {
                                 <Ionicons name="chevron-forward" color={"#253E86"} size={11} />
                             </Pressable>
                         </View>
-
-
-                        {/* note input  */}
-                        {/* <View style={styles.amount_input_wrapper} >
-
-                            <TextInput
-                                keyboardType="default"
-                                style={[styles.text_input, {
-                                    color: "#808080",
-                                    fontSize: 12,
-                                    textAlign: "center"
-                                }]}
-                                placeholder="Add note (optional)"
-                            />
-
-
-                        </View> */}
 
                     </View>
 
@@ -335,7 +389,7 @@ export default function Withdraw() {
                         paddingVertical: 8
                     }} >
                         <Text style={styles.amount_breakdown_row_heading} >Withdrawal Amount</Text>
-                        <Text style={styles.amount_breakdown_row_value} >₦ {withdrawalAmount}</Text>
+                        <Text style={styles.amount_breakdown_row_value} >₦ {Number(withdrawalAmount).toLocaleString()}</Text>
                     </View>
 
 
@@ -352,7 +406,7 @@ export default function Withdraw() {
                         }}
                     >
                         <Text style={styles.amount_breakdown_row_heading} >Total to Receive</Text>
-                        <Text style={styles.amount_breakdown_row_value}>₦ 0</Text>
+                        <Text style={styles.amount_breakdown_row_value}>₦ {totalToReceive.toLocaleString()}</Text>
                     </View>
 
 
@@ -371,19 +425,6 @@ export default function Withdraw() {
                 </View>
 
 
-                {/* Limit error */}
-                {/* <View style={styles.limit} >
-
-                    <Ionicons
-                        name="alert-circle"
-                        size={23}
-                        color={"#FF070B"}
-                    />
-
-                    <Text style={styles.limit_text} >You have ₦0 remaining in your daily limit</Text>
-                </View> */}
-
-
                 {/* note */}
                 <View style={styles.note} >
                     <Text style={styles.note_text} >You’ll receive an OTP to confirm this withdrawal</Text>
@@ -393,7 +434,10 @@ export default function Withdraw() {
                 {/* Buttons */}
                 <View style={styles.button_wrapper} >
 
-                    <TouchableOpacity style={[styles.button]} >
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => navigation.goBack()}
+                        style={[styles.button]} >
                         <Text style={[styles.button_text, {
                             color: "#253E86"
                         }]} >Cancel</Text>
@@ -401,7 +445,7 @@ export default function Withdraw() {
 
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("withdraw_initiated")}
+                        onPress={submit}
                         style={[styles.button, {
                             backgroundColor: "#253E86"
                         }]} >

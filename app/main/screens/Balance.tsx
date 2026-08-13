@@ -22,8 +22,9 @@ export default function Balance() {
     const navigation = useNavigation<OverviewNavigationProp>()
     const [showBalance, setShowBalance] = useState(true)
     const [isBreakdownOpen, setIsBreakdownOpen] = useState(true);
-    const { walletBalance, breakdown } = useWalletStore()
+    const { walletBalance } = useWalletStore()
     const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
 
 
     // Masking logic for balance
@@ -43,7 +44,6 @@ export default function Balance() {
                 if (balanceResponse.ok) {
                     useWalletStore.setState({
                         walletBalance: balanceResponse.totalBalanceNgn,
-                        breakdown: balanceResponse.breakdown
                     });
 
                     setLastUpdated(new Date())

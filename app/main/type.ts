@@ -55,3 +55,14 @@ export type MainStackParamList = {
 
 
 
+export interface bankLogo {
+  name: string,
+  aliases: string[],
+  bankCode: string;
+  scCode: string;
+  category: string;
+  logos: {
+    png: string;
+    svg: string;
+  };
+}

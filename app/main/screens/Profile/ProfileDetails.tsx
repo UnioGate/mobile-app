@@ -9,7 +9,6 @@ import SupportIcon from "@/components/icons/SupportIcon";
 import TeamIcon from "@/components/icons/Team";
 import WalletIcon from "@/components/icons/WalletIcon";
 import { useCurrentUser } from "@/stores/authStore";
-import { UseBankAccountStore } from "@/stores/bankStore";
 import { useSaleStore } from "@/stores/saleStore";
 import { useTierStore } from "@/stores/tierStore";
 import { formatCompactNumbers, handleLogOut, maskPhone, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
@@ -30,7 +29,12 @@ export default function ProfileDetails() {
 
     const tierDetails = useTierStore((state) => state.tierDetails);
     const sumTodayTX = useSaleStore((state) => state.sumTodayTX);
-    const accounts = UseBankAccountStore((state) => state.accounts);
+    const accounts = [{
+        id: "7483748734873874",
+        accountNumber: "0003232323",
+        bank: "uba BANK ",
+        accountName: "2248351634"
+    }] //UseBankAccountStore((state) => state.accounts);
 
 
     return (
@@ -347,9 +351,9 @@ export default function ProfileDetails() {
                             {/* Right side  */}
                             <View style={styles.right_side} >
                                 <Text style={styles.right_side_text} >
-                                    {accounts.length > 0
-                                        ? `${accounts[0].accountName.split(" ")[0]} ${accounts[0].accountName.split(" ")[2]} ${maskPhone(accounts[0].accountNumber)}`
-                                        : "No bank account"}</Text>
+                                    {accounts[0].accountName.split(" ")[0] + " " + accounts[0].accountName.split(" ")[2]}
+                                    {" "}
+                                    {maskPhone(accounts[0].accountNumber)}</Text>
                                 <Ionicons name="chevron-forward" size={15} color={"#4B4848"} />
                             </View>
 

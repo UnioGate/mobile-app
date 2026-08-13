@@ -1,5 +1,5 @@
-import { getRates, getTotalBalance } from "@/api/walletService.api";
-import { Breakdown, RatesResponse } from "@/types/types";
+import { getRates, getTotalBalance, getWallets } from "@/api/walletService.api";
+import { RatesResponse, Wallet } from "@/types/types";
 import axios from "axios";
 import { create } from "zustand";
 
@@ -7,18 +7,19 @@ import { create } from "zustand";
 
 
 interface WalletStore {
-    // data
+
     walletBalance: string;
     isLoadingBalance: boolean;
     rate: RatesResponse;
-    breakdown: Breakdown[];
     lastFetched: number | null;
     firstDisplay: boolean;
+    wallets: Wallet[];
 
 
     // actions
     fetchBalance: () => void
     fetchRates: () => void
+    fetchWallets: () => void
 
 }
 
@@ -30,6 +31,7 @@ export const useWalletStore = create<WalletStore>((set, get) => ({
     isLoadingBalance: false,
     lastFetched: null,
     firstDisplay: false,
+    wallets: [],
 
     rate: {
         rates: {
@@ -46,9 +48,6 @@ export const useWalletStore = create<WalletStore>((set, get) => ({
     },
 
     fetchBalance: async () => {
-
-        const { firstDisplay } = get();
-
 
         set({
             isLoadingBalance: true
@@ -120,7 +119,36 @@ export const useWalletStore = create<WalletStore>((set, get) => ({
     },
 
 
-    breakdown: []
+
+
+    fetchWallets: async () => {
+        try {
+
+            const response = await getWallets()
+
+            if (!response.ok || !response.wallets) {
+                console.error(response.error)
+                return;
+            }
+
+            set({
+                wallets: response.wallets
+            })
+
+            console.log("the available wallets:", response.wallets)
+
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                return {
+                    ok: false,
+                    error: error.response?.data.error ?? error.message
+                }
+            }
+        }
+    }
+
+
+
 
 
 }))

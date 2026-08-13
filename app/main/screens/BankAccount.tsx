@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Image, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ActivityIndicator, Divider } from "react-native-paper";
 import { MainStackParamList } from "../type";
@@ -22,6 +22,23 @@ export default function BankAccount() {
     const fetchAccounts = UseBankAccountStore((s) => s.fetchAccounts)
     const accounts = UseBankAccountStore((s) => s.accounts)
     const fetchingAccounts = UseBankAccountStore((s) => s.isLoading)
+    const bankLogos = UseBankAccountStore((s) => s.bankLogos)
+
+
+
+
+
+    // this finds the bank logos in the array of bank logos
+    const getBankLogo = (bankCode: string) => {
+        const bank = bankLogos.find(
+            (entry) =>
+                entry.bankCode === bankCode ||
+                entry.scCode === bankCode
+        );
+
+        return bank?.logos.png ?? null;
+    }
+
 
 
 
@@ -44,8 +61,9 @@ export default function BankAccount() {
             }
 
 
-            showSuccessToast(response.message)
+
             await fetchAccounts()
+            showSuccessToast(response.message)
 
 
         } catch (error) {
@@ -77,18 +95,18 @@ export default function BankAccount() {
 
         try {
             await fetchAccounts()
-        } finally {
+
+        }
+
+        finally {
             setRefreshing(false)
         }
     }
 
 
-
-
-    useEffect(() => {
-        fetchAccounts()
-    }, [fetchAccounts])
-
+    if (!accounts) {
+        return;
+    };
 
 
 
@@ -129,9 +147,6 @@ export default function BankAccount() {
                 </Pressable>
 
             </View>
-
-
-
 
 
             {/* main content  */}
@@ -227,7 +242,10 @@ export default function BankAccount() {
                                             gap: 10,
                                         }} >
                                             <Image
-                                                source={require("../../../assets/logos/GTBank_logo.svg.png")}
+                                                source={{
+                                                    uri: getBankLogo(acct.bank) ??
+                                                        "https://cdn.jsdelivr.net/gh/Nigerian-Bank-Logos/ng-bank-logos@main/logos/_default.png"
+                                                }}
                                                 style={{
                                                     height: 20,
                                                     width: 20
