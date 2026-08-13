@@ -74,7 +74,7 @@ export default function BankAccount() {
             await fetchAccounts();
         }
         catch (error) {
-            console.error(error)
+            console.error("Error refreshing bank accounts:", error);
         }
 
         finally {
