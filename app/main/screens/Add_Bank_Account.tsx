@@ -381,7 +381,7 @@ export default function AddBankAccount() {
 
                 <View>
                     <CustomCheckbox
-                        label="I confirm this information is accurate."
+                        label={`I confirm this information is accurate. \n  \nFor security, only business accounts in your registered name can be added`}
                         linkText=""
                         path=""
                         checked={confirmation}
@@ -443,8 +443,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         flexDirection: "row",
-        borderBottomWidth: 0.5,
-        borderBottomColor: "#B3B3B3",
         paddingHorizontal: scaleHorizontalPadding(15),
         paddingVertical: scaleVerticalPadding(9)
     },

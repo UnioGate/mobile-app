@@ -1,4 +1,5 @@
 import { deleteAccount } from "@/api/bank-accounts.api";
+import LogoReveal from "@/components/LogoReveal";
 import { UseBankAccountStore } from "@/stores/bankStore";
 import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
@@ -17,9 +18,11 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 export default function BankAccount() {
     const navigation = useNavigation<OverviewNavigationProp>()
     const [deletingID, setDeletingID] = useState<string | null>(null)
+    const [fetchingAccounts, setFetchingAccts] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
     const fetchAccounts = UseBankAccountStore((s) => s.fetchAccounts)
     const accounts = UseBankAccountStore((s) => s.accounts)
+
 
 
     // delete bank accts
@@ -40,8 +43,10 @@ export default function BankAccount() {
                 return;
             }
 
+
             showSuccessToast(response.message)
-            await fetchAccounts()
+            fetchAccounts()
+
 
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -67,20 +72,14 @@ export default function BankAccount() {
 
     // refresh functionality
     // This handles the screen refresh function
-    const onRefresh = async () => {
-        setRefreshing(true);
+    const onRefresh = () => {
 
-        try {
-            await fetchAccounts();
-        }
-        catch (error) {
-            console.error("Error refreshing bank accounts:", error);
-        }
+        setRefreshing(true)
 
-        finally {
-            setRefreshing(false);
-        }
-    };
+        fetchAccounts()
+
+        setRefreshing(false)
+    }
 
 
 
@@ -128,228 +127,285 @@ export default function BankAccount() {
 
 
             {/* main content  */}
+            {fetchingAccounts ? (
+                <>
+                    <ScrollView
+                        style={{ flex: 1, width: "100%" }}
+                        contentContainerStyle={[, {
+                            flexGrow: 1,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }]}
+                        showsVerticalScrollIndicator={false}
 
-            <ScrollView
-                style={{ flex: 1, width: "100%" }}
-                contentContainerStyle={styles.scrollView_style}
-                showsVerticalScrollIndicator={false}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                            />
+                        }
+                    >
+                        <LogoReveal backgroundColor="#D3D8E7" />
+                    </ScrollView>
+                </>
+            ) : accounts.length < 1 ? (
+                <>
+
+                    <ScrollView
+                        style={{ flex: 1, width: "100%" }}
+                        contentContainerStyle={[, {
+                            flexGrow: 1,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }]}
+                        showsVerticalScrollIndicator={false} >
+                        <Text style={{
+                            color: "#000000",
+                            fontFamily: "Sora_600SemiBold",
+                            fontSize: scaleFont(14),
+                        }}>No bank accounts have been saved yet.</Text>
+                    </ScrollView>
+
+                </>
+            )
+
+                : (
+                    <ScrollView
+                        style={{ flex: 1, width: "100%" }}
+                        contentContainerStyle={styles.scrollView_style}
+                        showsVerticalScrollIndicator={false}
 
 
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                    />
-                }
-            >
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                            />
+                        }
+                    >
 
-                <View style={{
-                    gap: 10
-                }}
-                >
+                        <View style={{
+                            gap: 10
+                        }}
+                        >
 
-                    {accounts.map((acct) => (
-                        <View
-                            key={acct.id}
-                            style={{
-                                backgroundColor: "#ffffff",
-                                borderRadius: 10,
-                                paddingVertical: scaleVerticalPadding(10),
-                                paddingHorizontal: scaleHorizontalPadding(15)
-                            }} >
-
-
-                            {/* Bank name  */}
-                            <View style={{
-                                width: "100%",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                flexDirection: "row",
-                                paddingVertical: scaleVerticalPadding(7),
-                                paddingTop: scaleVerticalPadding(1)
-                            }} >
-
-                                <View style={{
-                                    alignItems: "flex-start",
-                                    justifyContent: "space-between",
-                                    flexDirection: "row",
-                                    gap: 10,
-                                }} >
-                                    <Image
-                                        source={require("../../../assets/logos/GTBank_logo.svg.png")}
-                                        style={{
-                                            height: 20,
-                                            width: 20
-                                        }}
-                                    />
-
-                                    <View style={{
-                                        gap: 9,
+                            {accounts.map((acct) => (
+                                <View
+                                    key={acct.id}
+                                    style={{
+                                        backgroundColor: "#ffffff",
+                                        borderRadius: 10,
+                                        paddingVertical: scaleVerticalPadding(10),
+                                        paddingHorizontal: scaleHorizontalPadding(15)
                                     }} >
-                                        <Text style={{
-                                            color: "#000000",
-                                            fontFamily: "Sora_600SemiBold",
-                                            fontSize: scaleFont(14),
-                                        }} > {acct.accountName} </Text>
 
-                                        <Text style={{
-                                            color: "#10182AB2",
-                                            fontSize: scaleFont(12),
-                                            fontFamily: "Sora_300Light"
-                                        }} > {acct.accountNumber} </Text>
-                                    </View>
-                                </View>
 
-                                <View style={{
-                                    backgroundColor: "#199C1E33",
-                                    borderRadius: 7,
-                                    paddingVertical: scaleVerticalPadding(4),
-                                    paddingHorizontal: scaleHorizontalPadding(8),
-                                    gap: 6,
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "center"
-                                }} >
-                                    <Ionicons
-                                        size={11}
-                                        color={"#0B7C3E"}
-                                        name="checkmark"
-                                    />
-                                    <Text
-                                        style={{
-                                            color: "#0B7C3E",
-                                            fontSize: scaleFont(12),
-                                            fontFamily: "Sora_400Regular"
-                                        }}
-                                    >Verified</Text>
-                                </View>
-
-                            </View>
-
-                            <Divider style={{
-                                backgroundColor: "#808080"
-                            }} />
-
-                            {/* Primary account */}
-                            <View style={{
-                                width: "100%",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                flexDirection: "row",
-                                paddingVertical: scaleVerticalPadding(7),
-                                paddingTop: scaleVerticalPadding(10)
-                            }} >
-
-                                <View style={{
-                                    alignItems: "flex-start",
-                                    justifyContent: "space-between",
-                                    flexDirection: "row",
-                                    gap: 10,
-                                }} >
-
+                                    {/* Bank name  */}
                                     <View style={{
-                                        gap: 9,
-                                    }} >
-                                        <Text style={{
-                                            color: "#000000",
-                                            fontFamily: "Sora_600SemiBold",
-                                            fontSize: scaleFont(14),
-                                        }} >{acct.accountName}</Text>
-                                    </View>
-                                </View>
-
-                                {accounts.indexOf(acct) === 0 && (
-                                    <View style={{
-                                        backgroundColor: "#253E8633",
-                                        borderRadius: 7,
-                                        paddingVertical: scaleVerticalPadding(4),
-                                        paddingHorizontal: scaleHorizontalPadding(8),
-                                        gap: 6,
-                                        flexDirection: "row",
+                                        width: "100%",
                                         alignItems: "center",
-                                        justifyContent: "center"
+                                        justifyContent: "space-between",
+                                        flexDirection: "row",
+                                        paddingVertical: scaleVerticalPadding(7),
+                                        paddingTop: scaleVerticalPadding(1)
                                     }} >
 
-                                        <Text
-                                            style={{
-                                                color: "#253E86",
-                                                fontSize: scaleFont(12),
-                                                fontFamily: "Sora_400Regular"
-                                            }}
-                                        >Primary Account</Text>
+                                        <View style={{
+                                            alignItems: "flex-start",
+                                            justifyContent: "space-between",
+                                            flexDirection: "row",
+                                            gap: 10,
+                                        }} >
+                                            <Image
+                                                source={require("../../../assets/logos/GTBank_logo.svg.png")}
+                                                style={{
+                                                    height: 20,
+                                                    width: 20
+                                                }}
+                                            />
+
+                                            <View style={{
+                                                gap: 9,
+                                            }} >
+                                                <Text style={{
+                                                    color: "#000000",
+                                                    fontFamily: "Sora_600SemiBold",
+                                                    fontSize: scaleFont(14),
+                                                }} > {acct.accountName} </Text>
+
+                                                <Text style={{
+                                                    color: "#10182AB2",
+                                                    fontSize: scaleFont(12),
+                                                    fontFamily: "Sora_300Light"
+                                                }} > {acct.accountNumber} </Text>
+                                            </View>
+                                        </View>
+
+                                        <View style={{
+                                            backgroundColor: "#199C1E33",
+                                            borderRadius: 7,
+                                            paddingVertical: scaleVerticalPadding(4),
+                                            paddingHorizontal: scaleHorizontalPadding(8),
+                                            gap: 6,
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            justifyContent: "center"
+                                        }} >
+                                            <Ionicons
+                                                size={11}
+                                                color={"#0B7C3E"}
+                                                name="checkmark"
+                                            />
+                                            <Text
+                                                style={{
+                                                    color: "#0B7C3E",
+                                                    fontSize: scaleFont(12),
+                                                    fontFamily: "Sora_400Regular"
+                                                }}
+                                            >Verified</Text>
+                                        </View>
+
                                     </View>
-                                )}
 
-                            </View>
+                                    <Divider style={{
+                                        backgroundColor: "#808080"
+                                    }} />
+
+                                    {/* Primary account */}
+                                    <View style={{
+                                        width: "100%",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                        flexDirection: "row",
+                                        paddingVertical: scaleVerticalPadding(7),
+                                        paddingTop: scaleVerticalPadding(10)
+                                    }} >
+
+                                        <View style={{
+                                            alignItems: "flex-start",
+                                            justifyContent: "space-between",
+                                            flexDirection: "row",
+                                            gap: 10,
+                                        }} >
+
+                                            <View style={{
+                                                gap: 9,
+                                            }} >
+                                                <Text style={{
+                                                    color: "#000000",
+                                                    fontFamily: "Sora_600SemiBold",
+                                                    fontSize: scaleFont(14),
+                                                }} >{acct.accountName}</Text>
+                                            </View>
+                                        </View>
+
+                                        {accounts.indexOf(acct) === 0 && (
+                                            <View style={{
+                                                backgroundColor: "#253E8633",
+                                                borderRadius: 7,
+                                                paddingVertical: scaleVerticalPadding(4),
+                                                paddingHorizontal: scaleHorizontalPadding(8),
+                                                gap: 6,
+                                                flexDirection: "row",
+                                                alignItems: "center",
+                                                justifyContent: "center"
+                                            }} >
+
+                                                <Text
+                                                    style={{
+                                                        color: "#253E86",
+                                                        fontSize: scaleFont(12),
+                                                        fontFamily: "Sora_400Regular"
+                                                    }}
+                                                >Primary Account</Text>
+                                            </View>
+                                        )}
+
+                                    </View>
 
 
 
-                            <Divider style={{
-                                backgroundColor: "#808080"
-                            }} />
+                                    <Divider style={{
+                                        backgroundColor: "#808080"
+                                    }} />
 
 
-                            <View style={styles.button_wrapper} >
+                                    <View style={styles.button_wrapper} >
 
-                                <TouchableOpacity
-                                    onPress={() => deleteBankAccount(acct.id)}
-                                    style={[styles.button, {
-                                        borderColor: "#FF070B",
-                                        marginLeft: "auto"
-                                    }]} >
+                                        {/* <TouchableOpacity style={[styles.button, {
+                                            borderColor: "#808080"
+                                        }]} >
+                                            <Text style={[styles.button_text, {
+                                                color: "#000000",
+                                            }]} >Change  Account</Text>
+                                        </TouchableOpacity> */}
 
-                                    {deletingID === acct.id ? (
-                                        <ActivityIndicator color="#FF070B" />
-                                    ) : (
-                                        <Text style={
-                                            [styles.button_text, {
-                                                color: "#FF070B"
-                                            }]
-                                        } >Remove  Account</Text>
-                                    )}
-                                </TouchableOpacity>
 
-                            </View>
+                                        <TouchableOpacity
+                                            onPress={() => deleteBankAccount(acct.id)}
+                                            style={[styles.button, {
+                                                borderColor: "#FF070B",
+                                                marginLeft: "auto"
+                                            }]} >
 
+                                            {deletingID === acct.id ? (
+                                                <ActivityIndicator color="#FF070B" />
+                                            ) : (
+                                                <Text style={
+                                                    [styles.button_text, {
+                                                        color: "#FF070B"
+                                                    }]
+                                                } >Remove  Account</Text>
+                                            )}
+                                        </TouchableOpacity>
+
+                                    </View>
+
+
+                                </View>
+                            ))}
 
                         </View>
-                    ))}
-
-                </View>
 
 
 
 
 
-                {/* Button wrapper */}
-                <View style={[styles.button_wrapper, {
-                    marginTop: 2
-                }]} >
-
-                    <Pressable
-                        onPress={() => navigation.goBack()}
-                        style={[styles.button]} >
-                        <Text style={[styles.button_text, {
-                            color: "#253E86"
-                        }]} >Cancel</Text>
-                    </Pressable>
-
-
-                    <TouchableOpacity
-                        activeOpacity={0.7}
-                        onPress={() => navigation.navigate("add_bank_account")}
-                        style={[styles.button, {
-                            backgroundColor: "#253E86"
+                        {/* Button wrapper */}
+                        <View style={[styles.button_wrapper, {
+                            marginTop: 2
                         }]} >
-                        <Text style={[styles.button_text, {
-                            color: "#ffffff"
-                        }]} >Add Account</Text>
-                    </TouchableOpacity>
 
-                </View>
+                            <Pressable
+                                onPress={() => navigation.goBack()}
+                                style={[styles.button]} >
+                                <Text style={[styles.button_text, {
+                                    color: "#253E86"
+                                }]} >Cancel</Text>
+                            </Pressable>
 
 
-            </ScrollView >
+                            <TouchableOpacity
+                                activeOpacity={0.7}
+                                onPress={() => navigation.navigate("add_bank_account")}
+                                style={[styles.button, {
+                                    backgroundColor: "#253E86"
+                                }]} >
+                                <Text style={[styles.button_text, {
+                                    color: "#ffffff"
+                                }]} >Add Account</Text>
+                            </TouchableOpacity>
+
+                        </View>
+
+
+                    </ScrollView >
+                )
+            }
+
+
 
         </View >
     )
