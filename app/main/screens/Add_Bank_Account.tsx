@@ -9,7 +9,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { MainStackParamList } from "../type";
@@ -24,7 +24,9 @@ export default function AddBankAccount() {
     const [resolving, setResolving] = useState(false)
     const [incompleteNumber, setIncompleteNumber] = useState(false)
     const [resolvedName, setResolvedName] = useState("");
-    const { fetchAccounts, banks, fetchBanks } = UseBankAccountStore()
+    const fetchAccounts = UseBankAccountStore((state) => state.fetchAccounts)
+    const fetchBanks = UseBankAccountStore((state) => state.fetchBanks)
+    const banks = UseBankAccountStore((state) => state.banks)
     const [formValues, setFormValues] = useState({
         accountNumber: "",
         bankName: "",
@@ -41,15 +43,15 @@ export default function AddBankAccount() {
 
 
     // derive dropdown options from the store's banks — no local state, no separate fetch
-    const bankOptions: DropdownOption[] = banks.map((bank) => ({
+    const bankOptions: DropdownOption[] = useMemo(() => banks.map((bank) => ({
         label: bank.name,
         value: bank.code,
-    }));
+    })), [banks]);
 
 
     useEffect(() => {
         fetchBanks();
-    }, []);
+    }, [fetchBanks]);
 
 
 
@@ -126,7 +128,7 @@ export default function AddBankAccount() {
             setResolvedName("");
             setConfirmation(false);
             setIncompleteNumber(false);
-            fetchAccounts()
+            await fetchAccounts()
 
             setErrors({
                 bank: "",
@@ -282,12 +284,19 @@ export default function AddBankAccount() {
                             }}
                             placeholderText="Select Bank"
                             options={bankOptions}
+                            value={formValues.bankCode}
                             onChange={(value: string) => {
                                 const selected = bankOptions.find((option) => option.value === value);
                                 setFormValues((prev) => ({
                                     ...prev,
                                     bankCode: value,
                                     bankName: selected ? String(selected.label) : "",
+                                }));
+                                setResolvedName("");
+                                setErrors((prev) => ({
+                                    ...prev,
+                                    bank: "",
+                                    accountName: "",
                                 }));
                             }}
                         />
@@ -325,7 +334,11 @@ export default function AddBankAccount() {
                                 fontFamily: "Sora_400Regular",
                                 color: "#000000"
                             }}
-                            onChangeText={(text) => updateFormField("accountNumber", text, setFormValues)}
+                            onChangeText={(text) => {
+                                updateFormField("accountNumber", text, setFormValues);
+                                setResolvedName("");
+                                setIncompleteNumber(false);
+                            }}
                             onBlur={() => findBankAcct({
                                 accountNumber: formValues.accountNumber,
                                 bankCode: formValues.bankCode
