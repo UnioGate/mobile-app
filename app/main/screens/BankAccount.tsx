@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ActivityIndicator, Divider } from "react-native-paper";
 import { MainStackParamList } from "../type";
@@ -18,10 +18,10 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 export default function BankAccount() {
     const navigation = useNavigation<OverviewNavigationProp>()
     const [deletingID, setDeletingID] = useState<string | null>(null)
-    const [fetchingAccounts, setFetchingAccts] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
     const fetchAccounts = UseBankAccountStore((s) => s.fetchAccounts)
     const accounts = UseBankAccountStore((s) => s.accounts)
+    const fetchingAccounts = UseBankAccountStore((s) => s.isLoading)
 
 
 
@@ -45,7 +45,7 @@ export default function BankAccount() {
 
 
             showSuccessToast(response.message)
-            fetchAccounts()
+            await fetchAccounts()
 
 
         } catch (error) {
@@ -72,14 +72,22 @@ export default function BankAccount() {
 
     // refresh functionality
     // This handles the screen refresh function
-    const onRefresh = () => {
-
+    const onRefresh = async () => {
         setRefreshing(true)
 
-        fetchAccounts()
-
-        setRefreshing(false)
+        try {
+            await fetchAccounts()
+        } finally {
+            setRefreshing(false)
+        }
     }
+
+
+
+
+    useEffect(() => {
+        fetchAccounts()
+    }, [fetchAccounts])
 
 
 
