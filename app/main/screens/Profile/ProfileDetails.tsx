@@ -25,10 +25,12 @@ type OverviewNavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 export default function ProfileDetails() {
     const navigation = useNavigation<OverviewNavigationProp>()
+
     const user = useCurrentUser()
-    const { tierDetails } = useTierStore()
-    const { sumTodayTX } = useSaleStore()
-    const { accounts } = UseBankAccountStore()
+
+    const tierDetails = useTierStore((state) => state.tierDetails);
+    const sumTodayTX = useSaleStore((state) => state.sumTodayTX);
+    const accounts = UseBankAccountStore((state) => state.accounts);
 
 
     return (
@@ -345,9 +347,9 @@ export default function ProfileDetails() {
                             {/* Right side  */}
                             <View style={styles.right_side} >
                                 <Text style={styles.right_side_text} >
-                                    {accounts[0].accountName.split(" ")[0] + " " + accounts[0].accountName.split(" ")[2]}
-                                    {" "}
-                                    {maskPhone(accounts[0].accountNumber)}</Text>
+                                    {accounts.length > 0
+                                        ? `${accounts[0].accountName.split(" ")[0]} ${accounts[0].accountName.split(" ")[2]} ${maskPhone(accounts[0].accountNumber)}`
+                                        : "No bank account"}</Text>
                                 <Ionicons name="chevron-forward" size={15} color={"#4B4848"} />
                             </View>
 

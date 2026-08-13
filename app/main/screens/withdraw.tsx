@@ -1,5 +1,6 @@
-import { fetchMyAccounts, resolveBankAcct } from "@/api/bank-accounts.api";
+import { resolveBankAcct } from "@/api/bank-accounts.api";
 import { withdrawBank } from "@/api/withdraw.api";
+import { UseBankAccountStore } from "@/stores/bankStore";
 import { useSaleStore } from "@/stores/saleStore";
 import { useTierStore } from "@/stores/tierStore";
 import { useWalletStore } from "@/stores/WalletStore";
@@ -24,34 +25,15 @@ export default function Withdraw() {
     const navigation = useNavigation<NavigationProp>();
     const { walletBalance } = useWalletStore()
     const [withdrawalAmount, setWithdrawalAmount] = useState("")
-    const [accounts, setAccounts] = useState<myAccount[]>([])
     const [processing, setProcessing] = useState(false)
     const { tierDetails } = useTierStore()
     const [selectedAccount, setSelectedAccount] = useState<myAccount | null>(null)
     const [fetchingName, setFetchingName] = useState(false)
     const { accountDetails } = useSaleStore()
-
-    // fetch bank accounts
-    useEffect(() => {
-
-        const fetchAccounts = async () => {
-            const response = await fetchMyAccounts()
-
-            if (!response.ok) {
-                showErrorToast("Failed to fetch accounts!")
-                return;
-            }
-            setAccounts(response.accounts)
-            console.log(response)
-            setSelectedAccount(response.accounts[0])
-        }
-
-        fetchAccounts()
-    }, [])
+    const accounts = UseBankAccountStore((s) => s.accounts)
 
 
-
-
+    console.log(accounts)
 
     // with the parsed details available, we can then resolve to get the account name and bank name
     useEffect(() => {

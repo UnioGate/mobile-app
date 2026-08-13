@@ -5,16 +5,15 @@ import { create } from "zustand";
 
 
 
-
-
 interface BankAccountStoreProps {
     accounts: myAccount[];
     isLoading: boolean;
     error: string | null;
     banks: Bank[]
-    isLoadingBanks: false,
+    isLoadingBanks: boolean,
     fetchAccounts: () => Promise<void>;
-    fetchBanks: () => Promise<void>
+    fetchBanks: () => Promise<void>;
+    getBankName: (code: string) => string
 }
 
 
@@ -43,7 +42,8 @@ export const UseBankAccountStore = create<BankAccountStoreProps>((set, get) => (
             set({
                 accounts: response.accounts,
                 isLoading: false
-            })
+            });
+            console.log(response)
         }
 
         else {
@@ -84,17 +84,3 @@ export const UseBankAccountStore = create<BankAccountStoreProps>((set, get) => (
 
 
 }))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
