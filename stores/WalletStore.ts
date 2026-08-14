@@ -20,7 +20,7 @@ interface WalletStore {
     fetchBalance: () => void
     fetchRates: () => void
     fetchWallets: () => void
-
+    getWalletByCurrency: (currency: string) => Wallet | undefined;
 }
 
 
@@ -145,10 +145,10 @@ export const useWalletStore = create<WalletStore>((set, get) => ({
                 }
             }
         }
-    }
+    },
 
 
-
+    getWalletByCurrency: (currency) => get().wallets.find((w) => w.currency === currency)
 
 
 }))

@@ -25,7 +25,6 @@ type NavigationProp = NativeStackNavigationProp<
 
 export default function Withdraw() {
     const navigation = useNavigation<NavigationProp>();
-    const { walletBalance } = useWalletStore()
     const [withdrawalAmount, setWithdrawalAmount] = useState("")
     const [processing, setProcessing] = useState(false)
     const { tierDetails } = useTierStore()
@@ -36,6 +35,9 @@ export default function Withdraw() {
     const bankLogos = UseBankAccountStore((s) => s.bankLogos)
     const walletBalances = useWalletStore((s) => s.walletBalance)
     const fetchWallets = useWalletStore((s) => s.fetchWallets)
+    const ngnWallet = useWalletStore((s) => s.getWalletByCurrency("NGN"))
+    const WITHDRAWAL_FEE = 100;
+    const totalToReceive = withdrawalAmount ? Math.max(Number(withdrawalAmount) - WITHDRAWAL_FEE, 0) : 0;
 
 
 
@@ -59,8 +61,6 @@ export default function Withdraw() {
             })),
         [accounts]
     )
-
-    const totalToReceive = withdrawalAmount ? Number(withdrawalAmount) - 100 : 0
 
 
     console.log(accounts)
@@ -133,7 +133,7 @@ export default function Withdraw() {
             return;
         }
 
-        if (Number(withdrawalAmount) > Number(walletBalance)) {
+        if (Number(withdrawalAmount) > Number(ngnWallet?.amount)) {
             showErrorToast("Insufficient balance. Please enter a lower amount.");
             return;
         }
@@ -149,6 +149,13 @@ export default function Withdraw() {
             return;
         }
 
+
+
+
+        if (!ngnWallet) {
+            showErrorToast("Could not find your NGN wallet");
+            return;
+        }
         // then add validation for the amount left
 
 
@@ -159,15 +166,15 @@ export default function Withdraw() {
             const payload: BankWithdrawRequest = {
                 amount: withdrawalAmount,
                 bankAccountId: selectedAccount?.id ?? "",
-                walletId: ""
+                walletId: ngnWallet.id
             }
 
 
             const response = await withdrawBank(payload)
 
             if (!response?.ok) {
-                console.error("Failed to place withdrawal", response.error);
-                showErrorToast(response.error)
+                console.error("Failed to place withdrawal", response.message);
+                showErrorToast(response.message)
                 return;
             }
 
@@ -228,7 +235,7 @@ export default function Withdraw() {
             {/* balance */}
             <View style={styles.balance_box} >
                 <Text style={styles.balance_box_heading} >Available to withdraw</Text>
-                <Text style={styles.balance} >₦ {formatBalance(Number(walletBalance))} </Text>
+                <Text style={styles.balance} >₦ {formatBalance(Number(ngnWallet?.amount))} </Text>
             </View>
 
 
@@ -287,7 +294,7 @@ export default function Withdraw() {
                         <Text style={styles.fee} >Fee:
                             <Text style={{
                                 fontFamily: "Sora_600SemiBold"
-                            }}> ₦ 0</Text>
+                            }}> ₦ {WITHDRAWAL_FEE}</Text>
                         </Text>
 
 
@@ -361,7 +368,7 @@ export default function Withdraw() {
                                 )}
                             </View>
 
-
+                            {/*
                             <Pressable style={styles.change_bank_button} >
 
                                 <Text style={[styles.save_button_text, {
@@ -371,7 +378,7 @@ export default function Withdraw() {
                                 }]} >Change Bank</Text>
 
                                 <Ionicons name="chevron-forward" color={"#253E86"} size={11} />
-                            </Pressable>
+                            </Pressable> */}
                         </View>
 
                     </View>
