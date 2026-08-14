@@ -1,5 +1,6 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
+import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import React, { useCallback, useState } from 'react';
@@ -8,6 +9,7 @@ import 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 
 import { AnimatedSplashScreen } from '@/components/AnimatedSplashScreen';
+import { fonts } from '@/fonts/fonts';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { toastConfig } from '@/utils/toastConfig';
 
@@ -17,6 +19,7 @@ void SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const [fontsLoaded] = useFonts(fonts);
   const [isNativeSplashHidden, setIsNativeSplashHidden] = useState(false);
   const [isAnimatedSplashVisible, setIsAnimatedSplashVisible] = useState(true);
 
@@ -25,11 +28,15 @@ export default function RootLayout() {
   }, []);
 
   const handleRootLayout = useCallback(() => {
-    if (!isNativeSplashHidden) {
+    if (fontsLoaded && !isNativeSplashHidden) {
       void SplashScreen.hideAsync();
       setIsNativeSplashHidden(true);
     }
-  }, [isNativeSplashHidden]);
+  }, [fontsLoaded, isNativeSplashHidden]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <View style={{ flex: 1 }} onLayout={handleRootLayout}>
