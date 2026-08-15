@@ -51,9 +51,10 @@ export default function Overview() {
         = useTierStore()
 
     // Masking logic for balance
+    const safeWalletBalance = String(walletBalance ?? "");
     const displayBalance = showBalance
-        ? `₦ ${formatBalance(Number(walletBalance))}`
-        : `₦ ${"*".repeat(walletBalance.length)}`;
+        ? `₦ ${formatBalance(Number(safeWalletBalance || 0))}`
+        : `₦ ${"*".repeat(safeWalletBalance.length)}`;
 
 
     // this useEffect fetches sales history

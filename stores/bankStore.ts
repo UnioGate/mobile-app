@@ -58,7 +58,10 @@ export const UseBankAccountStore = create<BankAccountStoreProps>((set, get) => (
             isLoadingBanks: true
         })
 
-        if (get().banks.length > 0) return;
+        if ((get().banks ?? []).length > 0) {
+            set({ isLoadingBanks: false });
+            return;
+        }
 
         const response = await getBanks();
 

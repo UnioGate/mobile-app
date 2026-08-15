@@ -3,6 +3,7 @@ import { UseBankAccountStore } from "@/stores/bankStore";
 import { useBusinessStore } from "@/stores/businessStore";
 import { useWalletStore } from "@/stores/WalletStore";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { router } from "expo-router";
 import { useEffect } from "react";
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -61,7 +62,10 @@ export default function Index() {
     const fetchWallets = useWalletStore((s) => s.fetchWallets)
 
     useEffect(() => {
-        if (!accessToken) return;
+        if (!accessToken) {
+            router.replace("/auth/screens/SignIn");
+            return;
+        }
 
         fetchBusinesses();
         fetchBanks()

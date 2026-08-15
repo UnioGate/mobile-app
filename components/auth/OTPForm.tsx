@@ -29,6 +29,7 @@ type Props = {
     signUpMode: "emailAddress" | "phoneNumber"
     setSignUpMode: React.Dispatch<SetStateAction<"emailAddress" | "phoneNumber">>
     setCurrentForm?: React.Dispatch<SetStateAction<"createAccountForm" | "otp">>
+    onBack?: () => void;
     mode?: "signin" | "signup"
 };
 
@@ -37,6 +38,7 @@ export default function OTPForm({
     phone,
     signUpMode,
     setCurrentForm,
+    onBack,
     mode = "signup"
 }: Props) {
 
@@ -47,6 +49,22 @@ export default function OTPForm({
     const [loading, setLoading] = useState(false);
     const { currentStep, setCurrentStep } = useStep()
     const inputs = useRef<Array<TextInput | null>>([]);
+
+    const handleBack = () => {
+        if (onBack) {
+            onBack();
+            return;
+        }
+
+        if (setCurrentForm) {
+            setCurrentForm("createAccountForm");
+            return;
+        }
+
+        if (navigation.canGoBack()) {
+            navigation.goBack();
+        }
+    };
 
 
     // timer for the resend OTP functionality
@@ -259,7 +277,7 @@ export default function OTPForm({
 
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity
-                        onPress={() => setCurrentForm?.("createAccountForm")}
+                        onPress={handleBack}
                         style={styles.outlineButton}
                         activeOpacity={0.7}>
                         <Text style={styles.outlineButtonText}>Back</Text>
