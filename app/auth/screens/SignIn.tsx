@@ -59,6 +59,7 @@ export default function SignIn() {
                         signUpMode={signInMode}
                         setSignUpMode={setSignInMode}
                         mode='signin'
+                        onBack={() => setStep("signin_step")}
                     />
                 )}
 
