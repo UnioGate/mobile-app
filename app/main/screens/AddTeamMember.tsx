@@ -63,6 +63,9 @@ export default function AddTeamMember() {
                 return;
             }
 
+            setFormValues({
+                email: ""
+            })
             navigation.navigate("invitation_sent")
             return;
         }
@@ -130,7 +133,7 @@ export default function AddTeamMember() {
                     }} >
 
                         {/* Full name input */}
-                        <View style={{
+                        {/* <View style={{
                             width: "100%",
                             paddingHorizontal: scaleHorizontalPadding(10),
                             paddingVertical: scaleVerticalPadding(4)
@@ -145,15 +148,15 @@ export default function AddTeamMember() {
                                 }}
                             />
 
-                        </View>
+                        </View> */}
 
-                        <Divider style={{
+                        {/* <Divider style={{
                             backgroundColor: "#808080"
-                        }} />
+                        }} /> */}
 
 
                         {/* Phone number */}
-                        <View style={{
+                        {/* <View style={{
                             width: "100%",
                             paddingHorizontal: scaleHorizontalPadding(10),
                             paddingVertical: scaleVerticalPadding(4)
@@ -169,12 +172,12 @@ export default function AddTeamMember() {
                                 }}
                             />
 
-                        </View>
+                        </View> */}
 
 
-                        <Divider style={{
+                        {/* <Divider style={{
                             backgroundColor: "#808080"
-                        }} />
+                        }} /> */}
 
 
                         {/* Email address (optional) */}
@@ -186,12 +189,13 @@ export default function AddTeamMember() {
 
                             <TextInput
                                 keyboardType="email-address"
-                                placeholder="Email address (optional)"
+                                placeholder="Email address"
                                 style={{
                                     fontSize: scaleFont(14),
                                     color: "#10182AB2",
                                     fontFamily: "Sora_400Regular"
                                 }}
+                                value={formValues.email}
                                 onChangeText={(text) => updateFormField("email", text, setFormValues)}
                             />
 
@@ -202,7 +206,8 @@ export default function AddTeamMember() {
 
                     {/* assign role section  */}
                     <View style={{
-                        gap: 10
+                        gap: 10,
+                        display: "none"
                     }} >
 
                         <Text style={{
@@ -344,7 +349,8 @@ export default function AddTeamMember() {
 
                     {/* Permission Preview */}
                     <View style={{
-                        gap: 10
+                        gap: 10,
+                        display: "none"
                     }} >
 
                         <Text style={{
@@ -483,7 +489,8 @@ export default function AddTeamMember() {
 
                     {/* Invite Method */}
                     <View style={{
-                        gap: 10
+                        gap: 10,
+                        display: "none"
                     }} >
 
                         <Text style={{

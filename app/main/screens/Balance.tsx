@@ -3,16 +3,17 @@ import ATM_Icon from "@/components/icons/ATM_Icon";
 import CalendarIcon from "@/components/icons/CalendarIcon";
 import EyeClosed from "@/components/icons/EyeClosed";
 import ReloadIcon from "@/components/icons/Reload";
-import TransactionChart from "@/components/TransactionChart";
 import { withdrawals } from "@/data/mock_withdrawal_tx";
 import { useWalletStore } from "@/stores/WalletStore";
+import { showErrorToast } from "@/utils/toastConfig";
 import { formatBalance, formatTransactionDate, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { ChevronDown, Download, EyeIcon } from "lucide-react-native";
+import { Download, EyeIcon } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import { MainStackParamList } from "../type";
 
 
@@ -24,13 +25,15 @@ export default function Balance() {
     const [isBreakdownOpen, setIsBreakdownOpen] = useState(true);
     const { walletBalance } = useWalletStore()
     const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+    const [refreshing, setRefreshing] = useState(false)
+    const { fetchBalance } = useWalletStore()
 
 
 
     // Masking logic for balance
     const displayBalance = showBalance
         ? `₦ ${formatBalance(Number(walletBalance))}`
-        : `₦ ${"*".repeat(walletBalance.length)}`;
+        : `₦ ${"*".repeat(5)}`;
 
 
     // this polls the backend constantly for balance & history updates
@@ -64,6 +67,20 @@ export default function Balance() {
 
 
 
+    // This handles the screen refresh function
+    const onRefresh = async () => {
+        try {
+            setRefreshing(true);
+            await fetchBalance();
+        } catch (error) {
+            console.error("Failed to refresh balance:", error);
+        } finally {
+            setRefreshing(false);
+        }
+    };
+
+
+
     return (
         <View style={styles.container} >
 
@@ -88,8 +105,15 @@ export default function Balance() {
                 </Text>
 
 
-                <Pressable>
-                    <ReloadIcon />
+                <Pressable
+                    disabled={refreshing}
+                    onPress={onRefresh}
+                >
+                    {refreshing ? (
+                        <ActivityIndicator color="#253E86" />
+                    ) : (
+                        <ReloadIcon />
+                    )}
                 </Pressable>
 
             </View>
@@ -113,7 +137,11 @@ export default function Balance() {
                         <Text style={styles.balance_text} >Available Balance</Text>
 
                         <View style={styles.balance_wrapper} >
-                            <Text style={styles.balance_amount} >{displayBalance}</Text>
+                            <Text
+                                numberOfLines={1}
+                                adjustsFontSizeToFit
+                                minimumFontScale={0.5}
+                                style={[styles.balance_amount]} >{displayBalance}</Text>
 
                             <Pressable
                                 onPress={() => setShowBalance((prev) => !prev)}
@@ -156,10 +184,10 @@ export default function Balance() {
 
 
                     {/* Breakdown  */}
-                    <View style={styles.breakdown_wrapper} >
+                    {/* <View style={styles.breakdown_wrapper} > */}
 
-                        {/* Heading  */}
-                        <Pressable
+                    {/* Heading  */}
+                    {/* <Pressable
                             onPress={() => setIsBreakdownOpen(prev => !prev)}
                             style={{
                                 width: "100%",
@@ -183,9 +211,9 @@ export default function Balance() {
                                     ]
                                 }}
                             />
-                        </Pressable>
+                        </Pressable> */}
 
-                        {isBreakdownOpen && (
+                    {/* {isBreakdownOpen && (
                             <>
                                 <View style={styles.breakdown_row}>
                                     <View style={styles.left_side}>
@@ -195,7 +223,7 @@ export default function Balance() {
                                             <Text style={styles.row_subtitle}>Available now</Text>
                                         </View>
                                     </View>
-                                    <Text style={styles.right_side_text}>{"jfhfdjhfjh"} </Text>
+                                    <Text style={styles.right_side_text}>{"0"} </Text>
                                 </View>
 
                                 <View style={[
@@ -228,9 +256,9 @@ export default function Balance() {
                                     <Text style={styles.right_side_text}>₦0</Text>
                                 </View>
                             </>
-                        )}
+                        )} */}
 
-                    </View>
+                    {/* </View> */}
 
                 </View>
 
@@ -262,7 +290,7 @@ export default function Balance() {
                     </TouchableOpacity>
 
                     <Pressable
-                        onPress={() => navigation.navigate("settlement_settings")}
+                        onPress={() => showErrorToast("This feature is not available")}
                         style={[styles.button]} >
 
                         <CalendarIcon />
@@ -277,7 +305,7 @@ export default function Balance() {
 
 
                 {/* Automatic settlement */}
-                <View style={styles.automatic_settlement_wrapper} >
+                {/* <View style={styles.automatic_settlement_wrapper} >
 
                     <View style={{
                         width: "auto",
@@ -339,11 +367,11 @@ export default function Balance() {
 
                     </TouchableOpacity>
 
-                </View>
+                </View> */}
 
 
                 {/* Transaction chart */}
-                <TransactionChart />
+                {/* <TransactionChart /> */}
 
 
                 {/* Recent withdrawals section */}
@@ -385,77 +413,96 @@ export default function Balance() {
                     <View style={styles.recent_withdrawal_section_bottom} >
 
                         {/* The row for withdrawals */}
-                        {withdrawals.slice(0, 3).map((tx, id) => (
-                            <Pressable
-                                key={tx.id}
-                                style={[styles.recent_withdrawal_section_bottom_row, {
-                                    borderBottomColor: "#B3B3B3",
-                                    borderBottomWidth: id + 1 === 3 ? 0 : 0.4,
-                                }]}
-                                onPress={() => navigation.navigate("withdraw_details", {
-                                    id: tx.id
-                                })}
-                            >
+                        {withdrawals.length < 1 ? (
+                            <View style={styles.empty_withdrawals}>
+                                <Ionicons
+                                    name="receipt-outline"
+                                    size={32}
+                                    color="#808080"
+                                />
 
-                                <View style={{
-                                    alignItems: "flex-start",
-                                    gap: 9
-                                }} >
+                                <Text style={styles.empty_withdrawals_title}>
+                                    No withdrawals yet
+                                </Text>
 
-                                    <Text style={{
-                                        color: "#000000",
-                                        fontSize: scaleFont(14),
-                                        fontFamily: "Sora_600SemiBold"
-                                    }} > ₦{tx.amount.toLocaleString()} </Text>
+                                <Text style={styles.empty_withdrawals_text}>
+                                    Your recent withdrawals will appear here.
+                                </Text>
+                            </View>
+                        )
 
+                            :
+                            (withdrawals.slice(0, 3).map((tx, id) => (
+                                <Pressable
+                                    key={tx.id}
+                                    style={[styles.recent_withdrawal_section_bottom_row, {
+                                        borderBottomColor: "#B3B3B3",
+                                        borderBottomWidth: id + 1 === 3 ? 0 : 0.4,
+                                    }]}
+                                    onPress={() => navigation.navigate("withdraw_details", {
+                                        id: tx.id
+                                    })}
+                                >
 
-                                    <Text
-                                        style={{
-                                            color: "#10182AB2",
-                                            fontSize: scaleFont(12),
-                                            fontFamily: "Sora_400Regular"
-                                        }}
-                                    > {tx.bank} </Text>
-                                </View>
-
-
-                                <View style={{
-                                    width: "auto",
-                                    alignItems: "center",
-                                    flexDirection: "row",
-                                    gap: 5
-                                }} >
                                     <View style={{
-                                        alignItems: "flex-end",
-                                        gap: 7
+                                        alignItems: "flex-start",
+                                        gap: 9
                                     }} >
 
                                         <Text style={{
-                                            color: tx.status === "Completed" ? "#009A49"
-                                                : tx.status === "Pending" ? "#F7AA1A"
-                                                    : "#FF0707"
-                                            ,
-                                            fontSize: scaleFont(10),
+                                            color: "#000000",
+                                            fontSize: scaleFont(14),
                                             fontFamily: "Sora_600SemiBold"
-                                        }} > {tx.status} </Text>
+                                        }} > ₦{tx.amount.toLocaleString()} </Text>
 
 
-                                        <Text style={{
-                                            color: "#10182AB2",
-                                            fontSize: scaleFont(12),
-                                            fontFamily: "Sora_400Regular"
-                                        }}
-                                        >{tx.date} </Text>
+                                        <Text
+                                            style={{
+                                                color: "#10182AB2",
+                                                fontSize: scaleFont(12),
+                                                fontFamily: "Sora_400Regular"
+                                            }}
+                                        > {tx.bank} </Text>
                                     </View>
 
-                                    <Ionicons
-                                        name="chevron-forward"
-                                        color={"#000000"}
-                                        size={20}
-                                    />
-                                </View>
-                            </Pressable>
-                        ))}
+
+                                    <View style={{
+                                        width: "auto",
+                                        alignItems: "center",
+                                        flexDirection: "row",
+                                        gap: 5
+                                    }} >
+                                        <View style={{
+                                            alignItems: "flex-end",
+                                            gap: 7
+                                        }} >
+
+                                            <Text style={{
+                                                color: tx.status === "Completed" ? "#009A49"
+                                                    : tx.status === "Pending" ? "#F7AA1A"
+                                                        : "#FF0707"
+                                                ,
+                                                fontSize: scaleFont(10),
+                                                fontFamily: "Sora_600SemiBold"
+                                            }} > {tx.status} </Text>
+
+
+                                            <Text style={{
+                                                color: "#10182AB2",
+                                                fontSize: scaleFont(12),
+                                                fontFamily: "Sora_400Regular"
+                                            }}
+                                            >{tx.date} </Text>
+                                        </View>
+
+                                        <Ionicons
+                                            name="chevron-forward"
+                                            color={"#000000"}
+                                            size={20}
+                                        />
+                                    </View>
+                                </Pressable>
+                            )))}
 
 
                     </View>
@@ -589,7 +636,9 @@ const styles = StyleSheet.create({
     balance_amount: {
         color: "#FFFFFF",
         fontSize: scaleFont(34),
-        fontFamily: "Sora_400Regular"
+        fontFamily: "Sora_400Regular",
+        flex: 1,
+        flexShrink: 1,
     },
 
 
@@ -686,7 +735,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#B3B3B3",
         borderRadius: 7,
-        alignItems: "flex-start",
+        alignItems: "center",
         justifyContent: "center",
         paddingHorizontal: scaleHorizontalPadding(10),
         paddingVertical: scaleVerticalPadding(13),
@@ -720,7 +769,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.4,
         borderRadius: 7,
         width: "100%",
-        gap: 5
+        gap: 5,
     },
 
 
@@ -731,10 +780,29 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         paddingHorizontal: scaleHorizontalPadding(10),
         paddingVertical: scaleVerticalPadding(10),
-    }
+    },
 
+    empty_withdrawals: {
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+        paddingVertical: scaleVerticalPadding(30),
+        gap: 6,
+        paddingHorizontal: scaleHorizontalPadding(20),
+    },
 
+    empty_withdrawals_title: {
+        color: "#000000",
+        fontFamily: "Sora_600SemiBold",
+        fontSize: scaleFont(14),
+    },
 
+    empty_withdrawals_text: {
+        color: "#808080",
+        fontFamily: "Sora_400Regular",
+        fontSize: scaleFont(11),
+        textAlign: "center",
+    },
 
 
 

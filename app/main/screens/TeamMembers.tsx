@@ -117,7 +117,7 @@ export default function TeamMembers() {
 
                         </View>
 
-                        <View style={{
+                        {/* <View style={{
                             flexDirection: "row",
                             gap: 6,
                             width: "100%",
@@ -158,7 +158,7 @@ export default function TeamMembers() {
 
                             </View>
 
-                        </View>
+                        </View> */}
                     </View>
 
 

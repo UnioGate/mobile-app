@@ -5,6 +5,7 @@ import NFCIcon from "@/components/icons/NFCPayments";
 import SupportIcon from "@/components/icons/SupportIcon";
 import WithdrawIcon from "@/components/icons/WithdrawIcon";
 import TransactionCard from "@/components/TransactionCard";
+import { TransactionSkeleton } from "@/components/TransactionSkeleton";
 import CustomProgressBar from "@/components/ui/CustomProgressBar";
 import { useCurrentUser } from "@/stores/authStore";
 import { useSaleStore } from "@/stores/saleStore";
@@ -378,16 +379,48 @@ export default function Overview() {
                         </Pressable>
                     </View>
 
-                    {groupedSales &&
-                        Object.entries(groupedSales).slice(0, 1).map(([label, sales]) => (
-                            <View key={label}>
-                                <Text style={styles.today_text}>{label}</Text>
+                    {isLoadingHistory ? (
+                        <>
+                            <TransactionSkeleton />
+                            <TransactionSkeleton />
+                            <TransactionSkeleton />
+                            <TransactionSkeleton />
+                            <TransactionSkeleton />
+                        </>
+                    ) : Object.keys(groupedSales).length === 0 ? (
+                        <View style={styles.empty_transactions}>
+                            <Ionicons
+                                name="receipt-outline"
+                                size={32}
+                                color="#808080"
+                            />
 
-                                {sales.slice(0, 5).map((tx) => (
-                                    <TransactionCard key={tx.id} tx={tx} />
-                                ))}
-                            </View>
-                        ))}
+                            <Text style={styles.empty_transactions_title}>
+                                No transactions yet
+                            </Text>
+
+                            <Text style={styles.empty_transactions_text}>
+                                Your transactions will appear here once you make a sale.
+                            </Text>
+                        </View>
+                    ) : (
+                        Object.entries(groupedSales)
+                            .slice(0, 1)
+                            .map(([label, sales]) => (
+                                <View key={label}>
+                                    <Text style={styles.today_text}>
+                                        {label}
+                                    </Text>
+
+                                    {sales.slice(0, 5).map((tx) => (
+                                        <TransactionCard
+                                            key={tx.id}
+                                            tx={tx}
+                                        />
+                                    ))}
+                                </View>
+                            ))
+                    )}
 
 
                 </View>
@@ -724,6 +757,27 @@ const styles = StyleSheet.create({
         gap: 20,
     },
 
+    empty_transactions: {
+        width: "100%",
+        minHeight: 150,
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 6,
+        paddingHorizontal: 20,
+    },
 
+    empty_transactions_title: {
+        color: "#10182A",
+        fontSize: scaleFont(14),
+        fontFamily: "Sora_600SemiBold",
+    },
+
+    empty_transactions_text: {
+        color: "#808080",
+        fontSize: scaleFont(11),
+        fontFamily: "Sora_400Regular",
+        textAlign: "center",
+        maxWidth: 250,
+    },
 
 })

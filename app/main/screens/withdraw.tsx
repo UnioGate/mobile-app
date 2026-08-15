@@ -342,7 +342,7 @@ export default function Withdraw() {
                             >
                                 <Image
                                     source={{
-                                        uri: getBankLogo(accountDetails?.bank ?? "") ??
+                                        uri: getBankLogo(selectedAccount?.bank ?? "") ??
                                             "https://cdn.jsdelivr.net/gh/Nigerian-Bank-Logos/ng-bank-logos@main/logos/_default.png"
                                     }}
                                     style={{ width: 20, height: 20 }}
@@ -452,13 +452,20 @@ export default function Withdraw() {
 
 
                     <TouchableOpacity
+                        disabled={processing}
                         onPress={submit}
                         style={[styles.button, {
                             backgroundColor: "#253E86"
                         }]} >
-                        <Text style={[styles.button_text, {
-                            color: "#ffffff"
-                        }]} >Withdraw 0</Text>
+                        {processing ? (
+                            <ActivityIndicator color="#ffffff" />
+                        ) : (
+                            <Text style={
+                                [styles.button_text, {
+                                    color: "#ffffff"
+                                }]
+                            } >Withdraw </Text>
+                        )}
                     </TouchableOpacity>
 
                 </View>
