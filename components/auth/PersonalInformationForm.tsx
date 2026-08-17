@@ -2,7 +2,7 @@ import { completeProfile } from "@/api/onboarding.api";
 import { useStep } from "@/context/StepContext";
 import { CompleteProfileBody } from "@/types/types";
 import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
-import { scaleFont, scaleVerticalPadding, updateFormField } from "@/utils/utils";
+import { scaleFont, scaleVerticalPadding, updateFormField, uploadImageToCloudinary } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -23,7 +23,7 @@ export default function PersonalInformationForm() {
     const [showCountryPicker, setShowCountryPicker] = useState(false);
     const [showPicker, setShowPicker] = useState(false)
     const [error, setError] = useState("")
-    const { currentStep, setCurrentStep } = useStep();
+    const { setCurrentStep } = useStep();
     const SIGNUP_KEY = "signup_data";
     const [loading, setLoading] = useState(false)
 
@@ -83,6 +83,7 @@ export default function PersonalInformationForm() {
             setSelectedImage(result.assets[0].uri);
         }
     };
+
 
 
     // Validation functions
@@ -174,6 +175,20 @@ export default function PersonalInformationForm() {
         try {
             setLoading(true);
 
+
+            let profileImageUrl: string | null = null;
+
+            if (selectedImage) {
+                try {
+                    profileImageUrl = await uploadImageToCloudinary(selectedImage);
+                } catch (uploadError) {
+                    showErrorToast("Failed to upload profile picture");
+                    console.error(uploadError);
+                    return; // stop here — don't proceed with a broken image state
+                }
+            }
+
+
             const data = await AsyncStorage.getItem(SIGNUP_KEY);
 
             if (!data) {
@@ -196,6 +211,7 @@ export default function PersonalInformationForm() {
                 email: formValues.email?.toLowerCase(),
                 phoneNumber: formValues.phoneNumber,
                 inviteBusinessId: formValues.inviteBusinessId,
+                // profileImageUrl,   see the flag below before adding this
             }
 
             console.log("signupData", signupData);

@@ -1,7 +1,7 @@
 import { createBusiness } from "@/api/onboarding.api";
 import { CompleteBusinessInformationBody, CompleteProfileBody, Currency, DropdownOption } from "@/types/types";
 import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
-import { scaleFont, scaleVerticalPadding, updateFormField } from "@/utils/utils";
+import { scaleFont, scaleVerticalPadding, updateFormField, uploadImageToCloudinary } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -16,6 +16,7 @@ import CustomDropdown from "../ui/CustomDropdown";
 import CustomInput from "../ui/ReusableInput";
 
 
+
 export default function BusinessInformationForm() {
     const SIGNUP_KEY = "signup_data";
     const [cachedData, setCachedData] = useState<CompleteProfileBody | null>(null)
@@ -24,6 +25,8 @@ export default function BusinessInformationForm() {
     const currenciesData = currencies as Currency[]
     const [currencyOption, setCurrencyOptions] = useState<DropdownOption[]>([])
     const [loading, setLoading] = useState(false)
+    const [uploadingLogo, setUploadingLogo] = useState(false);
+
 
     const [formValues, setFormValues] = useState<CompleteBusinessInformationBody>({
         address: "",
@@ -151,13 +154,12 @@ export default function BusinessInformationForm() {
 
     const handleSubmit = async () => {
         const error =
-            validateAddress(formValues.address)
-        validateCity(formValues.city)
-        validateCompanyName(formValues.name)
-        validateCurrency(formValues.primaryCurrency)
-        validatePostalCode(formValues.postalCode)
-        validateState(formValues.town)
-
+            validateAddress(formValues.address) ||
+            validateCity(formValues.city) ||
+            validateCompanyName(formValues.name) ||
+            validateCurrency(formValues.primaryCurrency) ||
+            validatePostalCode(formValues.postalCode) ||
+            validateState(formValues.town);
 
         if (error) {
             setError(error);
@@ -171,6 +173,23 @@ export default function BusinessInformationForm() {
         try {
             setLoading(true)
 
+            let logoUrl: string | null = null;
+
+            if (logoUrl) {
+                setUploadingLogo(true);
+
+                try {
+                    logoUrl = await uploadImageToCloudinary(logoImage ?? "");
+                } catch (uploadError) {
+                    showErrorToast("Failed to upload business logo");
+                    console.error(uploadError);
+                    return; // stop - don't submit with a broken/missing logo
+                }
+                finally {
+                    setUploadingLogo(false);
+                }
+            }
+
             const payload: CompleteBusinessInformationBody = {
                 userId: cachedData?.userId,
                 name: formValues.name,
@@ -178,7 +197,8 @@ export default function BusinessInformationForm() {
                 city: formValues.city,
                 town: formValues.town,
                 postalCode: formValues.postalCode,
-                primaryCurrency: formValues.primaryCurrency
+                primaryCurrency: formValues.primaryCurrency,
+                // image: logoUrl
             }
 
             console.log("payload:", JSON.stringify(payload, null, 2));

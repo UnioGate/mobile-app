@@ -104,12 +104,6 @@ export default function BankAccount() {
     }
 
 
-    if (!accounts) {
-        return;
-    };
-
-
-
     return (
         <View style={styles.container} >
 
@@ -503,7 +497,7 @@ const styles = StyleSheet.create({
     scrollView_style: {
         flexGrow: 1,
         alignItems: "stretch",
-        gap: 12,
+        gap: 20,
         paddingBottom: scaleVerticalPadding(20),
         paddingHorizontal: scaleHorizontalPadding(10),
         paddingVertical: scaleVerticalPadding(5),

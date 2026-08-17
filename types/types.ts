@@ -159,6 +159,7 @@ export interface CompleteBusinessInformationBody {
   postalCode: string;
   primaryCurrency: string;
   userId?: string;
+  image?: string | null
 }
 
 

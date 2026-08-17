@@ -34,17 +34,21 @@ export const UseBankAccountStore = create<BankAccountStoreProps>((set, get) => (
 
     // fetch bank accounts
     fetchAccounts: async () => {
-        const response = await fetchMyAccounts();
+        try {
+            const response = await fetchMyAccounts();
 
-        if (response.ok) {
-            set({
-                accounts: response.accounts,
-                error: null,
-            });
-        } else {
-            set({
-                error: response.error,
-            });
+            if (response.ok) {
+                set({
+                    accounts: response.accounts,
+                    error: null,
+                });
+            } else {
+                set({
+                    error: response.error,
+                });
+            }
+        } catch (error) {
+            console.error(error)
         }
     },
 

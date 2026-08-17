@@ -12,6 +12,8 @@ import { showSuccessToast } from "./toastConfig";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 const baseWidth = 375;
+const cloudName = process.env.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME;
+const uploadPreset = process.env.EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 
 
 export const scaleFont = (size: number) => {
@@ -268,3 +270,40 @@ export const parseBankTransferAddress = (walletAddress: string) => {
     const [, bankCode, accountNumber, bankName] = match;
     return { bankCode, accountNumber, bankName };
 }
+
+
+
+
+// This function uploads the image to cloudinary
+export const uploadImageToCloudinary = async (imageUri: string): Promise<string> => {
+    const formData = new FormData();
+
+    // React Native FormData expects this specific shape for files —
+    // not a File object like the browser version.
+    formData.append("file", {
+        uri: imageUri,
+        type: "image/jpeg",
+        name: `upload_${Date.now()}.jpg`,
+    } as any);
+
+    formData.append("upload_preset", `${uploadPreset}`);
+
+    const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        {
+            method: "POST",
+            body: formData,
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.error?.message || "Image upload failed");
+    }
+
+    return data.secure_url;
+};

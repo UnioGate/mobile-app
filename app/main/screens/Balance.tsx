@@ -175,7 +175,9 @@ export default function Balance() {
                                 height: 4,
                             }]} />
                             <Text style={styles.date_text} >Last updated: {" "}
-                                {formatTransactionDate(String(lastUpdated) ?? String(new Date()))}
+                                {lastUpdated
+                                    ? formatTransactionDate(lastUpdated.toISOString())
+                                    : "Updating..."}
                             </Text>
 
                         </View>

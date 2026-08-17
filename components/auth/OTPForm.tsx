@@ -146,6 +146,7 @@ export default function OTPForm({
                 if (mode === "signin") {
                     // user tried to sign in but no account exists.
                     showErrorToast("No account found with this email. Please sign up.");
+                    navigation.navigate("PersonalInformation")
                     setOtp(Array(OTP_LENGTH).fill(""));
                     return;
                 }
