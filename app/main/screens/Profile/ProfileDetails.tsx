@@ -9,7 +9,7 @@ import SupportIcon from "@/components/icons/SupportIcon";
 import TeamIcon from "@/components/icons/Team";
 import WalletIcon from "@/components/icons/WalletIcon";
 import { useCurrentUser } from "@/stores/authStore";
-import { UseBankAccountStore } from "@/stores/bankStore";
+import { useBankAccountStore } from "@/stores/bankStore";
 import { useSaleStore } from "@/stores/saleStore";
 import { useTierStore } from "@/stores/tierStore";
 import { formatCompactNumbers, handleLogOut, maskPhone, scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
@@ -30,7 +30,7 @@ export default function ProfileDetails() {
 
     const tierDetails = useTierStore((state) => state.tierDetails);
     const sumTodayTX = useSaleStore((state) => state.sumTodayTX);
-    const accounts = UseBankAccountStore((state) => state.accounts);
+    const accounts = useBankAccountStore((state) => state.accounts);
 
 
     return (

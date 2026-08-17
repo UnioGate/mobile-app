@@ -21,7 +21,7 @@ interface BankAccountStoreProps {
 
 
 
-export const UseBankAccountStore = create<BankAccountStoreProps>((set, get) => ({
+export const useBankAccountStore = create<BankAccountStoreProps>((set, get) => ({
     accounts: [],
     isLoading: false,
     error: null,

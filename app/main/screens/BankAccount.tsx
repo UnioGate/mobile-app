@@ -1,6 +1,6 @@
 import { deleteAccount } from "@/api/bank-accounts.api";
 import LogoReveal from "@/components/LogoReveal";
-import { UseBankAccountStore } from "@/stores/bankStore";
+import { useBankAccountStore } from "@/stores/bankStore";
 import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,10 +19,10 @@ export default function BankAccount() {
     const navigation = useNavigation<OverviewNavigationProp>()
     const [deletingID, setDeletingID] = useState<string | null>(null)
     const [refreshing, setRefreshing] = useState(false)
-    const fetchAccounts = UseBankAccountStore((s) => s.fetchAccounts)
-    const accounts = UseBankAccountStore((s) => s.accounts)
-    const fetchingAccounts = UseBankAccountStore((s) => s.isLoading)
-    const bankLogos = UseBankAccountStore((s) => s.bankLogos)
+    const fetchAccounts = useBankAccountStore((s) => s.fetchAccounts)
+    const accounts = useBankAccountStore((s) => s.accounts)
+    const fetchingAccounts = useBankAccountStore((s) => s.isLoading)
+    const bankLogos = useBankAccountStore((s) => s.bankLogos)
 
 
 

@@ -1,7 +1,7 @@
 import { resolveBankAcct, saveBankAccount } from "@/api/bank-accounts.api";
 import CustomCheckbox from "@/components/ui/CustomCheckbox";
 import CustomDropdown from "@/components/ui/CustomDropdown";
-import { UseBankAccountStore } from "@/stores/bankStore";
+import { useBankAccountStore } from "@/stores/bankStore";
 import { bankAccountBody, bankAccountResolveBody, DropdownOption } from "@/types/types";
 import { showErrorToast, showSuccessToast } from "@/utils/toastConfig";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding, updateFormField } from "@/utils/utils";
@@ -24,9 +24,9 @@ export default function AddBankAccount() {
     const [resolving, setResolving] = useState(false)
     const [incompleteNumber, setIncompleteNumber] = useState(false)
     const [resolvedName, setResolvedName] = useState("");
-    const fetchAccounts = UseBankAccountStore((state) => state.fetchAccounts)
-    const fetchBanks = UseBankAccountStore((state) => state.fetchBanks)
-    const banks = UseBankAccountStore((state) => state.banks)
+    const fetchAccounts = useBankAccountStore((state) => state.fetchAccounts)
+    const fetchBanks = useBankAccountStore((state) => state.fetchBanks)
+    const banks = useBankAccountStore((state) => state.banks)
     const [formValues, setFormValues] = useState({
         accountNumber: "",
         bankName: "",

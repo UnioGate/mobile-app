@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/stores/authStore";
-import { UseBankAccountStore } from "@/stores/bankStore";
+import { useBankAccountStore } from "@/stores/bankStore";
 import { useBusinessStore } from "@/stores/businessStore";
 import { useWalletStore } from "@/stores/WalletStore";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -56,9 +56,9 @@ export default function Index() {
     const role = useAuthStore((s) => s.role)
 
     const fetchBusinesses = useBusinessStore((s) => s.fetchBusinesses);
-    const fetchBanks = UseBankAccountStore((s) => s.fetchBanks)
-    const fetchAccounts = UseBankAccountStore((s) => s.fetchAccounts)
-    const fetchBankLogos = UseBankAccountStore((s) => s.fetchBankLogos)
+    const fetchBanks = useBankAccountStore((s) => s.fetchBanks)
+    const fetchAccounts = useBankAccountStore((s) => s.fetchAccounts)
+    const fetchBankLogos = useBankAccountStore((s) => s.fetchBankLogos)
     const fetchWallets = useWalletStore((s) => s.fetchWallets)
 
     useEffect(() => {
