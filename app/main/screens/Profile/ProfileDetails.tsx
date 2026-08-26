@@ -419,7 +419,10 @@ export default function ProfileDetails() {
                     <View style={styles.category_card} >
 
                         <Pressable
-                            onPress={() => navigation.navigate("security")}
+                            onPress={
+                                // () => navigation.navigate("security")
+                                () => navigation.navigate("maintenance_screen")
+                            }
                             style={[styles.category_card_row, {
                                 borderBottomWidth: 0
                             }]} >

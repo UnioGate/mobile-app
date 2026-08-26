@@ -446,3 +446,27 @@ export interface updateSaleStatus {
   txHash: string;
   amountPaid: string;
 }
+
+
+
+export interface bankLogo {
+  name: string,
+  aliases: string[],
+  bankCode: string;
+  scCode: string;
+  category: string;
+  logos: {
+    png: string;
+    svg: string;
+  };
+}
+
+
+export type NetworkContextType = {
+  isOnline: boolean;
+  isCheckingNetwork: boolean;
+  checkNetwork: () => Promise<boolean>;
+  showOfflineModal: () => void;
+  hideOfflineModal: () => void;
+  isOfflineModalVisible: boolean;
+}

@@ -26,6 +26,7 @@ import DisplayCurrencyScreen from "./screens/DisplayCurrencyScreen";
 import EditBusinessInfo from "./screens/EditBusinessInfo";
 import HelpCenter from "./screens/HelpCenter";
 import InvitationSection from "./screens/InvitationSent";
+import MaintenanceScreen from "./screens/Maintenance_Screen";
 import NotificationSettings from "./screens/NotificationSettings";
 import Overview from './screens/Overview';
 import PaymentMethods from "./screens/PaymentMethods";
@@ -124,6 +125,7 @@ export default function Index() {
                 <Stack.Screen name="personal_verification" component={PersonalVerification} />
                 <Stack.Screen name="business_verification" component={BusinessVerification} />
                 <Stack.Screen name="security" component={SecurityScreen} />
+                <Stack.Screen name="maintenance_screen" component={MaintenanceScreen} />
 
             </Stack.Navigator>
 

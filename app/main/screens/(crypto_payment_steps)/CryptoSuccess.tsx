@@ -32,9 +32,14 @@ export default function CryptoSuccess() {
 
 
 
-
     if (!pollResponse) {
-        return
+        return (
+            <View style={styles.container}>
+                <Text style={{ color: "#000" }}>
+                    Loading transaction...
+                </Text>
+            </View>
+        );
     }
 
     return (

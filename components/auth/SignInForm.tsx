@@ -1,4 +1,5 @@
 import { requestOTP } from '@/api/otp.api';
+import { useNetwork } from '@/context/NetworkContext';
 import { RequestOTPBody } from '@/types/types';
 import { showSuccessToast } from '@/utils/toastConfig';
 import { scaleFont, scaleVerticalPadding } from '@/utils/utils';
@@ -40,7 +41,7 @@ export default function SignInForm({
     const [showCountryPicker, setShowCountryPicker] = useState(false);
     const [callingCode, setCallingCode] = useState('234');
     const [loading, setLoading] = useState(false)
-
+    const { checkNetwork } = useNetwork()
 
 
     // Validation function
@@ -88,10 +89,19 @@ export default function SignInForm({
             return;
         }
 
+
+        // check for Network availability
+        const online = await checkNetwork()
+
+        if (!online) {
+            return;
+        }
+
         // then if the validation passes,
         // we then call our backend to send OTP then move to the OTP screen
         try {
             setLoading(true);
+
 
 
             const payload: RequestOTPBody = {

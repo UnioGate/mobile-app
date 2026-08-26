@@ -1,4 +1,5 @@
 import TeamIcon from "@/components/icons/TeamIcon";
+import OfflineScreen from "@/components/network/OfflineScreen";
 import TeamMembersCard from "@/components/ui/TeamMemberCard";
 import { teamMembers } from "@/data/team_members_data";
 import { scaleFont, scaleHorizontalPadding, scaleVerticalPadding } from "@/utils/utils";
@@ -62,6 +63,8 @@ export default function TeamMembers() {
                 </View>
 
                 {/* Main Content */}
+
+                <OfflineScreen />
                 <ScrollView
                     style={styles.scrollView}
                     contentContainerStyle={styles.scrollViewContent}

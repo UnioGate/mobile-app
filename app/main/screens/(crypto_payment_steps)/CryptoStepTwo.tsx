@@ -146,7 +146,6 @@ export default function CryptoStepTwo() {
 
             if (pollResponse.status === "confirmed") {
                 clearInterval(pollInterval);
-                resetSale()
                 navigation.navigate("CryptoSuccess");
             } else if (pollResponse.status === "expired") {
                 clearInterval(pollInterval);

@@ -25,8 +25,7 @@ export const fonts = {
     PlusJakartaSans_700Bold,
     PlusJakartaSans_400Regular_Italic,
     Sora_400Regular,
-    Sora_300Light,
-    Sora_600SemiBold,
+    Sora_300Light, Sora_600SemiBold,
     Sora_200ExtraLight,
     Sora_500Medium
 };

@@ -2,7 +2,7 @@ import { resolveBankAcct } from "@/api/bank-accounts.api";
 import { withdrawBank } from "@/api/withdraw.api";
 import { BankDetailSkeleton } from "@/components/ui/BankDetailSkeleton";
 import CustomDropdown from "@/components/ui/CustomDropdown";
-import { UseBankAccountStore } from "@/stores/bankStore";
+import { useBankAccountStore } from "@/stores/bankStore";
 import { useSaleStore } from "@/stores/saleStore";
 import { useTierStore } from "@/stores/tierStore";
 import { useWalletStore } from "@/stores/WalletStore";
@@ -31,8 +31,8 @@ export default function Withdraw() {
     const [selectedAccount, setSelectedAccount] = useState<myAccount | null>(null)
     const [fetchingBankName, setFetchingBankName] = useState(false)
     const { accountDetails } = useSaleStore()
-    const accounts = UseBankAccountStore((s) => s.accounts)
-    const bankLogos = UseBankAccountStore((s) => s.bankLogos)
+    const accounts = useBankAccountStore((s) => s.accounts)
+    const bankLogos = useBankAccountStore((s) => s.bankLogos)
     const walletBalances = useWalletStore((s) => s.walletBalance)
     const fetchWallets = useWalletStore((s) => s.fetchWallets)
     const ngnWallet = useWalletStore((s) => s.getWalletByCurrency("NGN"))

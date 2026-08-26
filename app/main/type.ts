@@ -1,3 +1,6 @@
+// This contains the different screen types
+
+
 export type MainStackParamList = {
   overview: undefined;
   sales: undefined;
@@ -51,18 +54,8 @@ export type MainStackParamList = {
   security: undefined;
 
 
+  maintenance_screen: undefined
+
+
 };
 
-
-
-export interface bankLogo {
-  name: string,
-  aliases: string[],
-  bankCode: string;
-  scCode: string;
-  category: string;
-  logos: {
-    png: string;
-    svg: string;
-  };
-}
